@@ -6,7 +6,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined | void> = this._onDidChangeTreeData.event;
 
-    constructor(private moduleName: string | undefined = undefined) {}
+    constructor(private moduleName: string | undefined = undefined) { }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
         return element;
@@ -47,9 +47,29 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private parsePythonContent(content: string): TreeNode[] {
         // Add your logic here to parse the Python content and return an array of TreeNodes
         const contentObj = JSON.parse(content);
-        const methods = contentObj['methods'];
+        const functions = contentObj['functions'];
+        const classes = contentObj['classes'];
+        return [
+            ...this.parseClasses(classes),
+            ...this.parseFunctions(functions),
+        ];
+    }
 
-        return methods.map((method: string) => {
+    parseClasses(classes: any) {
+        return classes.map((cls: any) => {
+            const methods = cls['methods'];
+            return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class');
+        });
+    }
+
+    parseFunctions(functions: Array<string>) {
+        return functions.map((func) => {
+            return new TreeNode(func, vscode.TreeItemCollapsibleState.None, [], 'function');
+        });
+    }
+
+    parseMethods(methods: Array<string>) {
+        return methods.map((method) => {
             return new TreeNode(method, vscode.TreeItemCollapsibleState.None, [], 'method');
         });
     }

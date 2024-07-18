@@ -10,16 +10,22 @@ def get_methods_from_module(module_name):
     except ModuleNotFoundError:
         return json.dumps({"error": f"Module '{module_name}' not found."})
     
-    # List to store all methods
-    methods_list = []
+    # Dictionary to store all methods and classes
+    module_data = {"module_name": module_name, "classes": []}
 
     # Iterate over all the members of the module
     for name, obj in inspect.getmembers(module):
-        # Check if the member is a function or method
-        if inspect.isfunction(obj) or inspect.ismethod(obj):
-            methods_list.append(name)
+        if inspect.isclass(obj):
+            class_data = {"class_name": name, "methods": []}
+            for cname, cobj in inspect.getmembers(obj):
+                # Check if the member is a function or method
+                if inspect.isfunction(cobj) or inspect.ismethod(cobj):
+                    class_data["methods"].append(cname)
+            module_data["classes"].append(class_data)
+        elif inspect.isfunction(obj) or inspect.ismethod(obj):
+            module_data.setdefault("functions", []).append(name)
 
-    return json.dumps({"module_name": module_name, "methods": methods_list})
+    return json.dumps(module_data)
 
 if __name__ == "__main__":
     # Check if the module name is provided as an argument
