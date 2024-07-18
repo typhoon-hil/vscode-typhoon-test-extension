@@ -9,6 +9,17 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     constructor(private moduleName: string | undefined = undefined) { }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
+        if (element.type === 'class') {
+            return element;
+        }
+        
+        // Add helloworld command to the element
+        element.command = { 
+            command: 'helloworld.helloWorld', 
+            title: 'Show Docstring', 
+            arguments: [element]
+        };
+
         return element;
     }
 
@@ -75,7 +86,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     }
 }
 
-class TreeNode extends vscode.TreeItem {
+export class TreeNode extends vscode.TreeItem {
     children: TreeNode[];
 
     constructor(
