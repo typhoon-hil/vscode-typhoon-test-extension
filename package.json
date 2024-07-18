@@ -41,7 +41,13 @@
           "name": "Custom View 2"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "customView2",
+        "contents": "Typhoon Test API Wizard"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -60,6 +66,9 @@
     "eslint": "^8.57.0",
     "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "tree-sitter": "^0.21.0",
+    "tree-sitter-python": "^0.21.0"
+
   }
 }
