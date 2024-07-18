@@ -36,7 +36,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
             const filePath = path.resolve(__dirname, '..', 'get_module_source.py');
             exec(`py ${filePath} ${moduleName}`, (error, stdout, stderr) => {
                 if (error) {
-                    reject(`Error loading module: ${stderr}`);
+                    reject(`Error loading module: ${stderr}, ${error}`);
                 } else {
                     resolve(stdout);
                 }
@@ -62,15 +62,15 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         });
     }
 
-    parseFunctions(functions: Array<string>) {
+    parseFunctions(functions: Array<any>) {
         return functions.map((func) => {
-            return new TreeNode(func, vscode.TreeItemCollapsibleState.None, [], 'function');
+            return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc']);
         });
     }
 
-    parseMethods(methods: Array<string>) {
+    parseMethods(methods: Array<any>) {
         return methods.map((method) => {
-            return new TreeNode(method, vscode.TreeItemCollapsibleState.None, [], 'method');
+            return new TreeNode(method["name"], vscode.TreeItemCollapsibleState.None, [], 'method', method['doc']);
         });
     }
 }
@@ -82,7 +82,8 @@ class TreeNode extends vscode.TreeItem {
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         children: TreeNode[],
-        public readonly type: 'class' | 'method' | 'function'
+        public readonly type: 'class' | 'method' | 'function',
+        public readonly docstring: string = '',
     ) {
         super(label, collapsibleState);
         this.children = children;

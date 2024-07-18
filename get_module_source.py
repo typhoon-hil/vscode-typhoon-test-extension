@@ -7,6 +7,10 @@ def is_public(name):
     """Check if a name is considered public (not starting with '_')."""
     return not name.startswith('_')
 
+def get_doc(obj):
+    """Fetches the docstring of an object if available."""
+    return inspect.getdoc(obj) or ""
+
 def get_methods_from_module(module_name):
     try:
         # Dynamically import the module
@@ -24,11 +28,19 @@ def get_methods_from_module(module_name):
             for cname, cobj in inspect.getmembers(obj):
                 # Check if the member is a function or method and is public
                 if (inspect.isfunction(cobj) or inspect.ismethod(cobj)) and is_public(cname):
-                    class_data["methods"].append(cname)
+                    method_info = {
+                        "name": cname,
+                        "doc": get_doc(cobj)
+                    }
+                    class_data["methods"].append(method_info)
             if class_data["methods"]:  # Only add classes with public methods
                 module_data["classes"].append(class_data)
         elif (inspect.isfunction(obj) or inspect.ismethod(obj)) and is_public(name):
-            module_data.setdefault("functions", []).append(name)
+            function_info = {
+                "name": name,
+                "doc": get_doc(obj)
+            }
+            module_data.setdefault("functions", []).append(function_info)
 
     return json.dumps(module_data)
 
