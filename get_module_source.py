@@ -3,6 +3,10 @@ import inspect
 import importlib
 import json
 
+def is_public(name):
+    """Check if a name is considered public (not starting with '_')."""
+    return not name.startswith('_')
+
 def get_methods_from_module(module_name):
     try:
         # Dynamically import the module
@@ -18,11 +22,12 @@ def get_methods_from_module(module_name):
         if inspect.isclass(obj):
             class_data = {"class_name": name, "methods": []}
             for cname, cobj in inspect.getmembers(obj):
-                # Check if the member is a function or method
-                if inspect.isfunction(cobj) or inspect.ismethod(cobj):
+                # Check if the member is a function or method and is public
+                if (inspect.isfunction(cobj) or inspect.ismethod(cobj)) and is_public(cname):
                     class_data["methods"].append(cname)
-            module_data["classes"].append(class_data)
-        elif inspect.isfunction(obj) or inspect.ismethod(obj):
+            if class_data["methods"]:  # Only add classes with public methods
+                module_data["classes"].append(class_data)
+        elif (inspect.isfunction(obj) or inspect.ismethod(obj)) and is_public(name):
             module_data.setdefault("functions", []).append(name)
 
     return json.dumps(module_data)
