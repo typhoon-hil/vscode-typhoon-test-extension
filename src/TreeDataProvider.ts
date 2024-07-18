@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
-import Parser from 'tree-sitter';
-import Python from 'tree-sitter-python';
 import * as path from 'path';
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
@@ -46,46 +44,14 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         });
     }
 
-    private async parsePythonContent(content: string): Promise<TreeNode[]> {
-        const parser = new Parser();
-        parser.setLanguage(Python);
-        const tree = parser.parse(content);
+    private parsePythonContent(content: string): TreeNode[] {
+        // Add your logic here to parse the Python content and return an array of TreeNodes
+        const contentObj = JSON.parse(content);
+        const methods = contentObj['methods'];
 
-        const classes: TreeNode[] = [];
-        const methods: TreeNode[] = [];
-
-        function traverse(node: any, parent?: TreeNode) {
-            switch (node.type) {
-                case 'class_definition':
-                    const className = node.childForFieldName('name').text;
-                    const classNode = new TreeNode(className, vscode.TreeItemCollapsibleState.Collapsed, [], 'class');
-                    classes.push(classNode);
-                    traverseChildren(node, classNode);
-                    break;
-                case 'function_definition':
-                    const methodName = node.childForFieldName('name').text;
-                    const methodNode = new TreeNode(methodName, vscode.TreeItemCollapsibleState.None, [], parent ? 'method' : 'function');
-                    if (parent) {
-                        parent.children.push(methodNode);
-                    } else {
-                        methods.push(methodNode);
-                    }
-                    break;
-                default:
-                    traverseChildren(node, parent);
-                    break;
-            }
-        }
-
-        function traverseChildren(node: any, parent?: TreeNode) {
-            for (let i = 0; i < node.namedChildCount; i++) {
-                traverse(node.namedChild(i), parent);
-            }
-        }
-
-        traverse(tree.rootNode);
-
-        return [...classes, ...methods];
+        return methods.map((method: string) => {
+            return new TreeNode(method, vscode.TreeItemCollapsibleState.None, [], 'method');
+        });
     }
 }
 
