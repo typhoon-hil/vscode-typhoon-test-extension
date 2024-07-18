@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('customView', sidebarProvider)
   );
 
-  vscode.window.registerTreeDataProvider('customView2', new TreeDataProvider('pandas'));
+  vscode.window.registerTreeDataProvider('customView2', new TreeDataProvider('typhoon.api.schematic_editor'));
 }
 
 export function deactivate() {}
