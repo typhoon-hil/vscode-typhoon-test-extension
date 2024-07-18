@@ -35,6 +35,10 @@
           "id": "customView",
           "name": "Custom View",
           "type": "webview"
+        },
+        {
+          "id": "customView2",
+          "name": "Custom View 2"
         }
       ]
     }
