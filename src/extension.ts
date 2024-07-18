@@ -7,9 +7,9 @@ import { TreeNode } from './TreeDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);
-  vscode.window.registerWebviewViewProvider('customView', sidebarProvider);
-  vscode.window.registerTreeDataProvider('customView2', new TreeDataProvider('typhoon.api.schematic_editor'));
-  context.subscriptions.push(vscode.commands.registerCommand('helloworld.helloWorld', (item:TreeNode) => 
+  vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
+  vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', new TreeDataProvider('typhoon.api.schematic_editor'));
+  context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstring', (item:TreeNode) => 
     showDocstringCommand(sidebarProvider, item)
 ));
 }

@@ -15,7 +15,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         
         // Add helloworld command to the element
         element.command = { 
-            command: 'helloworld.helloWorld', 
+            command: 'typhoon-test.showDocstring', 
             title: 'Show Docstring', 
             arguments: [element]
         };
