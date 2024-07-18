@@ -23,29 +23,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {
-    const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'style.css'));
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'script.js'));
-
-    return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="${styleUri}" rel="stylesheet">
-        <title>Custom View</title>
-      </head>
-      <body>
-        <h1>Custom View</h1>
-        <form id="myForm">
-          <label for="input">Enter something:</label>
-          <input type="text" id="input" name="input">
-          <button type="button" id="submitButton">Submit</button>
-        </form>
-        <div id="output"></div>
-        <script src="${scriptUri}"></script>
-      </body>
-      </html>`;
+    return `<h2>Docstring Viewer</h2><h3>Select a method or function to view its docstring</h3>`;
   }
 
   private setWebviewMessageListener(webview: vscode.Webview): void {
@@ -55,5 +33,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this._view?.webview.postMessage({ command: 'update', text: `You entered: ${message.text}` });
       }
     });
+  }
+
+  public update_html(docstring: string) {
+    if (this._view) {
+      this._view.webview.html = docstring;
+    }
   }
 }
