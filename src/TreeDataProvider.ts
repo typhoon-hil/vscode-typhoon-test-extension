@@ -15,7 +15,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         
         // Add helloworld command to the element
         element.command = { 
-            command: 'typhoon-test.showDocstring', 
+            command: 'typhoon-test.handleTreeViewItemClicked', 
             title: 'Show Docstring', 
             arguments: [element]
         };
@@ -45,7 +45,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         return new Promise((resolve, reject) => {
             // Get the file path of the Python script located one folder above the current directory
             const filePath = path.resolve(__dirname, '..', 'get_module_source.py');
-            exec(`py ${filePath} ${moduleName}`, (error, stdout, stderr) => {
+            exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
                 if (error) {
                     reject(`Error loading module: ${stderr}, ${error}`);
                 } else {

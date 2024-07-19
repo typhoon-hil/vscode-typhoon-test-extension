@@ -16,6 +16,14 @@
       {
         "command": "typhoon-test.showDocstring",
         "title": "Show Docstring"
+      },
+      {
+        "command": "typhoon-test.showForm",
+        "title": "Show Form"
+      },
+      {
+        "command": "typhoon-test.handleTreeViewItemClicked",
+        "title": "Tree View Item Clicked"
       }
     ],
     "viewsContainers": {
@@ -37,6 +45,11 @@
         {
           "id": "typhoon-test.pythonModuleView",
           "name": "Module"
+        },
+        {
+          "id": "typhoon-test.formView",
+          "name": "Form",
+          "type": "webview"
         }
       ]
     },
