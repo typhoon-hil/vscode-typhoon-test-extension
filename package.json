@@ -38,17 +38,17 @@
     "views": {
       "typhoon-test": [
         {
+          "id": "typhoon-test.pythonModuleView",
+          "name": "Function List"
+        },
+        {
           "id": "typhoon-test.docstringView",
-          "name": "Docstring",
+          "name": "Function Documentation",
           "type": "webview"
         },
         {
-          "id": "typhoon-test.pythonModuleView",
-          "name": "Module"
-        },
-        {
           "id": "typhoon-test.formView",
-          "name": "Form",
+          "name": "Function Arguments",
           "type": "webview"
         }
       ]
