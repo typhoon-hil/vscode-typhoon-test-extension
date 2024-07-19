@@ -11,6 +11,20 @@ def get_doc(obj):
     """Fetches the docstring of an object if available."""
     return inspect.getdoc(obj) or ""
 
+def get_parameters(obj):
+    """Fetches the parameters of a callable object."""
+    parameters = []
+    signature = inspect.signature(obj)
+    for param in signature.parameters.values():
+        param_info = {
+            "name": param.name,
+            "type": str(param.annotation) if param.annotation != param.empty else "Any"
+        }
+        if param.default != param.empty:
+            param_info["default_value"] = param.default
+        parameters.append(param_info)
+    return parameters
+
 def get_methods_from_module(module_name):
     try:
         # Dynamically import the module
@@ -30,7 +44,8 @@ def get_methods_from_module(module_name):
                 if (inspect.isfunction(cobj) or inspect.ismethod(cobj)) and is_public(cname):
                     method_info = {
                         "name": cname,
-                        "doc": get_doc(cobj)
+                        "doc": get_doc(cobj),
+                        "arguments": get_parameters(cobj)
                     }
                     class_data["methods"].append(method_info)
             if class_data["methods"]:  # Only add classes with public methods
@@ -38,11 +53,12 @@ def get_methods_from_module(module_name):
         elif (inspect.isfunction(obj) or inspect.ismethod(obj)) and is_public(name):
             function_info = {
                 "name": name,
-                "doc": get_doc(obj)
+                "doc": get_doc(obj),
+                "arguments": get_parameters(obj)
             }
             module_data.setdefault("functions", []).append(function_info)
 
-    return json.dumps(module_data)
+    return json.dumps(module_data, indent=2)
 
 if __name__ == "__main__":
     # Check if the module name is provided as an argument
