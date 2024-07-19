@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import * as path from 'path';
+import { getDescription } from './utils/docstringParser';
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -106,7 +107,7 @@ export class TreeNode extends vscode.TreeItem {
         super(label, collapsibleState);
         this.children = children;
         this.tooltip = `${type}: ${label}`;
-        this.description = type;
+        this.description = getDescription(docstring);
     }
 }
 
