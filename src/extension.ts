@@ -19,16 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
   ));
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('typhoon-test.showForm', (item: TreeNode) => {
-      showFormCommand(formProvider, item);
-    }
-  ));
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('typhoon-test.handleTreeViewItemClicked', (item: TreeNode) => {
-      handleTreeViewItemClickedCommand(item);
-    }
-  ));
+    vscode.commands.registerCommand('typhoon-test.helloWorld', () => {
+      vscode.window.showInformationMessage('Hello, World!');
+    })
+  );
 }
 
 export function deactivate() { }

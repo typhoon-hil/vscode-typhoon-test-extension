@@ -24,6 +24,11 @@
       {
         "command": "typhoon-test.handleTreeViewItemClicked",
         "title": "Tree View Item Clicked"
+      },
+      {
+        "command": "typhoon-test.helloWorld",
+        "title": "Hello World",
+        "icon": "$(rocket)"
       }
     ],
     "viewsContainers": {
@@ -56,9 +61,18 @@
     "viewsWelcome": [
       {
         "view": "typhoon-test.pythonModuleView",
-        "contents": "Select a module to view it's classes, methods and functions"
+        "contents": "Select a module to view its classes, methods, and functions"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "typhoon-test.helloWorld",
+          "when": "view == typhoon-test.pythonModuleView",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -80,6 +94,5 @@
     "@vscode/test-electron": "^2.4.0",
     "tree-sitter": "^0.21.0",
     "tree-sitter-python": "^0.21.0"
-
   }
 }
