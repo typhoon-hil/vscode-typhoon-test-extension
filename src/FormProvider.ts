@@ -1,8 +1,11 @@
 import * as vscode from 'vscode';
 import { FunctionArgument } from './TreeDataProvider';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export class FormProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
+    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', 'media'));
 
     constructor(private readonly _extensionUri: vscode.Uri) {}
 
@@ -18,41 +21,34 @@ export class FormProvider implements vscode.WebviewViewProvider {
             localResourceRoots: [this._extensionUri]
         };
 
-        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
-        this.setWebviewMessageListener(webviewView.webview);
+        const htmlPath = vscode.Uri.file(
+            path.join(this.mediaPath.fsPath, 'argumentsWebview.html')
+        );
+        const htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf8');
+
+        webviewView.webview.html = this.getHtmlForWebview(htmlContent);
     }
 
-    private getHtmlForWebview(webview: vscode.Webview): string {
-        return `<h2>Arguments Viewer</h2><h3>Select a method or function to view its arguments</h3>`;
-    }
+    private getHtmlForWebview(htmlContent: string): string {
+        const jsPath = vscode.Uri.file(
+            path.join(this.mediaPath.fsPath, 'argumentsWebview.js')
+        );
 
-    private setWebviewMessageListener(webview: vscode.Webview): void {
-        webview.onDidReceiveMessage((message) => {
-            if (message.command === 'submit') {
-                vscode.window.showInformationMessage(`You entered: ${message.text}`);
-                this._view?.webview.postMessage({ command: 'update', text: `You entered: ${message.text}` });
-            }
-        });
+        const cssPath = vscode.Uri.file(
+            path.join(this.mediaPath.fsPath, 'argumentsWebview.css')
+        );
+        
+        const scriptUri = this._view!.webview.asWebviewUri(jsPath);
+        const styleUri = this._view!.webview.asWebviewUri(cssPath);
+
+        return htmlContent
+            .replace('argumentsWebview.js', scriptUri.toString())
+            .replace('argumentsWebview.css', styleUri.toString());
     }
 
     public update_html(args: FunctionArgument[]): void {
-        let htmlContent = '';
-
-        args.forEach(arg => {
-            if (arg.name === 'self') {
-                return;
-            }
-
-            const label = `<label for="${arg.name}">${arg.name}</label>`;
-            const inputType = 'text';
-            const inputValue = arg.default !== undefined ? `value="${arg.default}"` : '';
-            const input = `<input type="${inputType}" id="${arg.name}" name="${arg.name}" ${inputValue}>`;
-
-            htmlContent += `<div>${label}: ${input}</div>`;
-        });
-
         if (this._view) {
-            this._view.webview.html = htmlContent;
+            this._view.webview.postMessage(args);
         }
     }
 }
