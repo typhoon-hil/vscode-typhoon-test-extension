@@ -1,0 +1,18 @@
+body {
+    font-family: Arial, sans-serif;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 4px;
+}
+th {
+    text-align: left;
+}
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
