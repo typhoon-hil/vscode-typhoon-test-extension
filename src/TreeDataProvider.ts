@@ -75,13 +75,19 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     parseFunctions(functions: Array<any>) {
         return functions.map((func) => {
-            return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc']);
+            return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc'], this.parseArgs(func['args']));
         });
     }
 
     parseMethods(methods: Array<any>) {
         return methods.map((method) => {
-            return new TreeNode(method["name"], vscode.TreeItemCollapsibleState.None, [], 'method', method['doc']);
+            return new TreeNode(method["name"], vscode.TreeItemCollapsibleState.None, [], 'method', method['doc'], this.parseArgs(method['args']));
+        });
+    }
+
+    parseArgs(args: Array<any>): FunctionArgument[] {
+        return args.map((arg) => {
+            return { name: arg['name'], type: arg['type'], default: arg['default'] };
         });
     }
 }
@@ -95,10 +101,17 @@ export class TreeNode extends vscode.TreeItem {
         children: TreeNode[],
         public readonly type: 'class' | 'method' | 'function',
         public readonly docstring: string = '',
+        public readonly args: FunctionArgument[] = [], 
     ) {
         super(label, collapsibleState);
         this.children = children;
         this.tooltip = `${type}: ${label}`;
         this.description = type;
     }
+}
+
+export interface FunctionArgument {
+    name: string;
+    type: string;
+    default: any;
 }
