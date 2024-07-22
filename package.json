@@ -29,6 +29,11 @@
         "command": "typhoon-test.showApiOptions",
         "title": "Add Module to list",
         "icon": "$(plus)"
+      },
+      {
+        "command": "typhoon-test.removeModule",
+        "title": "Remove Module from list",
+        "icon": "$(minus)"
       }
     ],
     "viewsContainers": {
@@ -69,6 +74,13 @@
         {
           "command": "typhoon-test.showApiOptions",
           "when": "view == typhoon-test.pythonModuleView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "typhoon-test.removeModule",
+          "when": "view == typhoon-test.pythonModuleView && (viewItem == class || viewItem == module)",
           "group": "navigation"
         }
       ]

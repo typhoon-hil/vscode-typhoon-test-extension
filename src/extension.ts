@@ -38,6 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
       showApiOptionsCommand();
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('typhoon-test.removeModule', (item: TreeNode) => {
+      vscode.window.showInformationMessage(`Remove ${item.label}`);
+    })
+  );
 }
 
 export function deactivate() { }

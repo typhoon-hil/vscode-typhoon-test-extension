@@ -112,6 +112,7 @@ export class TreeNode extends vscode.TreeItem {
         this.tooltip = `${type}: ${label}`;
         this.description = alias ? `(${alias})` : getDescription(docstring);
         this.iconPath = this.getIconForType(type);
+        this.contextValue = type;
     }
 
     private getIconForType(type: 'class' | 'module' | 'method' | 'function'): vscode.ThemeIcon {
