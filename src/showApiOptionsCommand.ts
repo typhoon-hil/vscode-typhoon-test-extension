@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { registerModuleTreeView } from './registerModuleTreeView';
+import { addModule, registerModuleTreeView } from './registerModuleTreeView';
 
 
 const apiOptions: { [key: string]: string } = {
@@ -24,7 +24,7 @@ export async function showApiOptionsCommand() {
         });
 
         if (alias) {
-            registerModuleTreeView(apiOptions[selectedOption.label]);        
+            addModule(apiOptions[selectedOption.label]);
         }
     }
 }

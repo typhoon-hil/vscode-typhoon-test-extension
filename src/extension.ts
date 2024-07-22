@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
   vscode.window.registerWebviewViewProvider('typhoon-test.formView', formProvider);
-  registerModuleTreeView('typhoon.api.schematic_editor');
+  registerModuleTreeView();
 
   context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstring', (item: TreeNode) =>
     showDocstringCommand(sidebarProvider, item)

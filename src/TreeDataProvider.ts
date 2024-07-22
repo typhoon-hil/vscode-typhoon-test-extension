@@ -7,14 +7,15 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined | void> = this._onDidChangeTreeData.event;
 
-    constructor(private moduleName: string | undefined = undefined) { }
+    private rootNodes: TreeNode[] = [];
+
+    constructor() { }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
         if (element.type === 'class') {
             return element;
         }
-        
-        // Add helloworld command to the element
+
         element.command = { 
             command: 'typhoon-test.handleTreeViewItemClicked', 
             title: 'Show Docstring', 
@@ -26,14 +27,8 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     async getChildren(element?: TreeNode): Promise<TreeNode[]> {
         if (!element) {
-            if (!this.moduleName) {
-                return [];
-            }
-            // Load and parse the Python module from the interpreter
-            const content = await this.loadPythonModule(this.moduleName);
-            return this.parsePythonContent(content);
+            return this.rootNodes;
         } else {
-            // Return children of the given element, if any
             return element.children;
         }
     }
@@ -42,9 +37,19 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         this._onDidChangeTreeData.fire();
     }
 
+    async addModule(moduleName: string): Promise<void> {
+        try {
+            const content = await this.loadPythonModule(moduleName);
+            const nodes = this.parsePythonContent(content);
+            this.rootNodes = nodes;
+            this.refresh();
+        } catch (error) {
+            vscode.window.showErrorMessage(`Error loading module: ${error}`);
+        }
+    }
+
     private async loadPythonModule(moduleName: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            // Get the file path of the Python script located one folder above the current directory
             const filePath = path.resolve(__dirname, '..', 'get_module_source.py');
             exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
                 if (error) {
@@ -57,7 +62,6 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     }
 
     private parsePythonContent(content: string): TreeNode[] {
-        // Add your logic here to parse the Python content and return an array of TreeNodes
         const contentObj = JSON.parse(content);
         const functions = contentObj['functions'];
         const classes = contentObj['classes'];
@@ -67,26 +71,26 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         ];
     }
 
-    parseClasses(classes: any) {
+    private parseClasses(classes: any): TreeNode[] {
         return classes.map((cls: any) => {
             const methods = cls['methods'];
             return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class');
         });
     }
 
-    parseFunctions(functions: Array<any>) {
+    private parseFunctions(functions: Array<any>): TreeNode[] {
         return functions.map((func) => {
             return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc'], this.parseArgs(func['args']));
         });
     }
 
-    parseMethods(methods: Array<any>) {
+    private parseMethods(methods: Array<any>): TreeNode[] {
         return methods.map((method) => {
-            return new TreeNode(method["name"], vscode.TreeItemCollapsibleState.None, [], 'method', method['doc'], this.parseArgs(method['args']));
+            return new TreeNode(method['name'], vscode.TreeItemCollapsibleState.None, [], 'method', method['doc'], this.parseArgs(method['args']));
         });
     }
 
-    parseArgs(args: Array<any>): FunctionArgument[] {
+    private parseArgs(args: Array<any>): FunctionArgument[] {
         return args.map((arg) => {
             return { name: arg['name'], type: arg['type'], default: arg['default'] };
         });
@@ -99,7 +103,7 @@ export class TreeNode extends vscode.TreeItem {
     constructor(
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        children: TreeNode[],
+        children: TreeNode[] = [],
         public readonly type: 'class' | 'method' | 'function',
         public readonly docstring: string = '',
         public readonly args: FunctionArgument[] = [], 
@@ -108,7 +112,20 @@ export class TreeNode extends vscode.TreeItem {
         this.children = children;
         this.tooltip = `${type}: ${label}`;
         this.description = getDescription(docstring);
-        this.iconPath = new vscode.ThemeIcon(type === 'class' ? 'symbol-class' : 'symbol-method');
+        this.iconPath = this.getIconForType(type);
+    }
+
+    private getIconForType(type: 'class' | 'method' | 'function'): vscode.ThemeIcon {
+        switch (type) {
+            case 'class':
+                return new vscode.ThemeIcon('symbol-class');
+            case 'method':
+                return new vscode.ThemeIcon('symbol-method');
+            case 'function':
+                return new vscode.ThemeIcon('symbol-function');
+            default:
+                return new vscode.ThemeIcon('file');
+        }
     }
 }
 

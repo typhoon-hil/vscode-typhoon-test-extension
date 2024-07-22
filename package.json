@@ -27,8 +27,8 @@
       },
       {
         "command": "typhoon-test.showApiOptions",
-        "title": "Hello World",
-        "icon": "$(rocket)"
+        "title": "Add Module to list",
+        "icon": "$(plus)"
       }
     ],
     "viewsContainers": {
