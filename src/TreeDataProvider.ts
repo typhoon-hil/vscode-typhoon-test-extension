@@ -37,20 +37,20 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         this._onDidChangeTreeData.fire();
     }
 
-    async addModule(moduleName: string): Promise<void> {
+    public async addModule(moduleName: string, type: 'module'|'class'): Promise<void> {
         try {
-            const content = await this.loadPythonModule(moduleName);
+            const content = await this.loadPythonModule(moduleName, type);
             const nodes = this.parsePythonContent(content);
-            this.rootNodes = nodes;
+            this.rootNodes.push(...nodes);
             this.refresh();
         } catch (error) {
             vscode.window.showErrorMessage(`Error loading module: ${error}`);
         }
     }
 
-    private async loadPythonModule(moduleName: string): Promise<string> {
+    private async loadPythonModule(moduleName: string, type: 'module'|'class'): Promise<string> {
         return new Promise((resolve, reject) => {
-            const filePath = path.resolve(__dirname, '..', 'get_module_source.py');
+            const filePath = path.resolve(__dirname, '..', `get_${type}_source.py`);
             exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
                 if (error) {
                     reject(`Error loading module: ${stderr}, ${error}`);
@@ -63,22 +63,19 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     private parsePythonContent(content: string): TreeNode[] {
         const contentObj = JSON.parse(content);
-        const functions = contentObj['functions'];
-        const classes = contentObj['classes'];
-        return [
-            ...this.parseClasses(classes),
-            ...this.parseFunctions(functions),
-        ];
+        const call = contentObj['class_name'] ? this.parseClass.bind(this) : this.parseModule.bind(this);
+        return [call(contentObj)]; 
     }
 
-    private parseClasses(classes: any): TreeNode[] {
-        return classes.map((cls: any) => {
-            const methods = cls['methods'];
-            return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class');
-        });
+    private parseClass(cls: any): TreeNode {
+        const methods = cls['methods'];
+        return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class');
     }
 
-    private parseFunctions(functions: Array<any>): TreeNode[] {
+    private parseModule(module: any): TreeNode {
+        return new TreeNode(module['module_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseFunctions(module['functions']), 'module');
+    }
+    parseFunctions(functions: Array<any>): TreeNode[] | undefined {
         return functions.map((func) => {
             return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc'], this.parseArgs(func['args']));
         });
@@ -104,7 +101,7 @@ export class TreeNode extends vscode.TreeItem {
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         children: TreeNode[] = [],
-        public readonly type: 'class' | 'method' | 'function',
+        public readonly type: 'class' | 'module' | 'method' | 'function',
         public readonly docstring: string = '',
         public readonly args: FunctionArgument[] = [], 
     ) {
@@ -115,14 +112,14 @@ export class TreeNode extends vscode.TreeItem {
         this.iconPath = this.getIconForType(type);
     }
 
-    private getIconForType(type: 'class' | 'method' | 'function'): vscode.ThemeIcon {
+    private getIconForType(type: 'class' | 'module' | 'method' | 'function'): vscode.ThemeIcon {
         switch (type) {
             case 'class':
+            case 'module':
                 return new vscode.ThemeIcon('symbol-class');
             case 'method':
-                return new vscode.ThemeIcon('symbol-method');
             case 'function':
-                return new vscode.ThemeIcon('symbol-function');
+                return new vscode.ThemeIcon('symbol-method');
             default:
                 return new vscode.ThemeIcon('file');
         }
