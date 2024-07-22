@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import * as path from 'path';
-import { getDescription } from './utils/docstringParser';
+import { getDescription } from '../utils/docstringParser';
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -50,7 +50,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     private async loadPythonModule(moduleName: string, type: 'module'|'class'): Promise<string> {
         return new Promise((resolve, reject) => {
-            const filePath = path.resolve(__dirname, '..', `get_${type}_source.py`);
+            const filePath = path.resolve(__dirname, '..', '..', `get_${type}_source.py`);
             exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
                 if (error) {
                     reject(`Error loading module: ${stderr}, ${error}`);

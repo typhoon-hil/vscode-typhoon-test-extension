@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { FunctionArgument } from './TreeDataProvider';
 import * as path from 'path';
 import * as fs from 'fs';
+import { FunctionArgument } from './TreeDataProvider';
 
 export class FormProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
-    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', 'media'));
+    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media'));
 
     constructor(private readonly _extensionUri: vscode.Uri) {}
 

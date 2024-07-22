@@ -1,13 +1,13 @@
 // extension.ts
 import * as vscode from 'vscode';
-import { SidebarProvider } from './SidebarProvider';
-import { showDocstringCommand } from './showDocstringCommand';
-import { TreeNode } from './TreeDataProvider';
-import { FormProvider } from './FormProvider';
-import { showFormCommand } from './showFormCommand';
-import { handleTreeViewItemClickedCommand } from './handleTreeViewItemClickedCommand';
-import { showApiOptionsCommand } from './showApiOptionsCommand';
-import { registerModuleTreeView } from './registerModuleTreeView';
+import { SidebarProvider } from './view-providers/SidebarProvider';
+import { showDocstringCommand } from './commands/showDocstringCommand';
+import { TreeNode } from './view-providers/TreeDataProvider';
+import { FormProvider } from './view-providers/FormProvider';
+import { showFormCommand } from './commands/showFormCommand';
+import { handleTreeViewItemClickedCommand } from './commands/handleTreeViewItemClickedCommand';
+import { showApiOptionsCommand } from './commands/showApiOptionsCommand';
+import { registerModuleTreeView } from './commands/registerModuleTreeView';
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);

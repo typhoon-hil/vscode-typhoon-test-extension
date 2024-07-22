@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TreeDataProvider } from './TreeDataProvider';
+import { TreeDataProvider } from '../view-providers/TreeDataProvider';
 
 const treeDataProvider = new TreeDataProvider();
 

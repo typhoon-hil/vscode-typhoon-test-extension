@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { addModule, registerModuleTreeView } from './registerModuleTreeView';
+import { addModule } from './registerModuleTreeView';
 
 interface ApiOption {
     path: string;
