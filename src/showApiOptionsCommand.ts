@@ -30,7 +30,7 @@ export async function showApiOptionsCommand() {
         const { path, type } = apiOptions[selectedOption.label];
 
         if (alias) {
-            addModule(path, type);
+            addModule(path, type, alias);
         }
     }
 }

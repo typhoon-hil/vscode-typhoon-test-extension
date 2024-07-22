@@ -37,10 +37,10 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         this._onDidChangeTreeData.fire();
     }
 
-    public async addModule(moduleName: string, type: 'module'|'class'): Promise<void> {
+    public async addModule(moduleName: string, type: 'module'|'class', alias: string): Promise<void> {
         try {
             const content = await this.loadPythonModule(moduleName, type);
-            const nodes = this.parsePythonContent(content);
+            const nodes = this.parsePythonContent(content, alias);
             this.rootNodes.push(...nodes);
             this.refresh();
         } catch (error) {
@@ -61,20 +61,21 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         });
     }
 
-    private parsePythonContent(content: string): TreeNode[] {
+    private parsePythonContent(content: string, alias: string): TreeNode[] {
         const contentObj = JSON.parse(content);
         const call = contentObj['class_name'] ? this.parseClass.bind(this) : this.parseModule.bind(this);
-        return [call(contentObj)]; 
+        return [call(contentObj, alias)]; 
     }
 
-    private parseClass(cls: any): TreeNode {
+    private parseClass(cls: any, alias: string): TreeNode {
         const methods = cls['methods'];
-        return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class');
+        return new TreeNode(cls['class_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseMethods(methods), 'class', undefined, undefined, alias);
     }
 
-    private parseModule(module: any): TreeNode {
-        return new TreeNode(module['module_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseFunctions(module['functions']), 'module');
+    private parseModule(module: any, alias: string): TreeNode {
+        return new TreeNode(module['module_name'], vscode.TreeItemCollapsibleState.Collapsed, this.parseFunctions(module['functions']), 'module', undefined, undefined, alias);
     }
+    
     parseFunctions(functions: Array<any>): TreeNode[] | undefined {
         return functions.map((func) => {
             return new TreeNode(func['name'], vscode.TreeItemCollapsibleState.None, [], 'function', func['doc'], this.parseArgs(func['args']));
@@ -103,12 +104,13 @@ export class TreeNode extends vscode.TreeItem {
         children: TreeNode[] = [],
         public readonly type: 'class' | 'module' | 'method' | 'function',
         public readonly docstring: string = '',
-        public readonly args: FunctionArgument[] = [], 
+        public readonly args: FunctionArgument[] = [],
+        public readonly alias?: string
     ) {
         super(label, collapsibleState);
         this.children = children;
         this.tooltip = `${type}: ${label}`;
-        this.description = getDescription(docstring);
+        this.description = alias ? `(${alias})` : getDescription(docstring);
         this.iconPath = this.getIconForType(type);
     }
 

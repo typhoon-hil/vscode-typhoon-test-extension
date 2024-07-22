@@ -7,6 +7,6 @@ export function registerModuleTreeView() {
     vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', treeDataProvider);
 }
 
-export function addModule(moduleName: string, type: 'module'|'class') {
-    treeDataProvider.addModule(moduleName, type);
+export function addModule(moduleName: string, type: 'module'|'class', alias: string) {
+    treeDataProvider.addModule(moduleName, type, alias);
 }
