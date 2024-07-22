@@ -108,6 +108,7 @@ export class TreeNode extends vscode.TreeItem {
         this.children = children;
         this.tooltip = `${type}: ${label}`;
         this.description = getDescription(docstring);
+        this.iconPath = new vscode.ThemeIcon(type === 'class' ? 'symbol-class' : 'symbol-method');
     }
 }
 
