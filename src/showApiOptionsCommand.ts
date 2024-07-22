@@ -1,10 +1,14 @@
 import * as vscode from 'vscode';
 import { addModule, registerModuleTreeView } from './registerModuleTreeView';
 
+interface ApiOption {
+    path: string;
+    type: 'module' | 'class';
+}
 
-const apiOptions: { [key: string]: string } = {
-    'Schematic API': 'typhoon.api.schematic_editor',
-    'HIL API': 'typhoon.api.hil',
+const apiOptions: { [key: string]: ApiOption } = {
+    'Schematic API': { path: 'typhoon.api.schematic_editor.SchematicAPI', type: 'class' },
+    'HIL API': { path: 'typhoon.api.hil', type: 'module' },
 };
 
 export async function showApiOptionsCommand() {
@@ -23,8 +27,10 @@ export async function showApiOptionsCommand() {
             prompt: `Enter an alias for the ${selectedOption.label}:`
         });
 
+        const { path, type } = apiOptions[selectedOption.label];
+
         if (alias) {
-            addModule(apiOptions[selectedOption.label]);
+            addModule(path, type);
         }
     }
 }
