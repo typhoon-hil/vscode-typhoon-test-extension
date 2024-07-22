@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   ));
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('typhoon-test.helloWorld', () => {
+    vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
       vscode.window.showInformationMessage('Hello, World!');
     })
   );

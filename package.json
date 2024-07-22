@@ -26,7 +26,7 @@
         "title": "Tree View Item Clicked"
       },
       {
-        "command": "typhoon-test.helloWorld",
+        "command": "typhoon-test.showApiOptions",
         "title": "Hello World",
         "icon": "$(rocket)"
       }
@@ -67,7 +67,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "typhoon-test.helloWorld",
+          "command": "typhoon-test.showApiOptions",
           "when": "view == typhoon-test.pythonModuleView",
           "group": "navigation"
         }
