@@ -1,8 +1,10 @@
 const vscode = acquireVsCodeApi();
+let data = {};
 
 (function () {
     window.addEventListener('message', event => {
-        const args = event.data;
+        data = event.data;
+        const args = data.args;
         const content = document.getElementById('content');
         let htmlContent = '';
 
@@ -28,15 +30,27 @@ const vscode = acquireVsCodeApi();
     });
 })();
 
-function copyToClipboard() {
+function generateMethod() {
+    const alias = data.root.alias;
+    const methodName = data.label;
+    
     const inputs = document.querySelectorAll('input');
-    let values = '';
+    let args = '';
 
     inputs.forEach(input => {
-        values += `${input.id}: ${input.value}\n`;
+        // eslint-disable-next-line eqeqeq
+        if (input.value != data.args.find(arg => arg.name === input.id).default) {
+            args += `${input.id}=${input.value}, `;
+        }
     });
 
-    navigator.clipboard.writeText(values)
+    return `${alias}.${methodName}(${args.slice(0, -2)})`;
+}
+
+function copyToClipboard() {
+    const value = generateMethod();
+
+    navigator.clipboard.writeText(value)
         .then(() => {
             vscode.postMessage({ command: 'showInfo', text: 'Copied to clipboard!' });
         })
