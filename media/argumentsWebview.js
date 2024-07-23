@@ -30,6 +30,33 @@ let data = {};
     });
 })();
 
+function splitBeforeLastDot(inputString) {
+    const lastDotIndex = inputString.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+        return inputString;
+    }
+    return [inputString.slice(0, lastDotIndex), inputString.slice(lastDotIndex + 1)];
+}
+
+function generateImport() {
+    const alias = data.root.alias;
+    const module = data.root.label;
+    const type = data.root.type;
+
+    let importStatement = '';
+
+    if (type === 'module') {
+        importStatement = `import ${module} as '${alias}'`;
+    }
+    else if (type === 'class') {
+        const [module, className] = splitBeforeLastDot(data.root.label);
+        importStatement = `from ${module} import ${className}`;
+        importStatement += `\n\n${alias} = ${className}()`;
+    }
+
+    return importStatement;
+}
+
 function generateMethod() {
     const alias = data.root.alias;
     const methodName = data.label;
@@ -48,7 +75,7 @@ function generateMethod() {
 }
 
 function copyToClipboard() {
-    const value = generateMethod();
+    const value = `${generateImport()}\n\n${generateMethod()}`;
 
     navigator.clipboard.writeText(value)
         .then(() => {
