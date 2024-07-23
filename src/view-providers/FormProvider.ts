@@ -1,7 +1,33 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { FunctionArgument } from './TreeDataProvider';
+import { FunctionArgument, TreeNode } from './TreeDataProvider';
+
+interface WebviewMessage {
+    root: Root;
+    label: string;
+    args: FunctionArgument[];
+
+}
+
+interface Root {
+    label: string;
+    type: string;
+    alias: string;
+}
+
+function convertToWebviewMessage(item: TreeNode): WebviewMessage {
+    const root = item.getRootParent();
+    return {
+        root: {
+            label: root.label,
+            type: root.type,
+            alias: root.alias || ''
+        },
+        label: item.label,
+        args: item.args
+    };
+}
 
 export class FormProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -65,9 +91,12 @@ export class FormProvider implements vscode.WebviewViewProvider {
             .replace('argumentsWebview.css', styleUri.toString());
     }
 
-    public update_html(args: FunctionArgument[]): void {
+    public update_html(item: TreeNode): void {
         if (this._view) {
-            this._view.webview.postMessage(args);
+            const message = convertToWebviewMessage(item);
+            this._view.webview.postMessage(
+                message
+            );
         }
     }
 }
