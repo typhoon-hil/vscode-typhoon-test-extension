@@ -1,4 +1,3 @@
-// SidebarProvider.ts
 import * as vscode from 'vscode';
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -18,21 +17,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [this._extensionUri]
     };
 
-    webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
-    this.setWebviewMessageListener(webviewView.webview);
+    webviewView.webview.html = this.getHtmlForWebview();
   }
 
-  private getHtmlForWebview(webview: vscode.Webview): string {
+  private getHtmlForWebview(): string {
     return `<h2>Docstring Viewer</h2><h3>Select a method or function to view its docstring</h3>`;
-  }
-
-  private setWebviewMessageListener(webview: vscode.Webview): void {
-    webview.onDidReceiveMessage((message) => {
-      if (message.command === 'submit') {
-        vscode.window.showInformationMessage(`You entered: ${message.text}`);
-        this._view?.webview.postMessage({ command: 'update', text: `You entered: ${message.text}` });
-      }
-    });
   }
 
   public update_html(docstring: string) {
