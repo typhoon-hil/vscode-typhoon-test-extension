@@ -27,13 +27,13 @@
       },
       {
         "command": "typhoon-test.showApiOptions",
-        "title": "Add Module to list",
-        "icon": "$(plus)"
+        "title": "Add module to list",
+        "icon": "$(add)"
       },
       {
         "command": "typhoon-test.removeModule",
-        "title": "Remove Module from list",
-        "icon": "$(minus)"
+        "title": "Remove module from list",
+        "icon": "$(remove)"
       }
     ],
     "viewsContainers": {
@@ -81,7 +81,7 @@
         {
           "command": "typhoon-test.removeModule",
           "when": "view == typhoon-test.pythonModuleView && (viewItem == class || viewItem == module)",
-          "group": "navigation"
+          "group": "inline"
         }
       ]
     }
