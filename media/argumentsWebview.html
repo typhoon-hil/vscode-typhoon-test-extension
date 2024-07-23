@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arguments Webview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="argumentsWebview.css">
 </head>
 <body>
@@ -16,6 +17,15 @@
         </thead>
         <tbody id="content"></tbody>
     </table>
+
+    <div class="stick" id="buttons">
+        <button onclick="insertFunction()">
+            <i class="fas fa-code"></i> Insert function
+        </button>
+        <button onclick="copyToClipboard()">
+            <i class="fas fa-copy"></i> Copy to clipboard
+        </button>
+    </div>
     <script src="argumentsWebview.js"></script>
 </body>
 </html>
