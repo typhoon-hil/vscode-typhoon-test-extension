@@ -26,3 +26,25 @@
         content.innerHTML = htmlContent;
     });
 })();
+
+function copyToClipboard() {
+    const vscode = acquireVsCodeApi();
+    const inputs = document.querySelectorAll('input');
+    let values = '';
+
+    inputs.forEach(input => {
+        values += `${input.id}: ${input.value}\n`;
+    });
+
+    vscode.postMessage({ command: 'showInfo', text: 'Copying to clipboard...' });
+    navigator.clipboard.writeText(values)
+        .then(() => {
+            vscode.postMessage({ command: 'showInfo', text: 'Copied to clipboard!' });
+        })
+        .catch(error => {
+            vscode.postMessage({ command: 'showError', text: `Failed to copy to clipboard: ${error}` });
+        });
+}
+
+const copyButton = document.getElementById('copyButton');
+copyButton.addEventListener('click', copyToClipboard);

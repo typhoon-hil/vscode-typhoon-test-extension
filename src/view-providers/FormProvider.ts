@@ -27,6 +27,27 @@ export class FormProvider implements vscode.WebviewViewProvider {
         const htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf8');
 
         webviewView.webview.html = this.getHtmlForWebview(htmlContent);
+
+        webviewView.webview.onDidReceiveMessage(message => 
+            vscode.window.showInformationMessage(message.text)
+        );
+    }
+
+    private handleMessage(message: any): any {
+        // Possible commands:
+        // - showInfo
+        // - showError
+        // - Command 3
+        switch (message.command) {
+            case 'showInfo':
+                vscode.window.showInformationMessage(message.text);
+                break;
+            case 'showError':
+                vscode.window.showErrorMessage(message.text);
+                break;
+            default:
+                break;
+        }
     }
 
     private getHtmlForWebview(htmlContent: string): string {
