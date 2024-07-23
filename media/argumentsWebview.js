@@ -46,7 +46,7 @@ function generateImport() {
     let importStatement = '';
 
     if (type === 'module') {
-        importStatement = `import ${module} as '${alias}'`;
+        importStatement = `import ${module} as ${alias}`;
     }
     else if (type === 'class') {
         const [module, className] = splitBeforeLastDot(data.root.label);
