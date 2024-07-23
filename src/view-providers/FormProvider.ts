@@ -28,9 +28,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
 
         webviewView.webview.html = this.getHtmlForWebview(htmlContent);
 
-        webviewView.webview.onDidReceiveMessage(message => 
-            vscode.window.showInformationMessage(message.text)
-        );
+        webviewView.webview.onDidReceiveMessage(this.handleMessage);
     }
 
     private handleMessage(message: any): any {
