@@ -61,13 +61,23 @@ export class FormProvider implements vscode.WebviewViewProvider {
         // Possible commands:
         // - showInfo
         // - showError
-        // - Command 3
+        // - insertToEditor
         switch (message.command) {
             case 'showInfo':
                 vscode.window.showInformationMessage(message.text);
                 break;
             case 'showError':
                 vscode.window.showErrorMessage(message.text);
+                break;
+            case 'insertToEditor':
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                    editor.edit((editBuilder) => {
+                        editBuilder.insert(editor.selection.start, message.text);
+                    });
+                } else {
+                    vscode.window.showErrorMessage('No active text editor found.');
+                }
                 break;
             default:
                 break;
