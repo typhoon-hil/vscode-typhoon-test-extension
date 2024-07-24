@@ -86,8 +86,15 @@ function copyToClipboard() {
         });
 }
 
+function insertToEditor() {
+    const value = `${generateImport()}\n\n${generateMethod()}`;
+    vscode.postMessage({ command: 'insertToEditor', text: value });
+}
+
 window.addEventListener('load', () => {
     const copyButton = document.getElementById('copyButton');
+    const insertButton = document.getElementById('insertButton');
 
     copyButton.addEventListener('click', copyToClipboard.bind(this));
+    insertButton.addEventListener('click', insertToEditor.bind(this));
 });
