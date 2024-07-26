@@ -69,17 +69,18 @@ function generateHtmlContent(docstring: Docstring): string {
     flatElements.sort((a, b) => a.position - b.position);
 
     for (const element of flatElements) {
-        const propName = Object.keys(docstring).find(key => docstring[key as DosctringNonArrayProperty]?.position === element.position);
+        let propName = Object.keys(docstring).find(key => docstring[key as DosctringNonArrayProperty]?.position === element.position);
         if (propName) {            
             html += `<h3>${propName.charAt(0).toUpperCase() + propName.slice(1)}</h3>`;
         }
         else {
+            propName = 'description';
             // check if it is a description[0]
             if (docstring.descriptions?.[0]?.position === element.position) {
                 html += `<h3>Description</h3>`;
             }
         }
-        html += `<div>${element.content}</div>`;
+        html += `<div>${contentToHtml(element.content, propName)}</div>`;
     }
 
     return html;
@@ -110,4 +111,20 @@ function parseElement(lines: string[], i: number, condition: (line: string) => b
         content: content,
         nextIndex: i
     };
+}
+
+function contentToHtml(content: string, propName: string): string {
+    content = content
+        .replace(/``/g, '`')
+        .replace(/`.*?`/g, '<code>$&</code>')
+        .replace(/`/g, '');
+
+    if (propName.toLowerCase() === 'args') {
+        content = content
+            .replace(/.*:/g, '<strong>$&</strong>')
+            .replace(/\(.*\)/g, '<i>$&</i>') 
+            + '</code>';
+    }
+
+    return content;
 }
