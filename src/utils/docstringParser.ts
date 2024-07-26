@@ -1,10 +1,19 @@
-export function docstringToHtml(docstring: string): string {
-    return `<div>${docstring.replace(/\n/g, '<br>')
-        .replace(/(Args|Returns|Raises):/g, '<b>$1:</b>')
-        .replace(/^( {4}|\t)(.*)/gm, '<code>$2</code>')}</div>`
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-        .replace(/``(.*?)``/g, '<code>$1</code>');
-    }
+interface Docstring {
+    descriptions?: DocstringElement[];
+    args?: DocstringElement;
+    returns?: DocstringElement;
+    raises?: DocstringElement;
+    availability?: DocstringElement;
+    example?: DocstringElement;
+    output?: DocstringElement;
+}
+
+interface DocstringElement {
+    content: string;
+    position: number;
+}
+
+type DosctringNonArrayProperty = 'args' | 'returns' | 'raises' | 'availability' | 'example' | 'output';
 
 export function getDescription(docstring: string): string {
     return docstring.split('\n')[0].trim();
