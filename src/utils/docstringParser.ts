@@ -28,7 +28,7 @@ function parseDocstring(plainDocstring: string): Docstring {
         .replace(/\.\. note:/g, 'Note:')
         .replace(/\.\. /g, '    ')
         .replace(/\*\*/g, '');
-    const lines = plainDocstring.split('\n');
+    const lines = plainDocstring.split('\n').map(x => x + ' \n');
     let currentPosition = 0;
     const docstring: Docstring = {};
 
@@ -98,13 +98,10 @@ function parseElement(lines: string[], i: number, condition: (line: string) => b
     for (i; i < lines.length; i++) {
         let line = lines[i];
         if (condition(line)) {
-            return {
-                content: content,
-                nextIndex: i
-            };
+            break;
         }
 
-        content += '\n' + line;
+        content += line;
     }
 
     return {
@@ -117,13 +114,14 @@ function contentToHtml(content: string, propName: string): string {
     content = content
         .replace(/``/g, '`')
         .replace(/`.*?`/g, '<code>$&</code>')
-        .replace(/`/g, '');
+        .replace(/`/g, '')
+        .replace(/ \(/g, '(')
+        .replace(/\n/g, '<br>');
 
     if (propName.toLowerCase() === 'args') {
         content = content
-            .replace(/.*:/g, '<strong>$&</strong>')
-            .replace(/\(.*\)/g, '<i>$&</i>') 
-            + '</code>';
+            .replace(/\b(\w+)\(/g, '<strong>$1</strong>(')
+            .replace(/\(([^)]+)\)/g, '(<i>$1</i>)');
     }
 
     return content;
