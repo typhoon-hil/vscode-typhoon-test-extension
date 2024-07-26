@@ -127,6 +127,10 @@ function contentToHtml(content: string, propName: string): string {
         content = `<ul>${content}</ul>`;
     }
 
+    if (propName.toLowerCase() === 'example' || propName.toLowerCase() === 'output') {
+        content = `<pre>${content}</pre>`;
+    }
+    
     return content;
 }
 
