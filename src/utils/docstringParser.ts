@@ -112,17 +112,36 @@ function parseElement(lines: string[], i: number, condition: (line: string) => b
 
 function contentToHtml(content: string, propName: string): string {
     content = content
-        .replace(/``/g, '`')
-        .replace(/`.*?`/g, '<code>$&</code>')
-        .replace(/`/g, '')
-        .replace(/ \(/g, '(')
-        .replace(/\n/g, '<br>');
-
+    .replace(/``/g, '`')
+    .replace(/`.*?`/g, '<code>$&</code>')
+    .replace(/`/g, '')
+    .replace(/ \(/g, '(')
+    .replace(/\n/g, '<br>');
+    
     if (propName.toLowerCase() === 'args') {
+        content = inlineArgDescription(content);
         content = content
-            .replace(/\b(\w+)\(/g, '<strong>$1</strong>(')
-            .replace(/\(([^)]+)\)/g, '(<i>$1</i>)');
+            .replace(/\b(\w+)\(/g, '<li><strong>$1</strong> (')
+            .replace(/\(([^)]+)\)/g, '(<i>$1</i>)')
+            .replace(/<br>/g, '</li>');
+        content = `<ul>${content}</ul>`;
     }
 
     return content;
 }
+
+function inlineArgDescription(content: string): string {
+    const lines = content.split('<br>');
+    const args: string[] = [];
+    for (const line of lines) {
+        if (line.includes(':')) {
+            args.push(line);
+        }
+        else {
+            args[args.length - 1] += ` ${line}`;
+        }
+    }
+
+    return args.join('<br>');
+}
+
