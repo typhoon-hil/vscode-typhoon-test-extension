@@ -3,20 +3,32 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { FunctionArgument, TreeNode } from './TreeDataProvider';
 
-interface WebviewMessage {
-    root: Root;
-    label: string;
-    args: FunctionArgument[];
-
-}
-
 interface Root {
     label: string;
     type: string;
     alias: string;
 }
 
-function convertToWebviewMessage(item: TreeNode): WebviewMessage {
+interface CodeSnippet {
+    import: string;
+    class?: string;
+    method: string;
+}
+
+interface WebviewRequestMessage {
+    root: Root;
+    label: string;
+    args: FunctionArgument[];
+
+}
+
+interface WebviewResponseMessage {
+    command: string;
+    code?: CodeSnippet;
+    log?: string;
+}
+
+function convertToWebviewMessage(item: TreeNode): WebviewRequestMessage {
     const root = item.getRootParent();
     return {
         root: {
@@ -57,27 +69,45 @@ export class FormProvider implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(this.handleMessage);
     }
 
-    private handleMessage(message: any): any {
+    private handleMessage(message: WebviewResponseMessage) {
         // Possible commands:
         // - showInfo
         // - showError
         // - insertToEditor
         switch (message.command) {
             case 'showInfo':
-                vscode.window.showInformationMessage(message.text);
+                vscode.window.showInformationMessage(message.log ?? '');
                 break;
             case 'showError':
-                vscode.window.showErrorMessage(message.text);
+                vscode.window.showErrorMessage(message.log ?? '');
                 break;
             case 'insertToEditor':
                 const editor = vscode.window.activeTextEditor;
-                if (editor) {
-                    editor.edit((editBuilder) => {
-                        editBuilder.insert(editor.selection.start, message.text);
-                    });
-                } else {
+                if (!editor) {
                     vscode.window.showErrorMessage('No active text editor found.');
+                    break;
                 }
+                if (!message.code) {
+                    vscode.window.showErrorMessage('No code snippet found.');
+                    break;
+                }
+                const code: CodeSnippet = message.code;
+                editor.edit((editBuilder) => {
+                    const separator = '\n\n';
+                    const document = editor.document;
+                    const importPosition = findLastImportPosition(document);
+                    const cursorPosition = editor.selection.active;
+
+                    editBuilder.insert(new vscode.Position(importPosition + 1, 0), code.import + separator);
+
+                    // Insert the class constructor
+                    if (code.class) {
+                        editBuilder.insert(new vscode.Position(importPosition + 2, 0), code.class + separator);
+                    }
+
+                    editBuilder.insert(cursorPosition, code.method + '\n');
+                });
+                
                 break;
             default:
                 break;
@@ -92,7 +122,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
         const cssPath = vscode.Uri.file(
             path.join(this.mediaPath.fsPath, 'argumentsWebview.css')
         );
-        
+
         const scriptUri = this._view!.webview.asWebviewUri(jsPath);
         const styleUri = this._view!.webview.asWebviewUri(cssPath);
 
@@ -109,4 +139,14 @@ export class FormProvider implements vscode.WebviewViewProvider {
             );
         }
     }
+}
+
+function findLastImportPosition(document: vscode.TextDocument) {
+    for (let i = 0; i < document.lineCount; i++) {
+        const lineText = document.lineAt(i).text;
+        if (!lineText.startsWith('import') && !lineText.startsWith('from ')) {
+            return i - 1;
+        }
+    }
+    return 0; // If no import statements are found, return the top of the document
 }
