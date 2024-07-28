@@ -94,31 +94,9 @@ function generateSnippet() {
     return snippet;
 }
 
-function snippetToString(snippet) {
-    const separator = '\n\n\n';
-    let result = '';
-
-    result += `${snippet.import}${separator}`;
-
-    if (snippet.class) {
-        result += `${snippet.class}${separator}`;
-    }
-
-    result += `${snippet.method}`;
-
-    return result;
-}
-
 function copyToClipboard() {
     const snippet = generateSnippet();
-
-    navigator.clipboard.writeText(snippetToString(snippet))
-        .then(() => {
-            vscode.postMessage({ command: 'showInfo', log: 'Copied to clipboard!' });
-        })
-        .catch(error => {
-            vscode.postMessage({ command: 'showError', log: `Failed to copy to clipboard: ${error}` });
-        });
+    vscode.postMessage({ command: 'copyToClipboard', code: snippet });
 }
 
 function insertToEditor() {

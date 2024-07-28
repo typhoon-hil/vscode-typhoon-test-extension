@@ -70,16 +70,16 @@ export class FormProvider implements vscode.WebviewViewProvider {
     }
 
     private handleMessage(message: WebviewResponseMessage) {
-        // Possible commands:
-        // - showInfo
-        // - showError
-        // - insertToEditor
         switch (message.command) {
-            case 'showInfo':
-                vscode.window.showInformationMessage(message.log ?? '');
-                break;
-            case 'showError':
-                vscode.window.showErrorMessage(message.log ?? '');
+            case 'copyToClipboard':
+                if (!message.code) {
+                    vscode.window.showErrorMessage('No code snippet found.');
+                    break;
+                }
+                vscode.env.clipboard.writeText(snippetToString(message.code))
+                    .then(() => {
+                        vscode.window.showInformationMessage('Copied to clipboard!');
+                    });
                 break;
             case 'insertToEditor':
                 const editor = vscode.window.activeTextEditor;
@@ -146,8 +146,28 @@ function findLastImportIndex(document: vscode.TextDocument) {
 }
 
 function importWithClassSnippetString(snippet: CodeSnippet): string {
-    const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
-    const separator = '\n'.repeat(lineSpacingCount+1);
+    const lineSpace = getLineSpacing() + '\n';
     const classWithSeparator = snippet.class ? `${snippet.class}\n` : '';
-    return `${snippet.import}${separator}${classWithSeparator}`;
+    return `${snippet.import}${lineSpace}${classWithSeparator}`;
+}
+
+
+function snippetToString(snippet: CodeSnippet): string {
+    const lineSpace = getLineSpacing() + '\n';
+    let result = '';
+
+    result += `${snippet.import}${lineSpace}`;
+
+    if (snippet.class) {
+        result += `${snippet.class}${lineSpace}`;
+    }
+
+    result += `${snippet.method}`;
+
+    return result;
+}
+
+function getLineSpacing(): string {
+    const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
+    return '\n'.repeat(lineSpacingCount);
 }
