@@ -20,7 +20,9 @@ export function getDescription(docstring: string): string {
 }
 
 function parseDocstring(plainDocstring: string): Docstring {
+    const separator = '???';
     const keywords = ['Args:', 'Returns:', 'Raises:', 'Availability:', 'Example:', 'Output'];
+    const keywordHighlighter = new RegExp(keywords.map(x => '<br><br>' + x + '<br><br>').join('|'), 'g');
     plainDocstring = plainDocstring
         .replace(/"""/g, '')
         .replace(/::/g, ':')
@@ -29,8 +31,9 @@ function parseDocstring(plainDocstring: string): Docstring {
         .replace(/\n/g, ' ')
         .replace(/\.\. note:/g, '<strong>Note</strong>:')
         .replace(/\.\. /g, '   ')
-        .replace(/\*\*/g, '');
-    const lines = plainDocstring.split('<br><br>').map(x => x + ` <br><br>`);
+        .replace(/\*\*/g, '')
+        .replace(keywordHighlighter, (match) => `${separator}${match.split('<br><br>')[1]}${separator}`); // add a separator to the beginning of each keyword
+    const lines = plainDocstring.split(separator);
     let currentPosition = 0;
     const docstring: Docstring = {};
 
