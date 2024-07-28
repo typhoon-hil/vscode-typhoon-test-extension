@@ -124,6 +124,9 @@ function contentToHtml(content: string, propName: string): string {
     .replace(/\n/g, '<br>');
     
     if (propName.toLowerCase() === 'args') {
+        if (!content.includes(':')) {
+            return content;
+        }
         content = inlineArgDescription(content);
         content = content
             .replace(/\b(\w+)\(/g, '<li><strong>$1</strong> (')
