@@ -24,11 +24,13 @@ function parseDocstring(plainDocstring: string): Docstring {
     plainDocstring = plainDocstring
         .replace(/"""/g, '')
         .replace(/::/g, ':')
-        .replace(/\n+/g, '\n')
-        .replace(/\.\. note:/g, 'Note:')
-        .replace(/\.\. /g, '    ')
+        .replace(/\n{2,}/g, '<br><br>')
+        .replace(/\n   /g, '<br><br>   ')
+        .replace(/\n/g, ' ')
+        .replace(/\.\. note:/g, '<strong>Note</strong>:')
+        .replace(/\.\. /g, '   ')
         .replace(/\*\*/g, '');
-    const lines = plainDocstring.split('\n').map(x => x + ' \n');
+    const lines = plainDocstring.split('<br><br>').map(x => x + ` <br><br>`);
     let currentPosition = 0;
     const docstring: Docstring = {};
 
