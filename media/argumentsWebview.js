@@ -38,7 +38,7 @@ function splitBeforeLastDot(inputString) {
     return [inputString.slice(0, lastDotIndex), inputString.slice(lastDotIndex + 1)];
 }
 
-function generateImport() {
+function createImport() {
     const alias = data.root.alias;
     const module = data.root.label;
     const type = data.root.type;
@@ -51,10 +51,19 @@ function generateImport() {
     else if (type === 'class') {
         const [module, className] = splitBeforeLastDot(data.root.label);
         importStatement = `from ${module} import ${className}`;
-        importStatement += `\n\n${alias} = ${className}()`;
     }
 
     return importStatement;
+}
+
+function generateClass() {
+    const type = data.root.type;
+    if (type !== 'class') {
+        return '';
+    }
+    const alias = data.root.alias;
+    const className = splitBeforeLastDot(data.root.label)[1];
+    return `${alias} = ${className}()`;
 }
 
 function generateMethod() {
@@ -74,21 +83,47 @@ function generateMethod() {
     return `${alias}.${methodName}(${args.slice(0, -2)})`;
 }
 
-function copyToClipboard() {
-    const value = `${generateImport()}\n\n${generateMethod()}`;
+function generateSnippet() {    
+    let snippet = {};
+    snippet.import = createImport();
+    let classSnippet = generateClass();
+    if (classSnippet) {
+        snippet.class = classSnippet;
+    }
+    snippet.method = generateMethod();
+    return snippet;
+}
 
-    navigator.clipboard.writeText(value)
+function snippetToString(snippet) {
+    const separator = '\n\n\n';
+    let result = '';
+
+    result += `${snippet.import}${separator}`;
+
+    if (snippet.class) {
+        result += `${snippet.class}${separator}`;
+    }
+
+    result += `${snippet.method}`;
+
+    return result;
+}
+
+function copyToClipboard() {
+    const snippet = generateSnippet();
+
+    navigator.clipboard.writeText(snippetToString(snippet))
         .then(() => {
-            vscode.postMessage({ command: 'showInfo', text: 'Copied to clipboard!' });
+            vscode.postMessage({ command: 'showInfo', log: 'Copied to clipboard!' });
         })
         .catch(error => {
-            vscode.postMessage({ command: 'showError', text: `Failed to copy to clipboard: ${error}` });
+            vscode.postMessage({ command: 'showError', log: `Failed to copy to clipboard: ${error}` });
         });
 }
 
 function insertToEditor() {
-    const value = `${generateImport()}\n\n${generateMethod()}`;
-    vscode.postMessage({ command: 'insertToEditor', text: value });
+    const snippet = generateSnippet();
+    vscode.postMessage({ command: 'insertToEditor', code: snippet });
 }
 
 window.addEventListener('load', () => {
