@@ -12,6 +12,17 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Typhoon Test",
+      "properties": {
+        "typhoon-test.lineSpacing": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 1,
+          "description": "The number of blank lines to insert between top-level functions and classes"
+        }
+      }
+    },
     "commands": [
       {
         "command": "typhoon-test.showDocstring",

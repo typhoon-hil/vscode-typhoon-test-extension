@@ -146,7 +146,8 @@ function findLastImportIndex(document: vscode.TextDocument) {
 }
 
 function importWithClassSnippetString(snippet: CodeSnippet): string {
-    const separator = '\n\n\n';
+    const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
+    const separator = '\n'.repeat(lineSpacingCount+1);
     const classWithSeparator = snippet.class ? `${snippet.class}\n` : '';
     return `${snippet.import}${separator}${classWithSeparator}`;
 }
