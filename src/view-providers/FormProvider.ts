@@ -93,18 +93,12 @@ export class FormProvider implements vscode.WebviewViewProvider {
                 }
                 const code: CodeSnippet = message.code;
                 editor.edit((editBuilder) => {
-                    const separator = '\n\n';
                     const document = editor.document;
-                    const importPosition = findLastImportPosition(document);
+                    const lastImportIndex = findLastImportIndex(document);
                     const cursorPosition = editor.selection.active;
 
-                    editBuilder.insert(new vscode.Position(importPosition + 1, 0), code.import + separator);
-
-                    // Insert the class constructor
-                    if (code.class) {
-                        editBuilder.insert(new vscode.Position(importPosition + 2, 0), code.class + separator);
-                    }
-
+                    const importPosition = new vscode.Position(lastImportIndex + 1, 0);
+                    editBuilder.insert(importPosition, importWithClassSnippetString(code));
                     editBuilder.insert(cursorPosition, code.method + '\n');
                 });
                 
@@ -141,7 +135,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
     }
 }
 
-function findLastImportPosition(document: vscode.TextDocument) {
+function findLastImportIndex(document: vscode.TextDocument) {
     for (let i = 0; i < document.lineCount; i++) {
         const lineText = document.lineAt(i).text;
         if (!lineText.startsWith('import') && !lineText.startsWith('from ')) {
@@ -149,4 +143,10 @@ function findLastImportPosition(document: vscode.TextDocument) {
         }
     }
     return 0; // If no import statements are found, return the top of the document
+}
+
+function importWithClassSnippetString(snippet: CodeSnippet): string {
+    const separator = '\n\n\n';
+    const classWithSeparator = snippet.class ? `${snippet.class}\n` : '';
+    return `${snippet.import}${separator}${classWithSeparator}`;
 }
