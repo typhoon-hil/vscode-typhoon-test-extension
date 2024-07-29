@@ -2,27 +2,8 @@ import sys
 import inspect
 import importlib
 import json
+from utils import *
 
-def is_public(name):
-    """Check if a name is considered public (not starting with '_')."""
-    return not name.startswith('_')
-
-def get_doc(obj):
-    """Fetches the docstring of an object if available."""
-    return inspect.getdoc(obj) or ""
-
-def get_parameters(obj):
-    """Fetches the parameters of a callable object."""
-    parameters = []
-    signature = inspect.signature(obj)
-    for param in signature.parameters.values():
-        param_info = {
-            "name": param.name,
-        }
-        if param.default != param.empty:
-            param_info["default"] = param.default
-        parameters.append(param_info)
-    return parameters
 
 def get_methods_from_module(module_name):
     try:
