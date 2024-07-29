@@ -48,6 +48,10 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         }
     }
 
+    doesAliasExist(alias: string): boolean {
+        return this.rootNodes.some(node => node.alias === alias);
+    }
+
     private async loadPythonModule(moduleName: string, type: 'module'|'class'): Promise<string> {
         return new Promise((resolve, reject) => {
             const filePath = path.resolve(__dirname, '..', '..', 'scripts', `get_${type}_source.py`);
@@ -93,7 +97,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         return node;
     }
     
-    parseFunctions(parent: TreeNode, functions: Array<any>): TreeNode[] {
+    private parseFunctions(parent: TreeNode, functions: Array<any>): TreeNode[] {
         return functions.map((func) => {
             return new TreeNode(parent,
                 func['name'], 

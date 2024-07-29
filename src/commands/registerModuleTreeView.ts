@@ -11,3 +11,7 @@ export function registerModuleTreeView() {
 export function addModule(moduleName: string, type: 'module'|'class', alias: string) {
     treeDataProvider.addModule(moduleName, type, alias);
 }
+
+export function doesAliasExist(alias: string): boolean {
+    return treeDataProvider.doesAliasExist(alias);
+}
