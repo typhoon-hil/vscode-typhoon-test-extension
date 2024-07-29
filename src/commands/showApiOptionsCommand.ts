@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { addModule } from './registerModuleTreeView';
+import { addModule, doesAliasExist } from './registerModuleTreeView';
 
 interface ApiOption {
     path: string;
@@ -23,9 +23,7 @@ export async function showApiOptionsCommand() {
     });
 
     if (selectedOption) {
-        const alias = await vscode.window.showInputBox({
-            prompt: `Enter an alias for the ${selectedOption.label}:`
-        });
+        const alias = await getAlias(selectedOption.label);
 
         const { path, type } = apiOptions[selectedOption.label];
 
@@ -33,4 +31,21 @@ export async function showApiOptionsCommand() {
             addModule(path, type, alias);
         }
     }
+}
+
+async function getAlias(label: string): Promise<string> {
+    const alias = await vscode.window.showInputBox({
+        prompt: `Enter an alias for the ${label}:`
+    });
+
+    if (!alias) {
+        return '';
+    }
+
+    if (doesAliasExist(alias)) {
+        vscode.window.showErrorMessage(`Alias '${alias}' already exists. Please choose another name.`);
+        return getAlias(label);
+    }
+
+    return alias;
 }
