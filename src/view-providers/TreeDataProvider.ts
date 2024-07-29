@@ -120,7 +120,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     private parseArgs(args: Array<any>): FunctionArgument[] {
         return args.map((arg) => {
-            return { name: arg['name'], type: arg['type'], default: arg['default'] };
+            return { name: arg['name'], default: arg['default'] };
         });
     }
 }
@@ -168,6 +168,5 @@ export class TreeNode extends vscode.TreeItem {
 
 export interface FunctionArgument {
     name: string;
-    type: string;
     default: any;
 }

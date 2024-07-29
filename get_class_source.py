@@ -21,7 +21,6 @@ def get_parameters(obj):
     for param in signature.parameters.values():
         param_info = {
             "name": param.name,
-            "type": str(param.annotation) if param.annotation != param.empty else "Any"
         }
         if param.default != param.empty:
             param_info["default"] = param.default
