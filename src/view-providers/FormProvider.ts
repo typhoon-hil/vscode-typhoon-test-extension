@@ -45,7 +45,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
     private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media'));
 
-    constructor(private readonly _extensionUri: vscode.Uri) {}
+    constructor(private readonly _extensionUri: vscode.Uri) { }
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
@@ -101,7 +101,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
                     editBuilder.insert(importPosition, importWithClassSnippetString(code));
                     editBuilder.insert(cursorPosition, code.method + '\n');
                 });
-                
+
                 break;
             default:
                 break;
@@ -146,9 +146,20 @@ function findLastImportIndex(document: vscode.TextDocument) {
 }
 
 function importWithClassSnippetString(snippet: CodeSnippet): string {
-    const lineSpace = getLineSpacing() + '\n';
-    const classWithSeparator = snippet.class ? `${snippet.class}\n` : '';
-    return `${snippet.import}${lineSpace}${classWithSeparator}`;
+    const document = vscode.window.activeTextEditor!.document;
+    const lineSpace = getLineSpacing();
+    let importExists = doesImportExist(document, snippet.import);
+    const importWithSeparator = importExists ? '' : snippet.import + '\n';
+
+    let classWithSeparator = '';
+    if (snippet.class) {
+        let classExists = doesClassExist(document, snippet.class);
+        if (!classExists) {
+            classWithSeparator = `${lineSpace}${snippet.class}\n`;
+        }
+    }
+
+    return `${importWithSeparator}${classWithSeparator}`;
 }
 
 
@@ -170,4 +181,24 @@ function snippetToString(snippet: CodeSnippet): string {
 function getLineSpacing(): string {
     const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
     return '\n'.repeat(lineSpacingCount);
+}
+
+function doesImportExist(document: vscode.TextDocument, importStatement: string): boolean {
+    for (let i = 0; i < document.lineCount; i++) {
+        const lineText = document.lineAt(i).text;
+        if (lineText.trimEnd() === importStatement) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function doesClassExist(document: vscode.TextDocument, className: string): boolean {
+    for (let i = 0; i < document.lineCount; i++) {
+        const lineText = document.lineAt(i).text;
+        if (lineText.trimEnd() === className) {
+            return true;
+        }
+    }
+    return false;
 }
