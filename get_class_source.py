@@ -23,7 +23,10 @@ def get_parameters(obj):
             "name": param.name,
         }
         if param.default != param.empty:
-            param_info["default"] = param.default
+            if not is_value_typescript_supported(param.default):
+                param_info["default"] = str(param.default)
+            else:
+                param_info["default"] = f"'{param.default}'"
         parameters.append(param_info)
     return parameters
 
@@ -56,6 +59,16 @@ def get_class_methods(module_name, class_name):
             class_data["methods"].append(method_info)
     
     return class_data
+
+
+def is_value_typescript_supported(default_parameter):
+    if type(default_parameter) is str:
+        return True
+    if type(default_parameter) is bool or None:
+        return False
+    if type(default_parameter) is tuple or dict or list:
+        return False
+    return True
 
 
 if __name__ == "__main__":
