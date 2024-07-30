@@ -20,6 +20,32 @@
           "default": 2,
           "minimum": 1,
           "description": "The number of blank lines to insert between top-level functions and classes"
+        },
+        "typhoon-test.apiWizardWorkspace": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "required": true
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "class",
+                  "module"
+                ],
+                "required": true
+              },
+              "alias": {
+                "type": "string",
+                "required": true
+              }
+            },
+            "default": {},
+            "description": "The module and class to display in the API wizard"
+          }
         }
       }
     },
