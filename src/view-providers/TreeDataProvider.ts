@@ -127,6 +127,10 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
             return { name: arg['name'], default: arg['default'] };
         });
     }
+
+    public getRootNodes(): TreeNode[] {
+        return this.rootNodes;
+    }
 }
 
 export class TreeNode extends vscode.TreeItem {
