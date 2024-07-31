@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
 import { TreeDataProvider } from '../view-providers/TreeDataProvider';
+import { loadWorkspaceElements } from '../utils/config';
 
 const treeDataProvider = new TreeDataProvider();
 
 export function registerModuleTreeView() {
     vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', treeDataProvider);
-    addModule('typhoon.api.schematic_editor.SchematicAPI', 'class', 'sca');
+    loadWorkspace();
 }
 
 export function addModule(moduleName: string, type: 'module'|'class', alias: string) {
@@ -14,4 +15,13 @@ export function addModule(moduleName: string, type: 'module'|'class', alias: str
 
 export function doesAliasExist(alias: string): boolean {
     return treeDataProvider.doesAliasExist(alias);
+}
+
+export function loadWorkspace() {
+    const elements = loadWorkspaceElements();
+    elements.forEach(element => {
+        if (!doesAliasExist(element.alias)) {
+            addModule(element.path, element.type, element.alias);
+        }
+    });
 }

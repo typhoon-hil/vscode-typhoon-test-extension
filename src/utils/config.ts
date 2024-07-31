@@ -7,12 +7,12 @@ export interface ApiWizardWorkspaceElement {
 }
 
 export function loadWorkspaceElements(): ApiWizardWorkspaceElement[] {
-    const config = vscode.workspace.getConfiguration('api-wizard');
-    const elements = config.get<ApiWizardWorkspaceElement[]>('workspaceElements', []);
+    const config = vscode.workspace.getConfiguration('typhoon-test');
+    const elements = config.get<ApiWizardWorkspaceElement[]>('apiWizardWorkspace', []);
     return elements;
 }
 
 export function saveWorkspaceElements(elements: ApiWizardWorkspaceElement[]) {
-    const config = vscode.workspace.getConfiguration('api-wizard');
-    config.update('workspaceElements', elements, vscode.ConfigurationTarget.Global);
+    const config = vscode.workspace.getConfiguration('typhoon-test');
+    config.update('apiWizardWorkspace', elements, vscode.ConfigurationTarget.Global);
 }

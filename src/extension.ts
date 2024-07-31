@@ -7,7 +7,7 @@ import { FormProvider } from './view-providers/FormProvider';
 import { showFormCommand } from './commands/showFormCommand';
 import { handleTreeViewItemClickedCommand } from './commands/handleTreeViewItemClickedCommand';
 import { showApiOptionsCommand } from './commands/showApiOptionsCommand';
-import { registerModuleTreeView } from './commands/registerModuleTreeView';
+import { loadWorkspace, registerModuleTreeView } from './commands/registerModuleTreeView';
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);
@@ -25,13 +25,13 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('typhoon-test.showForm', (item: TreeNode) => {
       showFormCommand(formProvider, item);
     }
-  ));
+    ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.handleTreeViewItemClicked', (item: TreeNode) => {
       handleTreeViewItemClickedCommand(item);
     }
-  ));
+    ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
@@ -44,6 +44,12 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage(`Remove ${item.label}`);
     })
   );
+
+  vscode.workspace.onDidChangeConfiguration(event => {
+    if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
+      loadWorkspace();
+    }
+  });
 }
 
 export function deactivate() { }
