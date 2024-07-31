@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TreeDataProvider } from '../view-providers/TreeDataProvider';
-import { loadWorkspaceElements } from '../utils/config';
+import { ApiWizardWorkspaceElement, loadWorkspaceElements } from '../utils/config';
 
 const treeDataProvider = new TreeDataProvider();
 
@@ -23,5 +23,15 @@ export function loadWorkspace() {
         if (!doesAliasExist(element.alias)) {
             addModule(element.path, element.type, element.alias);
         }
+    });
+}
+
+export function getRootNodesAsWorkspaceElements(): ApiWizardWorkspaceElement[] {
+    return treeDataProvider.getRootNodes().map(node => {
+        return {
+            alias: node.alias!,
+            type: node.type as 'module' | 'class',
+            path: node.label
+        };
     });
 }
