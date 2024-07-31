@@ -74,7 +74,8 @@
       },
       {
         "command": "typhoon-test.saveApiWizardWorkspace",
-        "title": "Save API Wizard Workspace"
+        "title": "Save API Wizard Workspace",
+        "icon": "$(save)"
       }
     ],
     "viewsContainers": {
@@ -114,6 +115,11 @@
       "view/title": [
         {
           "command": "typhoon-test.showApiOptions",
+          "when": "view == typhoon-test.pythonModuleView",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.saveApiWizardWorkspace",
           "when": "view == typhoon-test.pythonModuleView",
           "group": "navigation"
         }
