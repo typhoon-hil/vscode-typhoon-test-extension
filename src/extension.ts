@@ -1,14 +1,14 @@
 // extension.ts
 import * as vscode from 'vscode';
 import { SidebarProvider } from './view-providers/SidebarProvider';
-import { showDocstringCommand } from './commands/showDocstringCommand';
+import { showDocstring } from './commands/showDocstring';
 import { TreeNode } from './view-providers/TreeDataProvider';
 import { FormProvider } from './view-providers/FormProvider';
-import { showFormCommand } from './commands/showFormCommand';
-import { handleTreeViewItemClickedCommand } from './commands/handleTreeViewItemClickedCommand';
-import { showApiOptionsCommand } from './commands/showApiOptionsCommand';
+import { showForm } from './commands/showForm';
+import { handleTreeViewItemClicked } from './commands/handleTreeViewItemClicked';
+import { showApiOptions } from './commands/showApiOptions';
 import { loadWorkspace, registerModuleTreeView } from './commands/registerModuleTreeView';
-import { saveApiWizardWorkspaceCommand } from './commands/saveApiWizardWorkspaceCommand';
+import { saveApiWizardWorkspace } from './commands/saveApiWizardWorkspace';
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);
@@ -19,24 +19,24 @@ export function activate(context: vscode.ExtensionContext) {
   registerModuleTreeView();
 
   context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstring', (item: TreeNode) =>
-    showDocstringCommand(sidebarProvider, item)
+    showDocstring(sidebarProvider, item)
   ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.showForm', (item: TreeNode) => {
-      showFormCommand(formProvider, item);
+      showForm(formProvider, item);
     }
     ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.handleTreeViewItemClicked', (item: TreeNode) => {
-      handleTreeViewItemClickedCommand(item);
+      handleTreeViewItemClicked(item);
     }
     ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
-      showApiOptionsCommand();
+      showApiOptions();
     })
   );
 
@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.saveApiWizardWorkspace', () => {
-      saveApiWizardWorkspaceCommand();
+      saveApiWizardWorkspace();
       vscode.window.showInformationMessage('API Wizard workspace saved');
     })
   );
