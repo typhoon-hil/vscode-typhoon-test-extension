@@ -71,6 +71,10 @@
         "command": "typhoon-test.removeModule",
         "title": "Remove module from list",
         "icon": "$(remove)"
+      },
+      {
+        "command": "typhoon-test.saveApiWizardWorkspace",
+        "title": "Save API Wizard Workspace"
       }
     ],
     "viewsContainers": {

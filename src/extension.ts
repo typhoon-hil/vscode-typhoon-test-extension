@@ -8,6 +8,7 @@ import { showFormCommand } from './commands/showFormCommand';
 import { handleTreeViewItemClickedCommand } from './commands/handleTreeViewItemClickedCommand';
 import { showApiOptionsCommand } from './commands/showApiOptionsCommand';
 import { loadWorkspace, registerModuleTreeView } from './commands/registerModuleTreeView';
+import { saveApiWizardWorkspaceCommand } from './commands/saveApiWizardWorkspaceCommand';
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);
@@ -42,6 +43,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.removeModule', (item: TreeNode) => {
       vscode.window.showInformationMessage(`Remove ${item.label}`);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('typhoon-test.saveApiWizardWorkspace', () => {
+      saveApiWizardWorkspaceCommand();
+      vscode.window.showInformationMessage('API Wizard workspace saved');
     })
   );
 
