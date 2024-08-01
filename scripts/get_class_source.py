@@ -19,7 +19,7 @@ def get_class_methods(module_name, class_name):
         return {"error": f"Class '{class_name}' not found in module '{module_name}'."}
     
     # Dictionary to store class information
-    class_data = {"class_name": f'{module_name}.{class_name}', "methods": []}
+    class_data = {"type": "class", "name": f'{module_name}.{class_name}', "callables": []}
     
     # Iterate over all members of the class
     for name, obj in inspect.getmembers(class_obj):
@@ -30,7 +30,7 @@ def get_class_methods(module_name, class_name):
                 "doc": get_doc(obj),
                 "args": get_parameters(obj),
             }
-            class_data["methods"].append(method_info)
+            class_data["callables"].append(method_info)
     
     return class_data
 

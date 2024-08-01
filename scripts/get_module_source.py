@@ -13,7 +13,7 @@ def get_methods_from_module(module_name):
         return json.dumps({"error": f"Module '{module_name}' not found."})
     
     # Dictionary to store all functions
-    functions_data = {"module_name": module_name, "functions": []}
+    functions_data = {"type": "module", "name": module_name, "callables": []}
 
     # Iterate over all the members of the module
     for name, obj in inspect.getmembers(module):
@@ -23,7 +23,7 @@ def get_methods_from_module(module_name):
                 "doc": get_doc(obj),
                 "args": get_parameters(obj)
             }
-            functions_data["functions"].append(function_info)
+            functions_data["callables"].append(function_info)
 
     return json.dumps(functions_data, indent=2)
 
