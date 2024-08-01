@@ -10,7 +10,16 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
 
     private rootNodes: TreeNode[] = [];
 
-    constructor() {
+    private constructor() {
+    }
+
+    static instance: PythonEntityTreeProvider | undefined;
+
+    static getInstance(): PythonEntityTreeProvider {
+        if (!PythonEntityTreeProvider.instance) {
+            PythonEntityTreeProvider.instance = new PythonEntityTreeProvider();
+        }
+        return PythonEntityTreeProvider.instance;
     }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
