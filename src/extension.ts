@@ -2,13 +2,13 @@
 import * as vscode from 'vscode';
 import { SidebarProvider } from './view-providers/SidebarProvider';
 import { showDocstring } from './commands/showDocstring';
-import { TreeNode } from './view-providers/TreeDataProvider';
 import { FormProvider } from './view-providers/FormProvider';
 import { showForm } from './commands/showForm';
 import { handleTreeViewItemClicked } from './commands/handleTreeViewItemClicked';
 import { showApiOptions } from './commands/showApiOptions';
 import { loadWorkspace, registerModuleTreeView } from './commands/registerModuleTreeView';
 import { saveApiWizardWorkspace } from './commands/saveApiWizardWorkspace';
+import {TreeNode} from "./models/TreeNode";
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new SidebarProvider(context.extensionUri);

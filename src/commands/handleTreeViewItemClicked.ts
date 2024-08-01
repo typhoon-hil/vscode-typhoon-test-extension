@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { TreeNode } from '../view-providers/TreeDataProvider';
+
+import {TreeNode} from "../models/TreeNode";
 
 export function handleTreeViewItemClicked(item: TreeNode) {
     vscode.commands.executeCommand('typhoon-test.showDocstring', item);
