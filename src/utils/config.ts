@@ -1,23 +1,17 @@
 import vscode from 'vscode';
-import {PythonEntityType} from "../models/pythonEntity";
+import {PythonImport} from "../models/pythonEntity";
 
-export interface ApiWizardWorkspaceElement {
-    path: string;
-    type: PythonEntityType;
-    alias: string;
+const config = vscode.workspace.getConfiguration('typhoon-test');
+
+export function loadWorkspaceElements(): PythonImport[] {
+    return config.get<PythonImport[]>('apiWizardWorkspace', []);
 }
 
-export function loadWorkspaceElements(): ApiWizardWorkspaceElement[] {
-    const config = vscode.workspace.getConfiguration('typhoon-test');
-    return config.get<ApiWizardWorkspaceElement[]>('apiWizardWorkspace', []);
-}
-
-export async function saveWorkspaceElements(elements: ApiWizardWorkspaceElement[]) {
-    const config = vscode.workspace.getConfiguration('typhoon-test');
+export async function saveWorkspaceElements(elements: PythonImport[]) {
     config.update('apiWizardWorkspace', elements, vscode.ConfigurationTarget.Global);
 }
 
 export function getLineSpacing(): string {
-    const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
+    const lineSpacingCount = config.get<number>('lineSpacing')!;
     return '\n'.repeat(lineSpacingCount);
 }

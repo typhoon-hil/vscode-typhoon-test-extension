@@ -23,3 +23,9 @@ export interface PythonEntity {
     name: string;
     callables: PythonCallable[];
 }
+
+export interface PythonImport {
+    type: PythonEntityType;
+    name: string;
+    alias: string;
+}

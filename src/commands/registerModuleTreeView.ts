@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { PythonEntityTreeProvider } from '../views/PythonEntityTreeProvider';
-import { ApiWizardWorkspaceElement, loadWorkspaceElements } from '../utils/config';
-import {PythonEntityType} from "../models/pythonEntity";
+import { loadWorkspaceElements } from '../utils/config';
+import {PythonEntityType, PythonImport} from "../models/pythonEntity";
 
 const treeDataProvider = new PythonEntityTreeProvider();
 
@@ -10,8 +10,8 @@ export function registerModuleTreeView() {
     loadWorkspace();
 }
 
-export function addModule(moduleName: string, type: PythonEntityType, alias: string) {
-    treeDataProvider.addEntity(moduleName, type, alias);
+export function addModule(name: string, type: PythonEntityType, alias: string) {
+    treeDataProvider.addEntity({name, type, alias});
 }
 
 export function doesAliasExist(alias: string): boolean {
@@ -22,17 +22,17 @@ export function loadWorkspace() {
     const elements = loadWorkspaceElements();
     elements.forEach(element => {
         if (!doesAliasExist(element.alias)) {
-            addModule(element.path, element.type, element.alias);
+            addModule(element.name, element.type, element.alias);
         }
     });
 }
 
-export function getRootNodesAsWorkspaceElements(): ApiWizardWorkspaceElement[] {
+export function getRootNodesAsWorkspaceElements(): PythonImport[] {
     return treeDataProvider.getRootNodes().map(node => {
         return {
             alias: node.alias!,
             type: node.item.type as PythonEntityType,
-            path: node.item.name
+            name: node.item.name
         };
     });
 }

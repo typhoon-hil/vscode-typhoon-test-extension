@@ -26,7 +26,7 @@
           "items": {
             "type": "object",
             "properties": {
-              "path": {
+              "name": {
                 "type": "string",
                 "required": true
               },
