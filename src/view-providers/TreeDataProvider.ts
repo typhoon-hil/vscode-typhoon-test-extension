@@ -10,16 +10,17 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     private rootNodes: TreeNode[] = [];
 
-    constructor() { }
+    constructor() {
+    }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
         if (element.type === 'class') {
             return element;
         }
 
-        element.command = { 
-            command: 'typhoon-test.handleTreeViewItemClicked', 
-            title: 'Show Docstring', 
+        element.command = {
+            command: 'typhoon-test.handleTreeViewItemClicked',
+            title: 'Show Docstring',
             arguments: [element]
         };
 
@@ -38,7 +39,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         this._onDidChangeTreeData.fire(undefined);
     }
 
-    public async addModule(moduleName: string, type: 'module'|'class', alias: string): Promise<void> {
+    public async addModule(moduleName: string, type: 'module' | 'class', alias: string): Promise<void> {
         try {
             const content = await this.loadPythonModule(moduleName, type);
             const nodes = this.parsePythonContent(content, alias);
@@ -53,7 +54,11 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         return this.rootNodes.some(node => node.alias === alias);
     }
 
-    private async loadPythonModule(moduleName: string, type: 'module'|'class'): Promise<string> {
+    public getRootNodes(): TreeNode[] {
+        return this.rootNodes;
+    }
+
+    private async loadPythonModule(moduleName: string, type: 'module' | 'class'): Promise<string> {
         return new Promise((resolve, reject) => {
             const filePath = path.resolve(__dirname, '..', '..', 'scripts', `get_${type}_source.py`);
             exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
@@ -69,42 +74,42 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private parsePythonContent(content: string, alias: string): TreeNode[] {
         const contentObj = JSON.parse(content);
         const call = contentObj['class_name'] ? this.parseClass.bind(this) : this.parseModule.bind(this);
-        return [call(contentObj, alias)]; 
+        return [call(contentObj, alias)];
     }
 
     private parseClass(cls: any, alias: string): TreeNode {
         const methods = cls['methods'];
         const node = new TreeNode(
-            undefined, 
-            cls['class_name'], 
-            vscode.TreeItemCollapsibleState.Collapsed, 
-            'class', 
-            undefined, 
-            undefined, 
+            undefined,
+            cls['class_name'],
+            vscode.TreeItemCollapsibleState.Collapsed,
+            'class',
+            undefined,
+            undefined,
             alias);
         node.children = this.parseMethods(node, methods);
         return node;
     }
 
     private parseModule(module: any, alias: string): TreeNode {
-        const node = new TreeNode(undefined, 
-            module['module_name'], 
-            vscode.TreeItemCollapsibleState.Collapsed, 
-            'module', 
-            undefined, 
-            undefined, 
+        const node = new TreeNode(undefined,
+            module['module_name'],
+            vscode.TreeItemCollapsibleState.Collapsed,
+            'module',
+            undefined,
+            undefined,
             alias);
         node.children = this.parseFunctions(node, module['functions']);
         return node;
     }
-    
+
     private parseFunctions(parent: TreeNode, functions: Array<any>): TreeNode[] {
         return functions.map((func) => {
             return new TreeNode(parent,
-                func['name'], 
-                vscode.TreeItemCollapsibleState.None, 
-                'function', 
-                func['doc'], 
+                func['name'],
+                vscode.TreeItemCollapsibleState.None,
+                'function',
+                func['doc'],
                 this.parseArgs(func['args'])
             );
         });
@@ -114,10 +119,10 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         return methods.map((method) => {
             return new TreeNode(
                 parent,
-                method['name'], 
-                vscode.TreeItemCollapsibleState.None, 
-                'method', 
-                method['doc'], 
+                method['name'],
+                vscode.TreeItemCollapsibleState.None,
+                'method',
+                method['doc'],
                 this.parseArgs(method['args'])
             );
         });
@@ -125,12 +130,8 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
 
     private parseArgs(args: Array<any>): FunctionArgument[] {
         return args.map((arg) => {
-            return { name: arg['name'], default: arg['default'] };
+            return {name: arg['name'], default: arg['default']};
         });
-    }
-
-    public getRootNodes(): TreeNode[] {
-        return this.rootNodes;
     }
 }
 
