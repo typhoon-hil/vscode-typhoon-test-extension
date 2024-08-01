@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import {exec} from 'child_process';
 import * as path from 'path';
 import {TreeNode} from "../models/TreeNode";
-import {FunctionArgument, PythonEntityType} from "../models/api-call-models";
+import {PythonArgument, PythonEntityType} from "../models/api-call-models";
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -128,7 +128,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         });
     }
 
-    private parseArgs(args: Array<any>): FunctionArgument[] {
+    private parseArgs(args: Array<any>): PythonArgument[] {
         return args.map((arg) => {
             return {name: arg['name'], default: arg['default']};
         });

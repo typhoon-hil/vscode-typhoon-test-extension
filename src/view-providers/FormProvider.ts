@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {FunctionArgument} from "../models/api-call-models";
+import {PythonArgument} from "../models/api-call-models";
 
 interface Root {
     label: string;
@@ -19,7 +19,7 @@ interface CodeSnippet {
 interface WebviewRequestMessage {
     root: Root;
     label: string;
-    args: FunctionArgument[];
+    args: PythonArgument[];
 
 }
 

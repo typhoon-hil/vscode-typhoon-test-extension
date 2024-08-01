@@ -1,7 +1,7 @@
 import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
 import {getDescription} from "../utils/docstringParser";
 
-import {FunctionArgument, PythonType} from "./api-call-models";
+import {PythonArgument, PythonType} from "./api-call-models";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
@@ -12,7 +12,7 @@ export class TreeNode extends vscode.TreeItem {
         public readonly collapsibleState: TreeItemCollapsibleState,
         public readonly type: PythonType,
         public readonly docstring: string = '',
-        public readonly args: FunctionArgument[] = [],
+        public readonly args: PythonArgument[] = [],
         public readonly alias?: string
     ) {
         super(label, collapsibleState);
