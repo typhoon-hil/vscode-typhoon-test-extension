@@ -1,7 +1,7 @@
 import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
 import {getDescription} from "../utils/docstringParser";
 
-import {PythonArgument, PythonType} from "./api-call-models";
+import {PythonArgument, PythonCallable, PythonEntity, PythonType} from "./api-call-models";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
@@ -34,5 +34,32 @@ export class TreeNode extends vscode.TreeItem {
             node = node.parent;
         }
         return node;
+    }
+
+    static parsePythonEntity(entity: PythonEntity, alias: string): TreeNode {
+        const callables = entity.callables;
+        const node = new TreeNode(
+            undefined,
+            entity.name,
+            vscode.TreeItemCollapsibleState.Collapsed,
+            entity.type,
+            undefined,
+            undefined,
+            alias
+        );
+        node.children = this.parseCallables(node, callables);
+        return node;
+    }
+
+    private static parseCallables(parent: TreeNode, callables: PythonCallable[]): TreeNode[] {
+        return callables.map((callable) => {
+            return new TreeNode(parent,
+                callable.name,
+                vscode.TreeItemCollapsibleState.None,
+                callable.type,
+                callable.doc,
+                callable.args
+            );
+        });
     }
 }
