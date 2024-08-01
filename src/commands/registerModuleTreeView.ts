@@ -11,7 +11,7 @@ export function registerModuleTreeView() {
 }
 
 export function addModule(moduleName: string, type: PythonEntityType, alias: string) {
-    treeDataProvider.addModule(moduleName, type, alias);
+    treeDataProvider.addEntity(moduleName, type, alias);
 }
 
 export function doesAliasExist(alias: string): boolean {

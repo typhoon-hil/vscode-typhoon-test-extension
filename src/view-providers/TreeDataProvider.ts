@@ -34,11 +34,11 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         }
     }
 
-    refresh(): void {
+    public refresh(): void {
         this._onDidChangeTreeData.fire(undefined);
     }
 
-    public async addModule(moduleName: string, type: PythonEntityType, alias: string): Promise<void> {
+    public async addEntity(moduleName: string, type: PythonEntityType, alias: string): Promise<void> {
         try {
             const entity = await loadPythonEntity(moduleName, type);
             const node =  TreeNode.parsePythonEntity(entity, alias);
@@ -49,7 +49,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         }
     }
 
-    doesAliasExist(alias: string): boolean {
+    public doesAliasExist(alias: string): boolean {
         return this.rootNodes.some(node => node.alias === alias);
     }
 
