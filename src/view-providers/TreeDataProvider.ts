@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import * as path from 'path';
 import { getDescription } from '../utils/docstringParser';
+import {TreeItemCollapsibleState} from "vscode";
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -34,7 +35,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     }
 
     refresh(): void {
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(undefined);
     }
 
     public async addModule(moduleName: string, type: 'module'|'class', alias: string): Promise<void> {
@@ -139,7 +140,7 @@ export class TreeNode extends vscode.TreeItem {
     constructor(
         public readonly parent: TreeNode | undefined,
         public readonly label: string,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        public readonly collapsibleState: TreeItemCollapsibleState,
         public readonly type: 'class' | 'module' | 'method' | 'function',
         public readonly docstring: string = '',
         public readonly args: FunctionArgument[] = [],
