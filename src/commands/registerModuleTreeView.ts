@@ -31,8 +31,8 @@ export function getRootNodesAsWorkspaceElements(): ApiWizardWorkspaceElement[] {
     return treeDataProvider.getRootNodes().map(node => {
         return {
             alias: node.alias!,
-            type: node.type as PythonEntityType,
-            path: node.name
+            type: node.item.type as PythonEntityType,
+            path: node.item.name
         };
     });
 }

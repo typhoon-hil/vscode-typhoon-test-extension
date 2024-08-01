@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {PythonArgument} from "../models/api-call-models";
+import {PythonArgument, PythonCallable} from "../models/api-call-models";
 
 interface Root {
     label: string;
@@ -33,12 +33,12 @@ function convertToWebviewMessage(item: TreeNode): WebviewRequestMessage {
     const root = item.getRootParent();
     return {
         root: {
-            label: root.name,
-            type: root.type,
+            label: root.item.name,
+            type: root.item.type,
             alias: root.alias || ''
         },
-        label: item.name,
-        args: item.args
+        label: item.item.name,
+        args: (item.item as PythonCallable).args
     };
 }
 
