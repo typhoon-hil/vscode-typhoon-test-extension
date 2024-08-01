@@ -34,9 +34,9 @@ export async function showApiOptions() {
     }
 }
 
-async function getAlias(label: string): Promise<string> {
+async function getAlias(entity_name: string): Promise<string> {
     const alias = await vscode.window.showInputBox({
-        prompt: `Enter an alias for the ${label}:`
+        prompt: `Enter an alias for the ${entity_name}:`
     });
 
     if (!alias) {
@@ -45,7 +45,7 @@ async function getAlias(label: string): Promise<string> {
 
     if (doesAliasExist(alias)) {
         vscode.window.showErrorMessage(`Alias '${alias}' already exists. Please choose another name.`);
-        return getAlias(label);
+        return getAlias(entity_name);
     }
 
     return alias;

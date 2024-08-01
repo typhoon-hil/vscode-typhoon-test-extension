@@ -33,11 +33,11 @@ function convertToWebviewMessage(item: TreeNode): WebviewRequestMessage {
     const root = item.getRootParent();
     return {
         root: {
-            label: root.label,
+            label: root.name,
             type: root.type,
             alias: root.alias || ''
         },
-        label: item.label,
+        label: item.name,
         args: item.args
     };
 }

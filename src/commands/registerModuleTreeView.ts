@@ -32,7 +32,7 @@ export function getRootNodesAsWorkspaceElements(): ApiWizardWorkspaceElement[] {
         return {
             alias: node.alias!,
             type: node.type as PythonEntityType,
-            path: node.label
+            path: node.name
         };
     });
 }

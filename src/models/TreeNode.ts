@@ -8,15 +8,15 @@ export class TreeNode extends vscode.TreeItem {
 
     constructor(
         public readonly parent: TreeNode | undefined,
-        public readonly label: string,
+        public readonly name: string,
         public readonly collapsibleState: TreeItemCollapsibleState,
         public readonly type: PythonType,
         public readonly docstring: string = '',
         public readonly args: PythonArgument[] = [],
         public readonly alias?: string
     ) {
-        super(label, collapsibleState);
-        this.tooltip = `${type}: ${label}`;
+        super(name, collapsibleState);
+        this.tooltip = `${type}: ${name}`;
         this.description = alias ? `(${alias})` : extractDescription(docstring);
         this.iconPath = this.getIconForType(type);
         this.contextValue = type;
