@@ -1,6 +1,7 @@
 import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
 import {getDescription} from "../utils/docstringParser";
-import {FunctionArgument} from "../view-providers/TreeDataProvider";
+
+import {FunctionArgument} from "./api-call-models";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];

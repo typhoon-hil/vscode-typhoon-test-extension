@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { FunctionArgument } from './TreeDataProvider';
 import {TreeNode} from "../models/TreeNode";
+import {FunctionArgument} from "../models/api-call-models";
 
 interface Root {
     label: string;

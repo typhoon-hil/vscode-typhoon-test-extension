@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import {exec} from 'child_process';
 import * as path from 'path';
 import {TreeNode} from "../models/TreeNode";
+import {FunctionArgument} from "../models/api-call-models";
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -133,7 +134,3 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     }
 }
 
-export interface FunctionArgument {
-    name: string;
-    default: any;
-}
