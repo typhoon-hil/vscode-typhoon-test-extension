@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { TreeDataProvider } from '../view-providers/TreeDataProvider';
+import { PythonEntityTreeProvider } from '../views/PythonEntityTreeProvider';
 import { ApiWizardWorkspaceElement, loadWorkspaceElements } from '../utils/config';
 import {PythonEntityType} from "../models/api-call-models";
 
-const treeDataProvider = new TreeDataProvider();
+const treeDataProvider = new PythonEntityTreeProvider();
 
 export function registerModuleTreeView() {
     vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', treeDataProvider);

@@ -3,7 +3,7 @@ import {TreeNode} from "../models/TreeNode";
 import {isPythonEntityType, PythonEntityType} from "../models/api-call-models";
 import {loadPythonEntity} from "../utils/python-converter";
 
-export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
+export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined | void> = this._onDidChangeTreeData.event;
 
