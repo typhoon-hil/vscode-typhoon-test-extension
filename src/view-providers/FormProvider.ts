@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {PythonArgument, PythonCallable} from "../models/api-call-models";
+import {PythonArgument, PythonCallable} from "../models/pythonEntity";
 
 interface Root {
     label: string;

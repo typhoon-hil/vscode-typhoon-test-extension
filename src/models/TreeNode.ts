@@ -1,7 +1,7 @@
 import vscode, {ThemeIcon} from "vscode";
 import {extractDescription} from "../utils/docstringParser";
 
-import {PythonCallable, PythonEntity, PythonType} from "./api-call-models";
+import {PythonCallable, PythonEntity, PythonType} from "./pythonEntity";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];

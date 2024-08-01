@@ -1,4 +1,4 @@
-import {PythonEntity, PythonEntityType} from "../models/api-call-models";
+import {PythonEntity, PythonEntityType} from "../models/pythonEntity";
 import path from "path";
 import {exec} from "child_process";
 

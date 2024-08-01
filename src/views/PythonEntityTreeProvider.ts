@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {TreeNode} from "../models/TreeNode";
-import {isPythonEntityType, PythonEntityType} from "../models/api-call-models";
+import {isPythonEntityType, PythonEntityType} from "../models/pythonEntity";
 import {loadPythonEntity} from "../utils/python-converter";
 
 export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {

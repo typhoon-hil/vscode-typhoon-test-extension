@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { PythonEntityTreeProvider } from '../views/PythonEntityTreeProvider';
 import { ApiWizardWorkspaceElement, loadWorkspaceElements } from '../utils/config';
-import {PythonEntityType} from "../models/api-call-models";
+import {PythonEntityType} from "../models/pythonEntity";
 
 const treeDataProvider = new PythonEntityTreeProvider();
 
