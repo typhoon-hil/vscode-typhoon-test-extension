@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import {TreeNode} from "../models/TreeNode";
-import {isPythonEntityType, PythonEntityType} from "../models/pythonEntity";
+import {isPythonEntityType, PythonImport} from "../models/pythonEntity";
 import {loadPythonEntity} from "../utils/pythonConverter";
+import {loadWorkspaceElements} from "../utils/config";
 
 export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -38,10 +39,10 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
         this._onDidChangeTreeData.fire(undefined);
     }
 
-    public async addEntity(moduleName: string, type: PythonEntityType, alias: string): Promise<void> {
+    public async addEntity(pythonImport: PythonImport): Promise<void> {
         try {
-            const entity = await loadPythonEntity(moduleName, type);
-            const node =  TreeNode.parsePythonEntity(entity, alias);
+            const entity = await loadPythonEntity(pythonImport.name, pythonImport.type);
+            const node =  TreeNode.parsePythonEntity(entity, pythonImport.alias);
             this.rootNodes.push(node);
             this.refresh();
         } catch (error) {
@@ -55,6 +56,16 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
 
     public getRootNodes(): TreeNode[] {
         return this.rootNodes;
+    }
+
+    public async loadEntitiesFromWorkspace() {
+        loadWorkspaceElements().forEach(element =>
+            this.doesAliasExist(element.alias) || this.addEntity(element)
+        );
+    }
+    
+    public getRootNodesAsPythonImports(): PythonImport[] {
+        return this.rootNodes.map(root => root.toPythonImport());
     }
 }
 

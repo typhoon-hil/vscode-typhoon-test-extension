@@ -1,7 +1,7 @@
 import vscode, {ThemeIcon} from "vscode";
 import {extractDescription} from "../utils/docstringParser";
 
-import {PythonCallable, PythonEntity, PythonType} from "./pythonEntity";
+import {PythonCallable, PythonEntity, PythonEntityType, PythonImport, PythonType} from "./pythonEntity";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
@@ -53,5 +53,13 @@ export class TreeNode extends vscode.TreeItem {
                 callable
             );
         });
+    }
+
+    public toPythonImport(): PythonImport {
+        return {
+            alias: this.alias!,
+            type: this.item.type as PythonEntityType,
+            name: this.item.name
+        };
     }
 }
