@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export class SidebarProvider implements vscode.WebviewViewProvider {
+export class DocumentationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
 
     constructor(private readonly _extensionUri: vscode.Uri) {

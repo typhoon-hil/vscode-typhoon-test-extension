@@ -1,6 +1,6 @@
 // extension.ts
 import * as vscode from 'vscode';
-import { SidebarProvider } from './view-providers/SidebarProvider';
+import { DocumentationProvider } from './views/DocumentationProvider';
 import { showDocstring } from './commands/showDocstring';
 import { FormProvider } from './view-providers/FormProvider';
 import { showForm } from './commands/showForm';
@@ -11,7 +11,7 @@ import { saveApiWizardWorkspace } from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 
 export function activate(context: vscode.ExtensionContext) {
-  let sidebarProvider = new SidebarProvider(context.extensionUri);
+  let sidebarProvider = new DocumentationProvider(context.extensionUri);
   let formProvider = new FormProvider(context.extensionUri);
 
   vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
