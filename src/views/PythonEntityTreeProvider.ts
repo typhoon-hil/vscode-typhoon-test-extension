@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import {TreeNode} from "../models/TreeNode";
 import {isPythonEntityType, PythonEntityType} from "../models/pythonEntity";
-import {loadPythonEntity} from "../utils/python-converter";
+import {loadPythonEntity} from "../utils/pythonConverter";
 
 export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
