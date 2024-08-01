@@ -1,6 +1,6 @@
 export type PythonEntityType = "class" | "module";
-export type PythonMemberType = "method" | "function";
-export type PythonType = PythonEntityType | PythonMemberType;
+export type PythonCallableType = "callable";
+export type PythonType = PythonEntityType | PythonCallableType;
 
 export interface PythonArgument {
     name: string;
@@ -8,6 +8,7 @@ export interface PythonArgument {
 }
 
 export interface PythonCallable {
+    type: PythonCallableType;
     name: string;
     doc: string;
     args: PythonArgument[]
