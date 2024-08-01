@@ -5,5 +5,5 @@ import {PythonCallable} from "../models/api-call-models";
 
 export function showDocstring(sidebarProvider: SidebarProvider , node: TreeNode) {
     const content = docstringToHtml((node.item as PythonCallable).doc);
-    sidebarProvider.update_html(content);
+    sidebarProvider.update(content);
 }
