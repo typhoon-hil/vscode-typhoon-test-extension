@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
+import {PythonEntityType} from "../models/api-call-models";
 
 export interface ApiWizardWorkspaceElement {
     path: string;
-    type: 'module' | 'class';
+    type: PythonEntityType;
     alias: string;
 }
 

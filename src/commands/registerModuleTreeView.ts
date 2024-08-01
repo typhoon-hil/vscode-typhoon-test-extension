@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { TreeDataProvider } from '../view-providers/TreeDataProvider';
 import { ApiWizardWorkspaceElement, loadWorkspaceElements } from '../utils/config';
+import {PythonEntityType} from "../models/api-call-models";
 
 const treeDataProvider = new TreeDataProvider();
 
@@ -9,7 +10,7 @@ export function registerModuleTreeView() {
     loadWorkspace();
 }
 
-export function addModule(moduleName: string, type: 'module'|'class', alias: string) {
+export function addModule(moduleName: string, type: PythonEntityType, alias: string) {
     treeDataProvider.addModule(moduleName, type, alias);
 }
 
@@ -30,7 +31,7 @@ export function getRootNodesAsWorkspaceElements(): ApiWizardWorkspaceElement[] {
     return treeDataProvider.getRootNodes().map(node => {
         return {
             alias: node.alias!,
-            type: node.type as 'module' | 'class',
+            type: node.type as PythonEntityType,
             path: node.label
         };
     });

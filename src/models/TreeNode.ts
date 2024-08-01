@@ -1,7 +1,7 @@
 import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
 import {getDescription} from "../utils/docstringParser";
 
-import {FunctionArgument} from "./api-call-models";
+import {FunctionArgument, PythonType} from "./api-call-models";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
@@ -10,7 +10,7 @@ export class TreeNode extends vscode.TreeItem {
         public readonly parent: TreeNode | undefined,
         public readonly label: string,
         public readonly collapsibleState: TreeItemCollapsibleState,
-        public readonly type: 'class' | 'module' | 'method' | 'function',
+        public readonly type: PythonType,
         public readonly docstring: string = '',
         public readonly args: FunctionArgument[] = [],
         public readonly alias?: string
@@ -22,17 +22,10 @@ export class TreeNode extends vscode.TreeItem {
         this.contextValue = type;
     }
 
-    private getIconForType(type: 'class' | 'module' | 'method' | 'function'): ThemeIcon {
-        switch (type) {
-            case 'class':
-            case 'module':
-                return new vscode.ThemeIcon('symbol-class');
-            case 'method':
-            case 'function':
-                return new vscode.ThemeIcon('symbol-method');
-            default:
-                return new vscode.ThemeIcon('file');
-        }
+    private getIconForType(type: PythonType): ThemeIcon {
+        return new vscode.ThemeIcon(
+            type === "class" || type === "module" ? "symbol-class" : "symbol-method"
+        );
     }
 
     public getRootParent(): TreeNode {

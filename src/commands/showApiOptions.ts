@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { addModule, doesAliasExist } from './registerModuleTreeView';
+import {PythonEntityType} from "../models/api-call-models";
 
 interface ApiOption {
     path: string;
-    type: 'module' | 'class';
+    type: PythonEntityType;
 }
 
 const apiOptions: { [key: string]: ApiOption } = {

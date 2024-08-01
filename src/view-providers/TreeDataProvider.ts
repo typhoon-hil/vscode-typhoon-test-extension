@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import {exec} from 'child_process';
 import * as path from 'path';
 import {TreeNode} from "../models/TreeNode";
-import {FunctionArgument} from "../models/api-call-models";
+import {FunctionArgument, PythonEntityType} from "../models/api-call-models";
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
@@ -39,7 +39,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         this._onDidChangeTreeData.fire(undefined);
     }
 
-    public async addModule(moduleName: string, type: 'module' | 'class', alias: string): Promise<void> {
+    public async addModule(moduleName: string, type: PythonEntityType, alias: string): Promise<void> {
         try {
             const content = await this.loadPythonModule(moduleName, type);
             const nodes = this.parsePythonContent(content, alias);
@@ -58,7 +58,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
         return this.rootNodes;
     }
 
-    private async loadPythonModule(moduleName: string, type: 'module' | 'class'): Promise<string> {
+    private async loadPythonModule(moduleName: string, type: PythonEntityType): Promise<string> {
         return new Promise((resolve, reject) => {
             const filePath = path.resolve(__dirname, '..', '..', 'scripts', `get_${type}_source.py`);
             exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
