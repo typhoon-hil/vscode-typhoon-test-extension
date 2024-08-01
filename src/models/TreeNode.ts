@@ -1,25 +1,22 @@
-import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
+import vscode, {ThemeIcon} from "vscode";
 import {extractDescription} from "../utils/docstringParser";
 
-import {PythonArgument, PythonCallable, PythonEntity, PythonType} from "./api-call-models";
+import {PythonCallable, PythonEntity, PythonType} from "./api-call-models";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
 
     constructor(
         public readonly parent: TreeNode | undefined,
-        public readonly name: string,
-        public readonly collapsibleState: TreeItemCollapsibleState,
-        public readonly type: PythonType,
-        public readonly docstring: string = '',
-        public readonly args: PythonArgument[] = [],
+        public readonly item: PythonEntity | PythonCallable,
         public readonly alias?: string
     ) {
-        super(name, collapsibleState);
-        this.tooltip = `${type}: ${name}`;
-        this.description = alias ? `(${alias})` : extractDescription(docstring);
-        this.iconPath = this.getIconForType(type);
-        this.contextValue = type;
+        const collapsibleState = parent ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
+        super(item.name, collapsibleState);
+        this.tooltip = `${item.type}: ${item.name}`;
+        this.description = alias ? `(${alias})` : extractDescription((item as PythonCallable).doc);
+        this.iconPath = this.getIconForType(item.type);
+        this.contextValue = item.type;
     }
 
     private getIconForType(type: PythonType): ThemeIcon {
@@ -40,11 +37,7 @@ export class TreeNode extends vscode.TreeItem {
         const callables = entity.callables;
         const node = new TreeNode(
             undefined,
-            entity.name,
-            vscode.TreeItemCollapsibleState.Collapsed,
-            entity.type,
-            undefined,
-            undefined,
+            entity,
             alias
         );
         node.children = this.parseCallables(node, callables);
@@ -53,12 +46,9 @@ export class TreeNode extends vscode.TreeItem {
 
     private static parseCallables(parent: TreeNode, callables: PythonCallable[]): TreeNode[] {
         return callables.map((callable) => {
-            return new TreeNode(parent,
-                callable.name,
-                vscode.TreeItemCollapsibleState.None,
-                callable.type,
-                callable.doc,
-                callable.args
+            return new TreeNode(
+                parent,
+                callable
             );
         });
     }
