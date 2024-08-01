@@ -49,7 +49,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.saveApiWizardWorkspace', () => {
       saveApiWizardWorkspace();
-      vscode.window.showInformationMessage('API Wizard workspace saved');
     })
   );
 

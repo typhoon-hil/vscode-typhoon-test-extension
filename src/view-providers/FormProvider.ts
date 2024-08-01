@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
 import {PythonArgument, PythonCallable} from "../models/pythonEntity";
+import {getLineSpacing} from "../utils/config";
 
 interface Root {
     label: string;
@@ -177,11 +178,6 @@ function snippetToString(snippet: CodeSnippet): string {
     result += `${snippet.method}`;
 
     return result;
-}
-
-function getLineSpacing(): string {
-    const lineSpacingCount = vscode.workspace.getConfiguration('typhoon-test').get<number>('lineSpacing')!;
-    return '\n'.repeat(lineSpacingCount);
 }
 
 function doesImportExist(document: vscode.TextDocument, importStatement: string): boolean {
