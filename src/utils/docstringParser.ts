@@ -15,7 +15,7 @@ interface DocstringElement {
 
 type DosctringNonArrayProperty = 'args' | 'returns' | 'raises' | 'availability' | 'example' | 'output';
 
-export function getDescription(docstring: string): string {
+export function extractDescription(docstring: string): string {
     return docstring.split('\n')[0].trim();
 }
 

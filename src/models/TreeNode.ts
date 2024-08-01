@@ -1,5 +1,5 @@
 import vscode, {ThemeIcon, TreeItemCollapsibleState} from "vscode";
-import {getDescription} from "../utils/docstringParser";
+import {extractDescription} from "../utils/docstringParser";
 
 import {PythonArgument, PythonCallable, PythonEntity, PythonType} from "./api-call-models";
 
@@ -17,7 +17,7 @@ export class TreeNode extends vscode.TreeItem {
     ) {
         super(label, collapsibleState);
         this.tooltip = `${type}: ${label}`;
-        this.description = alias ? `(${alias})` : getDescription(docstring);
+        this.description = alias ? `(${alias})` : extractDescription(docstring);
         this.iconPath = this.getIconForType(type);
         this.contextValue = type;
     }
