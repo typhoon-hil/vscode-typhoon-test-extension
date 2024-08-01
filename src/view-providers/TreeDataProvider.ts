@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {TreeNode} from "../models/TreeNode";
-import {PythonEntityType} from "../models/api-call-models";
+import {isPythonEntityType, PythonEntityType} from "../models/api-call-models";
 import {loadPythonEntity} from "../utils/python-converter";
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
@@ -13,7 +13,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeNode> {
     }
 
     async getTreeItem(element: TreeNode): Promise<vscode.TreeItem> {
-        if (element.type === 'class') {
+        if (isPythonEntityType(element.item.type)) {
             return element;
         }
 
