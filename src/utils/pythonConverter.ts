@@ -12,7 +12,7 @@ async function extractPython(moduleName: string, type: PythonEntityType): Promis
         const filePath = path.resolve(__dirname, '..', '..', 'scripts', `get_${type}_source.py`);
         exec(`python ${filePath} ${moduleName}`, (error, stdout, stderr) => {
             if (error) {
-                reject(`Error loading module: ${stderr}, ${error}`);
+                reject(`Error loading ${type}: ${stderr}, ${error}`);
             } else {
                 resolve(stdout);
             }

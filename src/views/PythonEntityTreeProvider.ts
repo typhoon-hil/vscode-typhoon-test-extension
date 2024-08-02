@@ -54,7 +54,7 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
             this.rootNodes.push(node);
             this.refresh();
         } catch (error) {
-            vscode.window.showErrorMessage(`Error loading module: ${error}`);
+            vscode.window.showErrorMessage(`Error loading ${pythonImport.type}: ${error}`);
         }
     }
 
