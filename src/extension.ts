@@ -36,13 +36,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
-      showApiOptions();
+      showApiOptions().then();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('typhoon-test.removeModule', (item: TreeNode) => {
-      vscode.window.showInformationMessage(`Remove ${item.label}`);
+      vscode.window.showInformationMessage(`Remove ${item.label}`).then();
     })
   );
 
