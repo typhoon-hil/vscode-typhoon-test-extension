@@ -82,10 +82,10 @@ export function insertToEditor(message: TakenActionMessage) {
         return;
     }
     const code: CodeSnippet = message.code!;
-    editor.edit((editBuilder) => {
-        const document = editor.document;
+    editor!.edit((editBuilder) => {
+        const document = editor!.document;
         const lastImportIndex = findLastImportIndex(document);
-        const cursorPosition = editor.selection.active;
+        const cursorPosition = editor!.selection.active;
 
         const importPosition = new vscode.Position(lastImportIndex + 1, 0);
         editBuilder.insert(importPosition, importWithClassSnippetString(code));
@@ -93,7 +93,7 @@ export function insertToEditor(message: TakenActionMessage) {
     }).then();
 }
 
-function checkValidity(editor: vscode.TextEditor, message: TakenActionMessage): boolean {
+function checkValidity(editor: vscode.TextEditor|undefined, message: TakenActionMessage): boolean {
     if (!editor) {
         vscode.window.showErrorMessage('No active text editor found.').then();
         return false;
