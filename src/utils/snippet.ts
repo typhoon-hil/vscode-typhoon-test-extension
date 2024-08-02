@@ -81,7 +81,7 @@ export function insertToEditor(message: TakenActionMessage) {
     if (!checkValidity(editor, message)) {
         return;
     }
-    const code: CodeSnippet = message.code;
+    const code: CodeSnippet = message.code!;
     editor.edit((editBuilder) => {
         const document = editor.document;
         const lastImportIndex = findLastImportIndex(document);
