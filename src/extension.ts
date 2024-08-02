@@ -9,6 +9,7 @@ import {showApiOptions} from './commands/showApiOptions';
 import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
+import {removePythonEntity} from "./commands/removePythonEntity";
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -42,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.removeModule', (item: TreeNode) => {
-            vscode.window.showInformationMessage(`Remove ${item.label}`).then();
+            removePythonEntity(item).then();
         })
     );
 
