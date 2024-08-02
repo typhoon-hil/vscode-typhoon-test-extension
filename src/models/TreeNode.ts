@@ -2,7 +2,7 @@ import vscode, {ThemeIcon} from "vscode";
 import {extractDescription} from "../utils/docstringParser";
 
 import {PythonCallable, PythonEntity, PythonEntityType, PythonImport, PythonType} from "./pythonEntity";
-import {RenderArgumentsMessage} from "./argumentsView.model";
+import {RenderArgumentsMessage} from "./snippet";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];

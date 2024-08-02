@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
 import {copyToClipboard, insertToEditor} from "../utils/snippet";
-import {TakenActionMessage} from "../models/argumentsView.model";
+import {TakenActionMessage} from "../models/snippet";
 
 export class ArgumentsProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;

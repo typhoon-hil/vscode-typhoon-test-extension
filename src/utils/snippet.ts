@@ -1,7 +1,7 @@
 import {getLineSpacing} from "./config";
 import vscode from "vscode";
 
-import {CodeSnippet, TakenActionMessage} from "../models/argumentsView.model";
+import {CodeSnippet, TakenActionMessage} from "../models/snippet";
 
 export function findLastImportIndex(document: vscode.TextDocument) {
     for (let i = 0; i < document.lineCount; i++) {
