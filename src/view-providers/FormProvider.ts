@@ -2,22 +2,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {PythonCallable, PythonEntityType} from "../models/pythonEntity";
 import {findLastImportIndex, importWithClassSnippetString, snippetToString} from "../utils/snippet";
-import {CodeSnippet, RenderArgumentsMessage, TakenActionMessage} from "../models/argumentsView.model";
-
-function convertToWebviewMessage(item: TreeNode): RenderArgumentsMessage {
-    const root = item.getRootParent();
-    return {
-        root: {
-            name: root.item.name,
-            type: root.item.type as PythonEntityType,
-            alias: root.alias!
-        },
-        name: item.item.name,
-        args: (item.item as PythonCallable).args
-    };
-}
+import {CodeSnippet, TakenActionMessage} from "../models/argumentsView.model";
 
 export class FormProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -105,10 +91,10 @@ export class FormProvider implements vscode.WebviewViewProvider {
 
     public update_html(item: TreeNode): void {
         if (this._view) {
-            const message = convertToWebviewMessage(item);
+            const message = item.toRenderArgumentsMessage();
             this._view.webview.postMessage(
                 message
-            );
+            ).then();
         }
     }
 }

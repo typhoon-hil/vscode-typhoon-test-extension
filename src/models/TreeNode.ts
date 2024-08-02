@@ -2,6 +2,7 @@ import vscode, {ThemeIcon} from "vscode";
 import {extractDescription} from "../utils/docstringParser";
 
 import {PythonCallable, PythonEntity, PythonEntityType, PythonImport, PythonType} from "./pythonEntity";
+import {RenderArgumentsMessage} from "./argumentsView.model";
 
 export class TreeNode extends vscode.TreeItem {
     public children: TreeNode[] = [];
@@ -60,6 +61,19 @@ export class TreeNode extends vscode.TreeItem {
             alias: this.alias!,
             type: this.item.type as PythonEntityType,
             name: this.item.name
+        };
+    }
+
+    public toRenderArgumentsMessage(): RenderArgumentsMessage {
+        const root = this.getRootParent();
+        return {
+            root: {
+                name: root.item.name,
+                type: root.item.type as PythonEntityType,
+                alias: root.alias!
+            },
+            name: this.item.name,
+            args: (this.item as PythonCallable).args
         };
     }
 }
