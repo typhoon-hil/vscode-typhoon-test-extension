@@ -71,6 +71,14 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
             this.doesAliasExist(element.alias) || this.addEntity(element)
         );
     }
+
+    public async removeEntity(item: TreeNode): Promise<void> {
+        const index = this.rootNodes.indexOf(item);
+        if (index !== -1) {
+            this.rootNodes.splice(index, 1);
+            this.refresh();
+        }
+    }
 }
 
 export function getPythonEntityTreeProvider(): PythonEntityTreeProvider {
