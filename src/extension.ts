@@ -16,8 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
     let formProvider = new ArgumentsProvider(context.extensionUri);
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
-    vscode.window.registerWebviewViewProvider('typhoon-test.formView', formProvider);
-    vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', getPythonEntityTreeProvider());
+    vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
+    vscode.window.registerTreeDataProvider('typhoon-test.pythonEntityView', getPythonEntityTreeProvider());
 
     context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
@@ -36,13 +36,13 @@ export function activate(context: vscode.ExtensionContext) {
         ));
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
+        vscode.commands.registerCommand('typhoon-test.addPythonEntity', () => {
             addPythonEntity().then();
         })
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.removeModule', (item: TreeNode) => {
+        vscode.commands.registerCommand('typhoon-test.removePythonEntity', (item: TreeNode) => {
             removePythonEntity(item).then();
         })
     );

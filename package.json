@@ -63,12 +63,12 @@
         "title": "Handle Tree View Item Clicked"
       },
       {
-        "command": "typhoon-test.showApiOptions",
+        "command": "typhoon-test.addPythonEntity",
         "title": "Add module to list",
         "icon": "$(add)"
       },
       {
-        "command": "typhoon-test.removeModule",
+        "command": "typhoon-test.removePythonEntity",
         "title": "Remove module from list",
         "icon": "$(remove)"
       },
@@ -90,7 +90,7 @@
     "views": {
       "typhoon-test": [
         {
-          "id": "typhoon-test.pythonModuleView",
+          "id": "typhoon-test.pythonEntityView",
           "name": "Function List"
         },
         {
@@ -99,7 +99,7 @@
           "type": "webview"
         },
         {
-          "id": "typhoon-test.formView",
+          "id": "typhoon-test.argumentsView",
           "name": "Function Arguments",
           "type": "webview"
         }
@@ -107,28 +107,60 @@
     },
     "viewsWelcome": [
       {
-        "view": "typhoon-test.pythonModuleView",
+        "view": "typhoon-test.pythonEntityView",
         "contents": "Select a module to view its classes, methods, and functions"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "typhoon-test.showApiOptions",
-          "when": "view == typhoon-test.pythonModuleView",
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view == typhoon-test.pythonEntityView",
           "group": "navigation"
         },
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
-          "when": "view == typhoon-test.pythonModuleView",
+          "when": "view == typhoon-test.pythonEntityView",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "typhoon-test.removeModule",
-          "when": "view == typhoon-test.pythonModuleView && (viewItem == class || viewItem == module)",
+          "command": "typhoon-test.removePythonEntity",
+          "when": "view == typhoon-test.pythonEntityView && (viewItem == class || viewItem == module)",
           "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "typhoon-test.showDocstringView",
+          "when": "false",
+          "group": "Typhoon Test"
+        },
+        {
+          "command": "typhoon-test.showArgumentsView",
+          "when": "false",
+          "group": "Typhoon Test"
+        },
+        {
+          "command": "typhoon-test.handleTreeViewItemClicked",
+          "when": "false",
+          "group": "Typhoon Test"
+        },
+        {
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view == typhoon-test.pythonEntityView",
+          "group": "Typhoon Test"
+        },
+        {
+          "command": "typhoon-test.removePythonEntity",
+          "when": "false",
+          "group": "Typhoon Test"
+        },
+        {
+          "command": "typhoon-test.saveApiWizardWorkspace",
+          "when": "view == typhoon-test.pythonEntityView",
+          "group": "Typhoon Test"
         }
       ]
     }
