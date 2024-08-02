@@ -1,7 +1,7 @@
 import {getLineSpacing} from "./config";
 import vscode from "vscode";
 
-import {CodeSnippet} from "../models/argumentsView.model";
+import {CodeSnippet, TakenActionMessage} from "../models/argumentsView.model";
 
 export function findLastImportIndex(document: vscode.TextDocument) {
     for (let i = 0; i < document.lineCount; i++) {
@@ -63,4 +63,44 @@ function doesClassExist(document: vscode.TextDocument, className: string): boole
         }
     }
     return false;
+}
+
+export function copyToClipboard(message: TakenActionMessage) {
+    if (!message.code) {
+        vscode.window.showErrorMessage('No code snippet found.').then();
+        return;
+    }
+    vscode.env.clipboard.writeText(snippetToString(message.code))
+        .then(() => {
+            vscode.window.showInformationMessage('Copied to clipboard!').then();
+        });
+}
+
+export function insertToEditor(message: TakenActionMessage) {
+    const editor = vscode.window.activeTextEditor;
+    if (!checkValidity(editor, message)) {
+        return;
+    }
+    const code: CodeSnippet = message.code;
+    editor.edit((editBuilder) => {
+        const document = editor.document;
+        const lastImportIndex = findLastImportIndex(document);
+        const cursorPosition = editor.selection.active;
+
+        const importPosition = new vscode.Position(lastImportIndex + 1, 0);
+        editBuilder.insert(importPosition, importWithClassSnippetString(code));
+        editBuilder.insert(cursorPosition, code.method + '\n');
+    }).then();
+}
+
+function checkValidity(editor: vscode.TextEditor, message: TakenActionMessage): boolean {
+    if (!editor) {
+        vscode.window.showErrorMessage('No active text editor found.').then();
+        return false;
+    }
+    if (!message.code) {
+        vscode.window.showErrorMessage('No code snippet found.').then();
+        return false;
+    }
+    return true;
 }
