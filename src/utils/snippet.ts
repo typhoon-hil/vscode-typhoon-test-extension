@@ -1,6 +1,7 @@
 import {getLineSpacing} from "./config";
 import vscode from "vscode";
-import {CodeSnippet} from "../view-providers/FormProvider";
+
+import {CodeSnippet} from "../models/argumentsView.model";
 
 export function findLastImportIndex(document: vscode.TextDocument) {
     for (let i = 0; i < document.lineCount; i++) {

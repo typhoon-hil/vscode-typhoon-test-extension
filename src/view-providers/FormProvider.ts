@@ -2,27 +2,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {PythonArgument, PythonCallable, PythonEntityType, PythonImport} from "../models/pythonEntity";
+import {PythonCallable, PythonEntityType} from "../models/pythonEntity";
 import {findLastImportIndex, importWithClassSnippetString, snippetToString} from "../utils/snippet";
-
-export interface CodeSnippet {
-    import: string;
-    class?: string;
-    method: string;
-}
-
-interface RenderArgumentsMessage {
-    root: PythonImport;
-    name: string;
-    args: PythonArgument[];
-
-}
-
-interface TakenActionMessage {
-    command: string;
-    code?: CodeSnippet;
-    log?: string;
-}
+import {CodeSnippet, RenderArgumentsMessage, TakenActionMessage} from "../models/argumentsView.model";
 
 function convertToWebviewMessage(item: TreeNode): RenderArgumentsMessage {
     const root = item.getRootParent();
