@@ -73,3 +73,6 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
     }
 }
 
+export function getPythonEntityTreeProvider(): PythonEntityTreeProvider {
+    return PythonEntityTreeProvider.getInstance();
+}
