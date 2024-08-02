@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { addModule, doesAliasExist } from './registerModuleTreeView';
 import {PythonEntityType} from "../models/pythonEntity";
+import {PythonEntityTreeProvider} from "../views/PythonEntityTreeProvider";
 
 interface ApiOption {
     path: string;
@@ -29,7 +29,8 @@ export async function showApiOptions() {
         const { path, type } = apiOptions[selectedOption.label];
 
         if (alias) {
-            addModule(path, type, alias);
+            PythonEntityTreeProvider.getInstance()
+                .addEntity({ name: path, type, alias }).then();
         }
     }
 }
@@ -43,7 +44,7 @@ async function getAlias(entity_name: string): Promise<string> {
         return '';
     }
 
-    if (doesAliasExist(alias)) {
+    if (PythonEntityTreeProvider.getInstance().doesAliasExist(alias)) {
         vscode.window.showErrorMessage(`Alias '${alias}' already exists. Please choose another name.`);
         return getAlias(entity_name);
     }

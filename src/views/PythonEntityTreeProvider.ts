@@ -5,15 +5,14 @@ import {loadPythonEntity} from "../utils/pythonConverter";
 import {loadWorkspaceElements} from "../utils/config";
 
 export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {
+    static instance: PythonEntityTreeProvider | undefined;
     private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void> = new vscode.EventEmitter<TreeNode | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined | void> = this._onDidChangeTreeData.event;
-
     private rootNodes: TreeNode[] = [];
 
     private constructor() {
+        this.loadEntitiesFromWorkspace().then();
     }
-
-    static instance: PythonEntityTreeProvider | undefined;
 
     static getInstance(): PythonEntityTreeProvider {
         if (!PythonEntityTreeProvider.instance) {
@@ -51,7 +50,7 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
     public async addEntity(pythonImport: PythonImport): Promise<void> {
         try {
             const entity = await loadPythonEntity(pythonImport.name, pythonImport.type);
-            const node =  TreeNode.parsePythonEntity(entity, pythonImport.alias);
+            const node = TreeNode.parsePythonEntity(entity, pythonImport.alias);
             this.rootNodes.push(node);
             this.refresh();
         } catch (error) {
@@ -63,18 +62,14 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
         return this.rootNodes.some(node => node.alias === alias);
     }
 
-    public getRootNodes(): TreeNode[] {
-        return this.rootNodes;
+    public getRootNodesAsPythonImports(): PythonImport[] {
+        return this.rootNodes.map(root => root.toPythonImport());
     }
 
     public async loadEntitiesFromWorkspace() {
         loadWorkspaceElements().forEach(element =>
             this.doesAliasExist(element.alias) || this.addEntity(element)
         );
-    }
-    
-    public getRootNodesAsPythonImports(): PythonImport[] {
-        return this.rootNodes.map(root => root.toPythonImport());
     }
 }
 
