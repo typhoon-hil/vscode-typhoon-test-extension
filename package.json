@@ -51,12 +51,10 @@
     },
     "commands": [
       {
-        "command": "typhoon-test.showDocstring",
-        "title": "Show Docstring"
+        "command": "typhoon-test.showDocstring"
       },
       {
-        "command": "typhoon-test.showForm",
-        "title": "Show Form"
+        "command": "typhoon-test.showArgumentsView"
       },
       {
         "command": "typhoon-test.handleTreeViewItemClicked",
