@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {copyToClipboard, insertToEditor} from "../utils/snippet";
+import {copyToClipboard, insertToEditor} from "../utils/snippetCreator";
 import {TakenActionMessage} from "../models/snippet";
 
 export class ArgumentsProvider implements vscode.WebviewViewProvider {
