@@ -2,14 +2,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import {TreeNode} from "../models/TreeNode";
-import {PythonArgument, PythonCallable} from "../models/pythonEntity";
+import {PythonArgument, PythonCallable, PythonEntityType, PythonImport} from "../models/pythonEntity";
 import {findLastImportIndex, importWithClassSnippetString, snippetToString} from "../utils/snippet";
-
-interface Root {
-    label: string;
-    type: string;
-    alias: string;
-}
 
 export interface CodeSnippet {
     import: string;
@@ -17,28 +11,28 @@ export interface CodeSnippet {
     method: string;
 }
 
-interface WebviewRequestMessage {
-    root: Root;
-    label: string;
+interface RenderArgumentsMessage {
+    root: PythonImport;
+    name: string;
     args: PythonArgument[];
 
 }
 
-interface WebviewResponseMessage {
+interface TakenActionMessage {
     command: string;
     code?: CodeSnippet;
     log?: string;
 }
 
-function convertToWebviewMessage(item: TreeNode): WebviewRequestMessage {
+function convertToWebviewMessage(item: TreeNode): RenderArgumentsMessage {
     const root = item.getRootParent();
     return {
         root: {
-            label: root.item.name,
-            type: root.item.type,
-            alias: root.alias || ''
+            name: root.item.name,
+            type: root.item.type as PythonEntityType,
+            alias: root.alias!
         },
-        label: item.item.name,
+        name: item.item.name,
         args: (item.item as PythonCallable).args
     };
 }
@@ -71,7 +65,7 @@ export class FormProvider implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(this.handleMessage);
     }
 
-    private handleMessage(message: WebviewResponseMessage) {
+    private handleMessage(message: TakenActionMessage) {
         switch (message.command) {
             case 'copyToClipboard':
                 if (!message.code) {

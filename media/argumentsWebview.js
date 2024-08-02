@@ -40,7 +40,7 @@ function splitBeforeLastDot(inputString) {
 
 function createImport() {
     const alias = data.root.alias;
-    const module = data.root.label;
+    const module = data.root.name;
     const type = data.root.type;
 
     let importStatement = '';
@@ -49,7 +49,7 @@ function createImport() {
         importStatement = `import ${module} as ${alias}`;
     }
     else if (type === 'class') {
-        const [module, className] = splitBeforeLastDot(data.root.label);
+        const [module, className] = splitBeforeLastDot(data.root.name);
         importStatement = `from ${module} import ${className}`;
     }
 
@@ -62,13 +62,13 @@ function generateClass() {
         return '';
     }
     const alias = data.root.alias;
-    const className = splitBeforeLastDot(data.root.label)[1];
+    const className = splitBeforeLastDot(data.root.name)[1];
     return `${alias} = ${className}()`;
 }
 
 function generateMethod() {
     const alias = data.root.alias;
-    const methodName = data.label;
+    const methodName = data.name;
     
     const inputs = document.querySelectorAll('input');
     let args = '';
