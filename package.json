@@ -52,30 +52,36 @@
     "commands": [
       {
         "command": "typhoon-test.showDocstringView",
-        "title": "Show Docstring"
+        "title": "Show Docstring",
+        "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.showArgumentsView",
-        "title": "Show Arguments View"
+        "title": "Show Arguments View",
+        "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.handleTreeViewItemClicked",
-        "title": "Handle Tree View Item Clicked"
+        "title": "Handle Tree View Item Clicked",
+        "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.addPythonEntity",
         "title": "Add module to list",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.removePythonEntity",
         "title": "Remove module from list",
-        "icon": "$(remove)"
+        "icon": "$(remove)",
+        "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.saveApiWizardWorkspace",
         "title": "Save API Wizard Workspace",
-        "icon": "$(save)"
+        "icon": "$(save)",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
@@ -134,33 +140,27 @@
       "commandPalette": [
         {
           "command": "typhoon-test.showDocstringView",
-          "when": "false",
-          "group": "Typhoon Test"
+          "when": "false"
         },
         {
           "command": "typhoon-test.showArgumentsView",
-          "when": "false",
-          "group": "Typhoon Test"
+          "when": "false"
         },
         {
           "command": "typhoon-test.handleTreeViewItemClicked",
-          "when": "false",
-          "group": "Typhoon Test"
+          "when": "false"
         },
         {
           "command": "typhoon-test.addPythonEntity",
-          "when": "view == typhoon-test.pythonEntityView",
-          "group": "Typhoon Test"
+          "when": "view.typhoon-test.pythonEntityView.visible"
         },
         {
           "command": "typhoon-test.removePythonEntity",
-          "when": "false",
-          "group": "Typhoon Test"
+          "when": "false"
         },
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
-          "when": "view == typhoon-test.pythonEntityView",
-          "group": "Typhoon Test"
+          "when": "view.typhoon-test.pythonEntityView.visible"
         }
       ]
     }
