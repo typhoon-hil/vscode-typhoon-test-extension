@@ -12,7 +12,7 @@ const apiOptions: { [key: string]: ApiOption } = {
     'HIL API': { path: 'typhoon.api.hil', type: 'module' },
 };
 
-export async function showApiOptions() {
+export async function addPythonEntity() {
     const options: vscode.QuickPickItem[] = [
         ...Object.keys(apiOptions).map(label => ({
             label: label

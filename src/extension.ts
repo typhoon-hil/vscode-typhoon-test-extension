@@ -5,7 +5,7 @@ import {showDocstringView} from './commands/showDocstringView';
 import {ArgumentsProvider} from './views/ArgumentsProvider';
 import {showArgumentsView} from './commands/showArgumentsView';
 import {handleTreeViewItemClicked} from './commands/handleTreeViewItemClicked';
-import {showApiOptions} from './commands/showApiOptions';
+import {addPythonEntity} from './commands/addPythonEntity';
 import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('typhoon-test.formView', formProvider);
     vscode.window.registerTreeDataProvider('typhoon-test.pythonModuleView', getPythonEntityTreeProvider());
 
-    context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstring', (item: TreeNode) =>
+    context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
     ));
 
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.showApiOptions', () => {
-            showApiOptions().then();
+            addPythonEntity().then();
         })
     );
 
