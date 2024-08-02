@@ -5,7 +5,7 @@ import {TreeNode} from "../models/TreeNode";
 import {copyToClipboard, insertToEditor} from "../utils/snippet";
 import {TakenActionMessage} from "../models/argumentsView.model";
 
-export class FormProvider implements vscode.WebviewViewProvider {
+export class ArgumentsProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
     private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media'));
 

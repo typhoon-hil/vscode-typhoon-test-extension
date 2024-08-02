@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import { DocumentationProvider } from './views/DocumentationProvider';
 import { showDocstring } from './commands/showDocstring';
-import { FormProvider } from './view-providers/FormProvider';
+import { ArgumentsProvider } from './views/ArgumentsProvider';
 import { showForm } from './commands/showForm';
 import { handleTreeViewItemClicked } from './commands/handleTreeViewItemClicked';
 import { showApiOptions } from './commands/showApiOptions';
@@ -12,7 +12,7 @@ import {PythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 
 export function activate(context: vscode.ExtensionContext) {
   let sidebarProvider = new DocumentationProvider(context.extensionUri);
-  let formProvider = new FormProvider(context.extensionUri);
+  let formProvider = new ArgumentsProvider(context.extensionUri);
 
   vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
   vscode.window.registerWebviewViewProvider('typhoon-test.formView', formProvider);

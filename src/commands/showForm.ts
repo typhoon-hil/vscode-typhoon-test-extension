@@ -1,7 +1,7 @@
-import { FormProvider } from "../view-providers/FormProvider";
+import { ArgumentsProvider } from "../views/ArgumentsProvider";
 
 import {TreeNode} from "../models/TreeNode";
 
-export function showForm(formProvider: FormProvider, item: TreeNode) {
+export function showForm(formProvider: ArgumentsProvider, item: TreeNode) {
     formProvider.update(item);
 }
