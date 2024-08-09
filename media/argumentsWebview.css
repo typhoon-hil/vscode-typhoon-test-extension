@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 48px;
+    margin-top: 4px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 4px;
+}
+th {
+    text-align: left;
+}
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.stick {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    flex-wrap: wrap;
+    background-color: var(--vscode-editor-background);
+}
+
+.stick button {
+    margin: 8px 4px;
+    padding: 4px;
+}

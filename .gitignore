@@ -3,7 +3,4 @@ dist
 node_modules
 .vscode-test/
 *.vsix
-local
-/.vscode/
-/.log/
-/.tool-versions
+**/__pycache__

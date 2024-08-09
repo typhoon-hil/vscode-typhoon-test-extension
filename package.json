@@ -9,22 +9,86 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onView:typhoon-test.customView"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Typhoon Test",
+      "properties": {
+        "typhoon-test.lineSpacing": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 1,
+          "description": "The number of blank lines to insert between top-level functions and classes"
+        },
+        "typhoon-test.apiWizardWorkspace": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "required": true
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "class",
+                  "module"
+                ],
+                "required": true
+              },
+              "alias": {
+                "type": "string",
+                "required": true
+              }
+            },
+            "default": {},
+            "description": "The module and class to display in the API wizard"
+          }
+        }
+      }
+    },
     "commands": [
       {
-        "command": "helloworld.helloWorld",
-        "title": "Open Custom Layout"
+        "command": "typhoon-test.showDocstringView",
+        "title": "Show Docstring",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.showArgumentsView",
+        "title": "Show Arguments View",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.handleTreeViewItemClicked",
+        "title": "Handle Tree View Item Clicked",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.addPythonEntity",
+        "title": "Add module to list",
+        "icon": "$(add)",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.removePythonEntity",
+        "title": "Remove module from list",
+        "icon": "$(remove)",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.saveApiWizardWorkspace",
+        "title": "Save API Wizard Workspace",
+        "icon": "$(save)",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "typhoon-test",
-          "title": "Typhoon Test",
+          "title": "Typhoon Test API Wizard",
           "icon": "$(rocket)"
         }
       ]
@@ -32,13 +96,71 @@
     "views": {
       "typhoon-test": [
         {
-          "id": "customView",
-          "name": "Custom View",
+          "id": "typhoon-test.pythonEntityView",
+          "name": "Function List"
+        },
+        {
+          "id": "typhoon-test.docstringView",
+          "name": "Function Documentation",
           "type": "webview"
         },
         {
-          "id": "customView2",
-          "name": "Custom View 2"
+          "id": "typhoon-test.argumentsView",
+          "name": "Function Arguments",
+          "type": "webview"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "typhoon-test.pythonEntityView",
+        "contents": "Select a module to view its classes, methods, and functions"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view == typhoon-test.pythonEntityView",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.saveApiWizardWorkspace",
+          "when": "view == typhoon-test.pythonEntityView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "typhoon-test.removePythonEntity",
+          "when": "view == typhoon-test.pythonEntityView && (viewItem == class || viewItem == module)",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "typhoon-test.showDocstringView",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.showArgumentsView",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.handleTreeViewItemClicked",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view.typhoon-test.pythonEntityView.visible"
+        },
+        {
+          "command": "typhoon-test.removePythonEntity",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.saveApiWizardWorkspace",
+          "when": "view.typhoon-test.pythonEntityView.visible"
         }
       ]
     }
@@ -60,6 +182,8 @@
     "eslint": "^8.57.0",
     "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "tree-sitter": "^0.21.0",
+    "tree-sitter-python": "^0.21.0"
   }
 }

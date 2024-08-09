@@ -1,22 +1,64 @@
 // extension.ts
 import * as vscode from 'vscode';
-import { SidebarProvider } from './SidebarProvider';
+import {DocumentationProvider} from './views/DocumentationProvider';
+import {showDocstringView} from './commands/showDocstringView';
+import {ArgumentsProvider} from './views/ArgumentsProvider';
+import {showArgumentsView} from './commands/showArgumentsView';
+import {handleTreeViewItemClicked} from './commands/handleTreeViewItemClicked';
+import {addPythonEntity} from './commands/addPythonEntity';
+import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
+import {TreeNode} from "./models/TreeNode";
+import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
+import {removePythonEntity} from "./commands/removePythonEntity";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Extension "typhoon-test" is now active!');
+    let sidebarProvider = new DocumentationProvider(context.extensionUri);
+    let formProvider = new ArgumentsProvider(context.extensionUri);
 
-  let disposable = vscode.commands.registerCommand('helloworld.helloWorld', async () => {
-    await vscode.commands.executeCommand('workbench.action.files.newUntitledFile');
-    await vscode.commands.executeCommand('workbench.view.explorer');
-    await vscode.commands.executeCommand('workbench.action.terminal.toggleTerminal');
-  });
+    vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
+    vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
+    vscode.window.registerTreeDataProvider('typhoon-test.pythonEntityView', getPythonEntityTreeProvider());
 
-  context.subscriptions.push(disposable);
+    context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
+        showDocstringView(sidebarProvider, item)
+    ));
 
-  const sidebarProvider = new SidebarProvider(context.extensionUri);
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider('customView', sidebarProvider)
-  );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.showArgumentsView', (item: TreeNode) => {
+                showArgumentsView(formProvider, item);
+            }
+        ));
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.handleTreeViewItemClicked', (item: TreeNode) => {
+                handleTreeViewItemClicked(item);
+            }
+        ));
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.addPythonEntity', () => {
+            addPythonEntity().then();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.removePythonEntity', (item: TreeNode) => {
+            removePythonEntity(item).then();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.saveApiWizardWorkspace', () => {
+            saveApiWizardWorkspace();
+        })
+    );
+
+    vscode.workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
+            getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
+        }
+    });
 }
 
-export function deactivate() {}
+export function deactivate() {
+}
