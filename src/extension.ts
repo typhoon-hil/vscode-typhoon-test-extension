@@ -53,6 +53,12 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.openTestRunConfiguration', () => {
+            vscode.commands.executeCommand('workbench.action.openSettings', 'testRun');
+        })
+    );
+
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
