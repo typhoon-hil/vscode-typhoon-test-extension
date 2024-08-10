@@ -47,6 +47,11 @@
             "description": "The module and class to display in the API wizard"
           }
         },
+        "typhoon-test.testRun.pythonInterpreter": {
+          "type": "string",
+          "default": "python",
+          "description": "The Python interpreter to use for running tests"
+        },
         "typhoon-test.testRun.real-timeLogs": {
           "type": "boolean",
           "default": true,
@@ -66,6 +71,21 @@
           "type": "boolean",
           "default": true,
           "description": "Generate PDF report after test finishes"
+        },
+        "typhoon-test.testRun.selectTestByName": {
+          "type": "string",
+          "default": "",
+          "description": "Select based on name (full or partial match). Equivalent to -k pytest option"
+        },
+        "typhoon-test.testRun.selectTestByMark": {
+          "type": "string",
+          "default": "",
+          "description": "Select based on marks/tags. Equivalent to -m pytest option"
+        },
+        "typhoon-test.testRun.additionalOptions": {
+          "type": "string",
+          "default": "",
+          "description": "Pass additional options to pytest"
         }
       }
     },
