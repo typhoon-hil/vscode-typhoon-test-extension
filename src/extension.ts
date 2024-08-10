@@ -10,6 +10,7 @@ import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
+import { isWindows } from './utils/operatingSystem';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -58,6 +59,25 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.executeCommand('workbench.action.openSettings', 'testRun');
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.pickPythonInterpreterPath', () => {
+            vscode.window.showOpenDialog({  
+                canSelectFiles: true,
+                canSelectFolders: false,
+                canSelectMany: false,
+                filters: {
+                    'Python Interpreter': isWindows() ? ['exe'] : ['']
+                }
+            }).then(result => {
+                if (result && result.length > 0) {
+                    const pythonInterpreterPath = result[0].fsPath;
+                    vscode.workspace.getConfiguration('typhoon-test.testRun').update('pythonInterpreter', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
+                }
+            });
+        })
+    );
+    
 
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {

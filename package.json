@@ -50,7 +50,7 @@
         "typhoon-test.testRun.pythonInterpreter": {
           "type": "string",
           "default": "python",
-          "description": "The Python interpreter to use for running tests"
+          "markdownDescription": "[Select File Path](command:typhoon-test.pickPythonInterpreterPath)"
         },
         "typhoon-test.testRun.real-timeLogs": {
           "type": "boolean",
@@ -126,6 +126,11 @@
       {
         "command": "typhoon-test.openTestRunConfiguration",
         "title": "Open Test Run Configuration",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.pickPythonInterpreterPath",
+        "title": "Select File Path",
         "category": "Typhoon Test"
       }
     ],
