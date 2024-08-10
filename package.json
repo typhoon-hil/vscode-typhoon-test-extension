@@ -50,42 +50,50 @@
         "typhoon-test.testRun.pythonInterpreter": {
           "type": "string",
           "default": "python",
-          "markdownDescription": "[Select File Path](command:typhoon-test.pickPythonInterpreterPath)"
+          "markdownDescription": "[Select File Path](command:typhoon-test.pickPythonInterpreterPath)",
+          "scope": "application"
         },
         "typhoon-test.testRun.real-timeLogs": {
           "type": "boolean",
           "default": true,
-          "description": "Enable real-time logging of steps in console"
+          "description": "Enable real-time logging of steps in console",
+          "scope": "application"
         },
         "typhoon-test.testRun.openReport": {
           "type": "boolean",
           "default": true,
-          "description": "Open interactive Allure report after test finishes"
+          "description": "Open interactive Allure report after test finishes",
+          "scope": "application"
         },
         "typhoon-test.testRun.cleanOldResults": {
           "type": "boolean",
           "default": true,
-          "description": "Clean old test results before running new tests"
+          "description": "Clean old test results before running new tests",
+          "scope": "application"
         },
         "typhoon-test.testRun.pdfReport": {
           "type": "boolean",
           "default": true,
-          "description": "Generate PDF report after test finishes"
+          "description": "Generate PDF report after test finishes",
+          "scope": "application"
         },
         "typhoon-test.testRun.selectTestByName": {
           "type": "string",
           "default": "",
-          "description": "Select based on name (full or partial match). Equivalent to -k pytest option"
+          "description": "Select based on name (full or partial match). Equivalent to -k pytest option",
+          "scope": "application"
         },
         "typhoon-test.testRun.selectTestByMark": {
           "type": "string",
           "default": "",
-          "description": "Select based on marks/tags. Equivalent to -m pytest option"
+          "description": "Select based on marks/tags. Equivalent to -m pytest option",
+          "scope": "application"
         },
         "typhoon-test.testRun.additionalOptions": {
           "type": "string",
           "default": "",
-          "description": "Pass additional options to pytest"
+          "description": "Pass additional options to pytest",
+          "scope": "application"
         }
       }
     },
