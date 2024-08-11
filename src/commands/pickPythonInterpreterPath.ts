@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { isWindows } from '../utils/operatingSystem';
+import { isWindows } from '../utils/platform';
 
 export function pickPythonInterpreterPath() {
     vscode.window.showOpenDialog({  
