@@ -49,8 +49,24 @@
         },
         "typhoon-test.testRun.pythonInterpreter": {
           "type": "string",
-          "default": "python",
-          "markdownDescription": "[Select File Path](command:typhoon-test.pickPythonInterpreterPath)",
+          "enum": [
+            "embedded",
+            "system",
+            "custom"
+          ],
+          "default": "embedded",
+          "enumDescriptions": [
+            "Use embedded (Python 3) interpreter",
+            "Use the system Python interpreter",
+            "Use a custom Python interpreter"
+          ],
+          "markdownDescription": "The Python interpreter to use for running tests\n\nNote: In order to use the custom interpreter, you need to set the path to the interpreter in the `#typhoon-test.testRun.customPythonInterpreterPath#`",
+          "scope": "application"
+        },
+        "typhoon-test.testRun.customPythonInterpreterPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The path to the custom Python interpreter to use for running tests. This path will be used if `#typhoon-test.testRun.pythonInterpreter#` is set to `custom`.\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickPythonInterpreterPath)",
           "scope": "application"
         },
         "typhoon-test.testRun.real-timeLogs": {

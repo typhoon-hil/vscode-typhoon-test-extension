@@ -72,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
             }).then(result => {
                 if (result && result.length > 0) {
                     const pythonInterpreterPath = result[0].fsPath;
-                    vscode.workspace.getConfiguration('typhoon-test.testRun').update('pythonInterpreter', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
+                    vscode.workspace.getConfiguration('typhoon-test.testRun').update('customPythonInterpreterPath', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
                 }
             });
         })
