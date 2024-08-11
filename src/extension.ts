@@ -11,6 +11,7 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import { isWindows } from './utils/operatingSystem';
+import { pickPythonInterpreterPath } from './commands/pickPythonInterpreterPath';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -62,19 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickPythonInterpreterPath', () => {
-            vscode.window.showOpenDialog({  
-                canSelectFiles: true,
-                canSelectFolders: false,
-                canSelectMany: false,
-                filters: {
-                    'Python Interpreter': isWindows() ? ['exe'] : ['']
-                }
-            }).then(result => {
-                if (result && result.length > 0) {
-                    const pythonInterpreterPath = result[0].fsPath;
-                    vscode.workspace.getConfiguration('typhoon-test.testRun').update('customPythonInterpreterPath', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
-                }
-            });
+            pickPythonInterpreterPath();
         })
     );
     
