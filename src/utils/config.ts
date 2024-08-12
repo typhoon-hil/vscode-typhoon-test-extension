@@ -9,7 +9,7 @@ export function loadWorkspaceElements(): PythonImport[] {
     return config.get<PythonImport[]>('apiWizardWorkspace', []);
 }
 
-export async function saveWorkspaceElements(elements: PythonImport[]) {
+export async function updateWorkspaceElements(elements: PythonImport[]) {
     config.update('apiWizardWorkspace', elements, vscode.ConfigurationTarget.Global);
 }
 
@@ -70,4 +70,8 @@ function getSelectTestByMark(): string | undefined {
 function getAdditionalOptions(): string | undefined {
     let options = testRunConfig.get<string | undefined>('additionalOptions');
     return options && options.trim() ? options : undefined;
+}
+
+export function updateCustomInterpreterPath(path: string) {
+    testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
 }
