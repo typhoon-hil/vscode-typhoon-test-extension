@@ -11,7 +11,6 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import { pickPythonInterpreterPath } from './commands/pickPythonInterpreterPath';
-import { getTestRunConfig } from './utils/config';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -73,8 +72,6 @@ export function activate(context: vscode.ExtensionContext) {
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
         }
     });
-
-    let x = getTestRunConfig();
 }
 
 export function deactivate() {
