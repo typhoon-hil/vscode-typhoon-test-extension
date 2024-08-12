@@ -1,11 +1,11 @@
-export enum PythonInterpreterType {
+export enum interpreterType {
     System = 'system',
     Embedded = 'embedded',
     Custom = 'custom'
 }
 
 export interface TestRunConfig {
-    pythonInterpreterType: PythonInterpreterType;
+    interpreterType: interpreterType;
     customInterpreterPath?: string;
     realTimeLogs: boolean;
     openReport: boolean;

@@ -47,7 +47,7 @@
             "description": "The module and class to display in the API wizard"
           }
         },
-        "typhoon-test.testRun.pythonInterpreter": {
+        "typhoon-test.testRun.interpreter": {
           "type": "string",
           "enum": [
             "embedded",
@@ -66,7 +66,7 @@
         "typhoon-test.testRun.customInterpreterPath": {
           "type": "string",
           "default": "",
-          "markdownDescription": "The path to the custom Python interpreter to use for running tests. This path will be used if `#typhoon-test.testRun.pythonInterpreter#` is set to `custom`.\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickPythonInterpreterPath)",
+          "markdownDescription": "The path to the custom Python interpreter to use for running tests. This path will be used if `#typhoon-test.testRun.interpreter#` is set to `custom`.\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickInterpreterPath)",
           "scope": "application"
         },
         "typhoon-test.testRun.real-timeLogs": {
@@ -153,7 +153,7 @@
         "category": "Typhoon Test"
       },
       {
-        "command": "typhoon-test.pickPythonInterpreterPath",
+        "command": "typhoon-test.pickInterpreterPath",
         "title": "Select File Path",
         "category": "Typhoon Test"
       }

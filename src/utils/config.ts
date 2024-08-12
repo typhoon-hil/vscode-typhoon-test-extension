@@ -1,6 +1,6 @@
 import vscode from 'vscode';
 import { PythonImport } from "../models/pythonEntity";
-import { PythonInterpreterType, TestRunConfig } from '../models/testRun';
+import { interpreterType, TestRunConfig } from '../models/testRun';
 
 const config = vscode.workspace.getConfiguration('typhoon-test');
 const testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
@@ -20,7 +20,7 @@ export function getLineSpacing(): string {
 
 export function getTestRunConfig(): TestRunConfig {
     return {
-        pythonInterpreterType: getPythonInterpreterType() as PythonInterpreterType,
+        interpreterType: getinterpreterType() as interpreterType,
         customInterpreterPath: getcustomInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
@@ -32,8 +32,8 @@ export function getTestRunConfig(): TestRunConfig {
     };
 }
 
-function getPythonInterpreterType(): PythonInterpreterType {
-    return testRunConfig.get<string>('pythonInterpreter', "embedded") as PythonInterpreterType;
+function getinterpreterType(): interpreterType {
+    return testRunConfig.get<string>('interpreter', "embedded") as interpreterType;
 }
 
 function getcustomInterpreterPath(): string | undefined {

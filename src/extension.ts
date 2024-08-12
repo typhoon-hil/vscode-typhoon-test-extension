@@ -10,7 +10,7 @@ import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
-import { pickPythonInterpreterPath } from './commands/pickPythonInterpreterPath';
+import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -61,12 +61,11 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.pickPythonInterpreterPath', () => {
-            pickPythonInterpreterPath();
+        vscode.commands.registerCommand('typhoon-test.pickInterpreterPath', () => {
+            pickInterpreterPath();
         })
     );
     
-
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();

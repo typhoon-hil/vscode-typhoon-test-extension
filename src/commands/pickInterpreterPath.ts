@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { isWindows } from '../utils/platform';
 import { updateCustomInterpreterPath } from '../utils/config';
 
-export function pickPythonInterpreterPath() {
+export function pickInterpreterPath() {
     vscode.window.showOpenDialog({  
         canSelectFiles: true,
         canSelectFolders: false,
@@ -12,8 +12,8 @@ export function pickPythonInterpreterPath() {
         }
     }).then(result => {
         if (result && result.length > 0) {
-            const pythonInterpreterPath = result[0].fsPath;
-            updateCustomInterpreterPath(pythonInterpreterPath);
+            const interpreterPath = result[0].fsPath;
+            updateCustomInterpreterPath(interpreterPath);
         }
     });
 }
