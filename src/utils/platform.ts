@@ -7,15 +7,31 @@ export function getPythonCommand(): string {
 }
 
 export function getEmbeddedPythonPath(): string {
-    let typhoonPath = '';
+    let typhoonPaths: string[] = [];
     const pathEnv = process.env.PATH || '';
     const pathDirs = pathEnv.split(';');
 
     for (const dir of pathDirs) {
         if (dir.includes('Typhoon')) {
-            typhoonPath = dir;
-            break;
+            typhoonPaths.push(dir);
         }
     }
-    return typhoonPath ? `${typhoonPath}/python` : '';
+
+    let selectedPath = '';
+    let selectedVersion = '';
+
+    for (const path of typhoonPaths) {
+        const versionMatch = path.match(/Typhoon [^\\\/]*?\b(\d+\.\d+)\b/);
+        if (versionMatch) {
+            const version = versionMatch[1];
+            if (!selectedVersion || version > selectedVersion) {
+                selectedPath = path;
+                selectedVersion = version;
+            }
+        }
+    }
+
+    selectedPath = selectedPath.replace(/\\bin$/, '');
+
+    return selectedPath ? `${selectedPath}/python3_portable/python.exe` : '';
 }
