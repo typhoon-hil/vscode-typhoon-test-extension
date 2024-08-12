@@ -10,7 +10,6 @@ import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
-import { isWindows } from './utils/platform';
 import { pickPythonInterpreterPath } from './commands/pickPythonInterpreterPath';
 
 export function activate(context: vscode.ExtensionContext) {
