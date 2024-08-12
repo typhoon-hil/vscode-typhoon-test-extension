@@ -12,7 +12,7 @@ export function pickPythonInterpreterPath() {
     }).then(result => {
         if (result && result.length > 0) {
             const pythonInterpreterPath = result[0].fsPath;
-            vscode.workspace.getConfiguration('typhoon-test.testRun').update('customPythonInterpreterPath', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
+            vscode.workspace.getConfiguration('typhoon-test.testRun').update('customInterpreterPath', pythonInterpreterPath, vscode.ConfigurationTarget.Global);
         }
     });
 }

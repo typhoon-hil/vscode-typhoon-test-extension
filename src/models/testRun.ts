@@ -6,7 +6,7 @@ export enum PythonInterpreterType {
 
 export interface TestRunConfig {
     pythonInterpreterType: PythonInterpreterType;
-    customPythonInterpreterPath?: string;
+    customInterpreterPath?: string;
     realTimeLogs: boolean;
     openReport: boolean;
     cleanOldResults: boolean;

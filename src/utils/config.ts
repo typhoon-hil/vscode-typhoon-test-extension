@@ -20,8 +20,8 @@ export function getLineSpacing(): string {
 
 export function getTestRunConfig(): TestRunConfig {
     return {
-        pythonInterpreterType: getPythonInterpreterType(),
-        customPythonInterpreterPath: getCustomPythonInterpreterPath(),
+        pythonInterpreterType: getPythonInterpreterType() as PythonInterpreterType,
+        customInterpreterPath: getcustomInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
         cleanOldResults: getCleanOldResults(),
@@ -33,11 +33,11 @@ export function getTestRunConfig(): TestRunConfig {
 }
 
 function getPythonInterpreterType(): PythonInterpreterType {
-    return testRunConfig.get<PythonInterpreterType>('pythonInterpreterType')!;
+    return testRunConfig.get<string>('pythonInterpreter', "embedded") as PythonInterpreterType;
 }
 
-function getCustomPythonInterpreterPath(): string | undefined {
-    let path = testRunConfig.get<string | undefined>('customPythonInterpreterPath');
+function getcustomInterpreterPath(): string | undefined {
+    let path = testRunConfig.get<string | undefined>('customInterpreterPath');
     return path && path.trim() ? path : undefined;
 }
 
