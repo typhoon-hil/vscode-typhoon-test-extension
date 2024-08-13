@@ -36,8 +36,13 @@ export class PytestBuilder {
         return this.config.additionalOptions || '';
     }
 
+    private getAllureDir(): string {
+        return "--alluredir report";
+    }
+
     build(): string {
-        let command = `& ${this.getInterpreterPath()} -m pytest ${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} -v`;
+        let command = `& ${this.getInterpreterPath()} -m pytest ` +
+            `${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} ${this.getAllureDir()} -v`;
         return command;
     }
 }
