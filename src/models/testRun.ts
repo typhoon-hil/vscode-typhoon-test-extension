@@ -7,6 +7,7 @@ export enum interpreterType {
 export interface TestRunConfig {
     interpreterType: interpreterType;
     customInterpreterPath?: string;
+    embeddedInterpreterPath?: string;
     realTimeLogs: boolean;
     openReport: boolean;
     cleanOldResults: boolean;
