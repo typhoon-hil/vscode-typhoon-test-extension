@@ -1,7 +1,7 @@
 import { getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/index";
 
-class PytestBuilder {
+export class PytestBuilder {
     private config = getTestRunConfig();
     private platform = getPlatform();
 
