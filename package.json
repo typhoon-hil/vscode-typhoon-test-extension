@@ -12,6 +12,13 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "typhoon-test.runTests",
+        "key": "F7",
+        "when": "true"
+      }
+    ],
     "configuration": {
       "title": "Typhoon Test",
       "properties": {
@@ -166,6 +173,11 @@
       {
         "command": "typhoon-test.updateEmbeddedInterpreterPath",
         "title": "Update Embedded Interpreter Path",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.runTests",
+        "title": "Run Tests",
         "category": "Typhoon Test"
       }
     ],

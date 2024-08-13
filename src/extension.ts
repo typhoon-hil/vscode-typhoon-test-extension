@@ -12,8 +12,9 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
-import { getTestRunConfig } from './utils/config';
+import { getTestRunConfig, refreshConfigs } from './utils/config';
 import { getPlatform } from './utils/platform/index';
+import { PytestBuilder } from './utils/pytestBuilder';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -74,10 +75,25 @@ export function activate(context: vscode.ExtensionContext) {
             updateEmbeddedInterpreterPath();
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTests', () => {
+            const command = new PytestBuilder().build();
+            vscode.window.activeTerminal ? vscode.window.activeTerminal.sendText(command) : 
+            vscode.window.createTerminal().sendText(command);
+        })
+    );
     
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
+        }
+        if (event.affectsConfiguration('typhoon-test.testRun')) {
+            refreshConfigs();
+            checkEmbeddedInterpreterPath();
+        }
+        if (event.affectsConfiguration('typhoon-test')) {
+            refreshConfigs();
         }
     });
 
