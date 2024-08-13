@@ -11,6 +11,8 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
+import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
+import { getTestRunConfig } from './utils/config';
 import { getPlatform } from './utils/platform/index';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -66,6 +68,12 @@ export function activate(context: vscode.ExtensionContext) {
             pickInterpreterPath();
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.updateEmbeddedInterpreterPath', () => {
+            updateEmbeddedInterpreterPath();
+        })
+    );
     
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
@@ -73,7 +81,25 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    getPlatform().getEmbeddedPythonPath();
+    checkEmbeddedInterpreterPath();
+}
+
+function checkEmbeddedInterpreterPath() {
+    const currentPath = getTestRunConfig().embeddedInterpreterPath;
+    const possiblePath = getPlatform().getEmbeddedPythonPath();
+    
+    if (!currentPath) {
+        vscode.commands.executeCommand('typhoon-test.updateEmbeddedInterpreterPath');
+        return;
+    }
+
+    if (currentPath !== possiblePath) {
+        vscode.window.showWarningMessage('We have detected a new embedded interpreter path. Do you want to update it?', 'Yes', 'No').then(value => {
+            if (value === 'Yes') {
+                updateEmbeddedInterpreterPath();
+            }
+        });
+    }
 }
 
 export function deactivate() {
