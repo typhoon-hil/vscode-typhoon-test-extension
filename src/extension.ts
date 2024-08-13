@@ -11,7 +11,7 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
-import { getEmbeddedPythonPath } from './utils/platform';
+import { getPlatform } from './utils/platform/index';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    getEmbeddedPythonPath();
+    getPlatform().getEmbeddedPythonPath();
 }
 
 export function deactivate() {
