@@ -27,7 +27,7 @@ export class PytestBuilder {
 
     private getNames(): string {
         if (this.config.selectTestByName) {
-            return this.config.selectTestByName;
+            return `-k ${this.config.selectTestByName}`;
         }
         return '';
     }
@@ -37,7 +37,7 @@ export class PytestBuilder {
     }
 
     build(): string {
-        let command = `${this.getInterpreterPath()} -m pytest ${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()}`;
+        let command = `& ${this.getInterpreterPath()} -m pytest ${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} -v`;
         return command;
     }
 }

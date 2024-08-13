@@ -1,10 +1,14 @@
 import vscode from 'vscode';
 import { PythonImport } from "../models/pythonEntity";
 import { interpreterType, TestRunConfig } from '../models/testRun';
-import { getPlatform } from './platform';
 
-const config = vscode.workspace.getConfiguration('typhoon-test');
-const testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
+let config = vscode.workspace.getConfiguration('typhoon-test');
+let testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
+
+export function refreshConfigs() {
+    config = vscode.workspace.getConfiguration('typhoon-test');
+    testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
+}
 
 export function loadWorkspaceElements(): PythonImport[] {
     return config.get<PythonImport[]>('apiWizardWorkspace', []);
