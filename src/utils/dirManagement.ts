@@ -1,4 +1,5 @@
 import fs from 'fs';
+import * as path from 'path';
 
 export function doesDirExist(dirPath: string): boolean {
     return fs.existsSync(dirPath);
@@ -15,7 +16,8 @@ export function deleteFilesWithType(dirPath: string, type: string) {
             return;
         }
 
-        files.filter((file) => file.endsWith(type)).forEach(deleteFile);
+        files.filter((file) => file.endsWith(type))
+        .map(file => path.join(dirPath, file)).forEach(deleteFile);
     });
 }
 
