@@ -1,18 +1,24 @@
+import * as vscode from 'vscode';
 import { getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/index";
 
 export class PytestBuilder {
     private config = getTestRunConfig();
     private platform = getPlatform();
+    private terminal: vscode.Terminal;
+
+    constructor(terminal: vscode.Terminal) {
+        this.terminal = terminal;
+    }
 
     private getInterpreterPath(): string {
         switch (this.config.interpreterType) {
             case 'system':
                 return this.platform.getPythonCommand();
             case 'embedded':
-                return `'${this.config.embeddedInterpreterPath!}'`;
+                return `"${this.config.embeddedInterpreterPath!}"`;
             case 'custom':
-                return `'${this.config.customInterpreterPath!}'`;
+                return `"${this.config.customInterpreterPath!}"`;
             default:
                 return '';
         }
@@ -40,9 +46,22 @@ export class PytestBuilder {
         return "--alluredir report";
     }
 
-    build(): string {
-        let command = `& ${this.getInterpreterPath()} -m pytest ` +
+    private buildDefaultCommand(): string {
+        let command = `${this.getInterpreterPath()} -m pytest ` +
             `${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} ${this.getAllureDir()} -v`;
         return command;
+    }
+
+    private buildPowerShellCommand(): string {
+        return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
+    }
+
+    private isPowerShell(): boolean {
+        const shell = vscode.env.shell.toLowerCase();
+        return shell.includes('powershell') || shell.includes('pwsh');
+    }
+
+    build(): string {
+        return this.isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
     }
 }
