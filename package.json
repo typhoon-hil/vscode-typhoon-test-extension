@@ -179,6 +179,11 @@
         "command": "typhoon-test.runTests",
         "title": "Run Tests",
         "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.cleanOldResults",
+        "title": "Clean Old Results",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {

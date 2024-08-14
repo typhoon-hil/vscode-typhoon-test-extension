@@ -15,6 +15,7 @@ import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpre
 import { getTestRunConfig, refreshConfigs } from './utils/config';
 import { getPlatform } from './utils/platform/index';
 import { runTests } from './commands/runTests';
+import { cleanOldResults } from './commands/cleanOldResults';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -79,6 +80,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
             runTests();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.cleanOldResults', () => {
+            cleanOldResults();
         })
     );
     
