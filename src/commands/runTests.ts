@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { PytestBuilder } from '../utils/pytestBuilder';
+import { PytestFactory } from '../utils/pytestBuilder';
 import { getTestRunConfig } from '../utils/config';
 
 export function runTests() {
@@ -9,8 +9,8 @@ export function runTests() {
 
 function sendRunCommand() {
     const terminal = getTerminal();
-    const builder = new PytestBuilder();
-    const command = builder.build();
+    const builder = new PytestFactory();
+    const command = builder.createCommand();
 
     terminal.sendText(command);
 }

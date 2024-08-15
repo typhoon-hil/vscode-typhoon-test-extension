@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/index";
 
-export class PytestBuilder {
+export class PytestFactory {
     private config = getTestRunConfig();
     private platform = getPlatform();
 
@@ -71,7 +71,7 @@ export class PytestBuilder {
         return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
     }
 
-    build(): string {
+    createCommand(): string {
         return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
     }   
 }
