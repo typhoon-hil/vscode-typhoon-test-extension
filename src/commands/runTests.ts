@@ -9,7 +9,7 @@ export function runTests() {
 
 function sendRunCommand() {
     const terminal = getTerminal();
-    const builder = new PytestBuilder(terminal);
+    const builder = new PytestBuilder();
     const command = builder.build();
 
     terminal.sendText(command);

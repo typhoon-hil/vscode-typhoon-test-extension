@@ -5,10 +5,8 @@ import { getPlatform } from "./platform/index";
 export class PytestBuilder {
     private config = getTestRunConfig();
     private platform = getPlatform();
-    private terminal: vscode.Terminal;
 
-    constructor(terminal: vscode.Terminal) {
-        this.terminal = terminal;
+    constructor() {
     }
 
     private getInterpreterPath(): string {
@@ -46,9 +44,21 @@ export class PytestBuilder {
         return "--alluredir report";
     }
 
+    private getCleanAllResults(): string {
+        return this.config.cleanOldResults ? "--clean-alluredir" : '';
+    }
+
     private buildDefaultCommand(): string {
-        let command = `${this.getInterpreterPath()} -m pytest ` +
-            `${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} ${this.getAllureDir()} -v`;
+        let command = concat(
+            this.getInterpreterPath(),
+            "-m pytest",
+            this.getNames(),
+            this.getMarks(),
+            this.getAdditionalOptions(),
+            this.getAllureDir(),
+            this.getCleanAllResults(),
+            "-v"
+        );
         return command;
     }
 
@@ -63,5 +73,11 @@ export class PytestBuilder {
 
     build(): string {
         return this.isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
-    }
+    }   
+}
+
+function concat(...args: string[]): string {
+    return args.filter(Boolean)
+    .map(arg => arg.trim())
+    .join(' ');
 }
