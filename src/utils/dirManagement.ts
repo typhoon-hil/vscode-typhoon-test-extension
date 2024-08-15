@@ -1,8 +1,19 @@
 import fs from 'fs';
 import * as path from 'path';
 
-export function doesDirExist(dirPath: string): boolean {
-    return fs.existsSync(dirPath);
+export function clearDir(dirPath: string) {
+    if (!doesDirExist(dirPath)) {
+        return;
+    }
+
+    fs.readdir(dirPath, (err, files) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+
+        files.map(file => path.join(dirPath, file)).forEach(deleteFile);
+    });
 }
 
 export function deleteFilesWithType(dirPath: string, type: string) {
@@ -27,4 +38,8 @@ function deleteFile(filePath: string) {
             console.error(err);
         }
     });
+}
+
+export function doesDirExist(dirPath: string): boolean {
+    return fs.existsSync(dirPath);
 }
