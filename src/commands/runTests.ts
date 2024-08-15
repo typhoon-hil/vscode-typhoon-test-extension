@@ -12,6 +12,7 @@ function sendRunCommand() {
     const builder = new PytestFactory();
     const command = builder.createCommand();
 
+    terminal.show();
     terminal.sendText(command);
 }
 
