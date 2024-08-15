@@ -71,14 +71,14 @@ export class PytestBuilder {
         return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
     }
 
-    private isPowerShell(): boolean {
-        const shell = vscode.env.shell.toLowerCase();
-        return shell.includes('powershell') || shell.includes('pwsh');
-    }
-
     build(): string {
-        return this.isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
+        return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
     }   
+}
+
+function isPowerShell(): boolean {
+    const shell = vscode.env.shell.toLowerCase();
+    return shell.includes('powershell') || shell.includes('pwsh');
 }
 
 function concat(...args: string[]): string {
