@@ -48,6 +48,10 @@ export class PytestBuilder {
         return this.config.cleanOldResults ? "--clean-alluredir" : '';
     }
 
+    private getRealTimeLogs(): string {
+        return this.config.realTimeLogs ? "-s" : '';
+    }
+
     private buildDefaultCommand(): string {
         let command = concat(
             this.getInterpreterPath(),
@@ -57,6 +61,7 @@ export class PytestBuilder {
             this.getAdditionalOptions(),
             this.getAllureDir(),
             this.getCleanAllResults(),
+            this.getRealTimeLogs(),
             "-v"
         );
         return command;
