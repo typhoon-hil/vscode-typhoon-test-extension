@@ -4,9 +4,12 @@ import { TestTreeProvider } from '../views/TestTreeProvider';
 import { TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
 
+export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
+    const outputChannel = initOutputChannel();
 
-function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
-    const pytestProcess = cp.spawn('pytest', ['--tb=short', '-m', 'square'], { shell: true });
+    const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], { shell: true,
+        cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
+     });
 
     const rl = readline.createInterface({
         input: pytestProcess.stdout,
@@ -15,11 +18,12 @@ function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     });
 
     rl.on('line', (line) => {
-        // Parse the line to determine test status
-        const testNameMatch = line.match(/(test_\w+) || (\w+_test)/); // Modify based on actual pytest output
+        const testNameMatch = line. match(/^(test_.*|.*_test)$/); // Modify based on actual pytest output
         const passMatch = line.match(/PASSED/i);
         const failMatch = line.match(/FAILED/i);
-        const startMatch = passMatch || failMatch;
+        const startMatch = !(passMatch || failMatch);
+
+        writeLineToOutputChannel(line, outputChannel);
 
         if (testNameMatch) {
             const testName = testNameMatch[1];
@@ -32,10 +36,14 @@ function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
             }
         }
     });
+}
 
-    pytestProcess.on('exit', (code) => {
-        if (code !== 0) {
-            vscode.window.showErrorMessage('Tests failed!');
-        }
-    });
+function writeLineToOutputChannel(line: string, outputChannel: vscode.OutputChannel) {
+    outputChannel.appendLine(line);
+}
+
+function initOutputChannel() {
+    const outputChannel = vscode.window.createOutputChannel('Pytest Output');
+    outputChannel.show();
+    return outputChannel;
 }
