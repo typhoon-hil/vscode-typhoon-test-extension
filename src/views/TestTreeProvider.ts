@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { TestItem, TestStatus } from '../models/testMonitoring';
 
 
-class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
+export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<TestItem | undefined | void> = new vscode.EventEmitter<TestItem | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TestItem | undefined | void> = this._onDidChangeTreeData.event;
 
