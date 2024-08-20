@@ -1,5 +1,4 @@
 import * as cp from 'child_process';
-import * as readline from 'readline';
 import { TestTreeProvider } from '../views/TestTreeProvider';
 import { TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
