@@ -29,7 +29,9 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
-    const testNameMatch = line.match(/^(test_.*|.*_test)/); // Modify based on actual pytest output
+    line = line.replace(/\s+/g, ' ').trim();
+
+    const testNameMatch = line.split(' ')[0]?.match(/^(test_.*|.*_test)/); // TODO: Improve regex
     const passMatch = line.match(/PASSED/i);
     const failMatch = line.match(/FAILED/i);
     const skipMatch = line.match(/SKIPPED/i);
