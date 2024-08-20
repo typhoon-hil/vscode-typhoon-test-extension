@@ -32,17 +32,29 @@ function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
     const testNameMatch = line.match(/^(test_.*|.*_test)$/); // Modify based on actual pytest output
     const passMatch = line.match(/PASSED/i);
     const failMatch = line.match(/FAILED/i);
+    const skipMatch = line.match(/SKIPPED/i);
+    const xfailMatch = line.match(/XFAIL/i);
+    const xpassMatch = line.match(/XPASS/i);
 
     if (testNameMatch) {
         const testName = testNameMatch[1];
         if (!testTreeProvider.containsTest(testName)) {
-            testTreeProvider.addTest(testName, TestStatus.Running);
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.Running);
         }
         if (passMatch) {
-            testTreeProvider.updateTestStatus(testName, TestStatus.Passed);
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.Passed);
         }
         if (failMatch) {
-            testTreeProvider.updateTestStatus(testName, TestStatus.Failed);
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.Failed);
+        }
+        if (skipMatch) {
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.Skipped);
+        }
+        if (xfailMatch) {
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.XFailed);
+        }
+        if (xpassMatch) {
+            testTreeProvider.addOrUpdateTest(testName, TestStatus.XPassed);
         }
     }
 }

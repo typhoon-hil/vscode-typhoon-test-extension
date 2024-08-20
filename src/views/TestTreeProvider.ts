@@ -24,23 +24,27 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         }
     }
 
-    addTest(testName: string, status: TestStatus): void {
+    private updateTest(test: TestItem, status: TestStatus): void {
+        test.setStatus(status);
+    }
+
+    private addTest(testName: string, status: TestStatus): void {
         const newTest = new TestItem(testName, vscode.TreeItemCollapsibleState.None, status);
         this.tests.push(newTest);
+    }
+
+    addOrUpdateTest(testName: string, status: TestStatus): void {
+        const test = this.tests.find(t => t.label === testName);
+        if (test) {
+            this.updateTest(test, status);
+        } else {
+            this.addTest(testName, status);
+        }
         this.refresh();
     }
 
     containsTest(testName: string): boolean {
         return this.tests.some(t => t.label === testName);
-    }
-
-    updateTestStatus(testName: string, status: TestStatus): void {
-        const test = this.tests.find(t => t.label === testName);
-        if (test) {
-            test.description = status;
-            test.iconPath = new vscode.ThemeIcon(status === 'passed' ? 'check' : 'error');
-            this.refresh();
-        }
     }
 
     clearTests(): void {
