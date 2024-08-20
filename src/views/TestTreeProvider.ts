@@ -51,4 +51,11 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         this.tests = [];
         this.refresh();
     }
+
+    updateLastTest(status: TestStatus) {
+        if (this.tests) {
+            this.updateTest(this.tests[this.tests.length - 1], status);
+            this.refresh();
+        }
+    }
 }

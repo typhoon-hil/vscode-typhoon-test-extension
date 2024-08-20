@@ -10,52 +10,66 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
 
     const outputChannel = initOutputChannel();
 
-    const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], { shell: true,
+    const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], {
+        shell: true,
         cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
-     });
-
-    const rl = readline.createInterface({
-        input: pytestProcess.stdout,
-        output: pytestProcess.stdin,
-        terminal: false
     });
 
-    rl.on('line', (line) => {
-        outputChannel.appendLine(line);
-        if (!hasTestRunEnded().check(line)) {
-            handleTestLine(line, testTreeProvider);
-        }
+    pytestProcess.stdout.on('data', (data: Buffer) => {
+        const output = data.toString();
+        outputChannel.append(output);
+
+        const lines = output.split('\n');
+        lines.forEach(line => {
+            if (!hasTestRunEnded().check(line)) {
+                handleTestLine(line, testTreeProvider);
+            }
+        });
     });
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
-    const testNameMatch = line.match(/^(test_.*|.*_test)$/); // Modify based on actual pytest output
+    const testNameMatch = line.match(/^(test_.*|.*_test)/); // Modify based on actual pytest output
     const passMatch = line.match(/PASSED/i);
     const failMatch = line.match(/FAILED/i);
     const skipMatch = line.match(/SKIPPED/i);
     const xfailMatch = line.match(/XFAIL/i);
     const xpassMatch = line.match(/XPASS/i);
 
+    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch];
+    const statusString = statusMatches.find(match => match !== null)?.[0];
+
     if (testNameMatch) {
         const testName = testNameMatch[1];
         if (!testTreeProvider.containsTest(testName)) {
             testTreeProvider.addOrUpdateTest(testName, TestStatus.Running);
         }
-        if (passMatch) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.Passed);
+        
+        if (statusString) {
+            const status = statusStringToEnum(statusString);
+            testTreeProvider.addOrUpdateTest(testName, status);
         }
-        if (failMatch) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.Failed);
-        }
-        if (skipMatch) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.Skipped);
-        }
-        if (xfailMatch) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.XFailed);
-        }
-        if (xpassMatch) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.XPassed);
-        }
+    }
+    else if (statusString) {
+        testTreeProvider.updateLastTest(statusStringToEnum(statusString!));
+    }
+}
+
+function statusStringToEnum(status: string): TestStatus {
+    status = status.trim().toLowerCase();
+    switch (status) {
+        case 'passed':
+            return TestStatus.Passed;
+        case 'failed':
+            return TestStatus.Failed;
+        case 'xfail':
+            return TestStatus.XFailed;
+        case 'skipped':
+            return TestStatus.Skipped;
+        case 'xpass':
+            return TestStatus.XPassed;
+        default:
+            return TestStatus.Running;
     }
 }
 
