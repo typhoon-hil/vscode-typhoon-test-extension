@@ -26,6 +26,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private updateTest(test: TestItem, status: TestStatus): void {
         test.setStatus(status);
+        test.description = (status as string).toUpperCase();
     }
 
     private addTest(testName: string, status: TestStatus): void {
