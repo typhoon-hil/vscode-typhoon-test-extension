@@ -5,6 +5,9 @@ import { TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
+    hasTestRunEnded().reset();
+    testTreeProvider.clearTests();
+
     const outputChannel = initOutputChannel();
 
     const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], { shell: true,
@@ -18,32 +21,50 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     });
 
     rl.on('line', (line) => {
-        const testNameMatch = line. match(/^(test_.*|.*_test)$/); // Modify based on actual pytest output
-        const passMatch = line.match(/PASSED/i);
-        const failMatch = line.match(/FAILED/i);
-        const startMatch = !(passMatch || failMatch);
-
-        writeLineToOutputChannel(line, outputChannel);
-
-        if (testNameMatch) {
-            const testName = testNameMatch[1];
-            if (startMatch) {
-                testTreeProvider.addTest(testName, TestStatus.Running);
-            } else if (passMatch) {
-                testTreeProvider.updateTestStatus(testName, TestStatus.Passed);
-            } else if (failMatch) {
-                testTreeProvider.updateTestStatus(testName, TestStatus.Failed);
-            }
+        outputChannel.appendLine(line);
+        if (!hasTestRunEnded().check(line)) {
+            handleTestLine(line, testTreeProvider);
         }
     });
 }
 
-function writeLineToOutputChannel(line: string, outputChannel: vscode.OutputChannel) {
-    outputChannel.appendLine(line);
+function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
+    const testNameMatch = line.match(/^(test_.*|.*_test)$/); // Modify based on actual pytest output
+    const passMatch = line.match(/PASSED/i);
+    const failMatch = line.match(/FAILED/i);
+
+    if (testNameMatch) {
+        const testName = testNameMatch[1];
+        if (!testTreeProvider.containsTest(testName)) {
+            testTreeProvider.addTest(testName, TestStatus.Running);
+        }
+        if (passMatch) {
+            testTreeProvider.updateTestStatus(testName, TestStatus.Passed);
+        }
+        if (failMatch) {
+            testTreeProvider.updateTestStatus(testName, TestStatus.Failed);
+        }
+    }
 }
 
 function initOutputChannel() {
     const outputChannel = vscode.window.createOutputChannel('Pytest Output');
     outputChannel.show();
     return outputChannel;
+}
+
+let hasEnded = false;
+function hasTestRunEnded() {
+    function check(line: string) {
+        function isTestRunEnd(line: string) {
+            return line.includes('===') && !line.includes('test session starts');
+        }
+        return hasEnded || (hasEnded = isTestRunEnd(line));
+    }
+
+    function reset() {
+        hasEnded = false;
+    }
+
+    return { check, reset };
 }

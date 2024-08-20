@@ -13,7 +13,6 @@ export class TestItem extends vscode.TreeItem {
         public readonly status: TestStatus,
     ) {
         super(label, collapsibleState);
-        this.description = status;
         this.setIcon();
     }
 
