@@ -30,6 +30,10 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         this.refresh();
     }
 
+    containsTest(testName: string): boolean {
+        return this.tests.some(t => t.label === testName);
+    }
+
     updateTestStatus(testName: string, status: TestStatus): void {
         const test = this.tests.find(t => t.label === testName);
         if (test) {
@@ -37,5 +41,10 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             test.iconPath = new vscode.ThemeIcon(status === 'passed' ? 'check' : 'error');
             this.refresh();
         }
+    }
+
+    clearTests(): void {
+        this.tests = [];
+        this.refresh();
     }
 }
