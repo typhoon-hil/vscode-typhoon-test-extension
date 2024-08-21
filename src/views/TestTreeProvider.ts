@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TestItem, TestStatus } from '../models/testMonitoring';
+import { extractTestNameDetails, TestItem, TestNameDetails, TestStatus } from '../models/testMonitoring';
 
 
 export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
@@ -7,6 +7,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     readonly onDidChangeTreeData: vscode.Event<TestItem | undefined | void> = this._onDidChangeTreeData.event;
 
     private tests: TestItem[] = [];
+    private lastTest: TestItem | undefined;
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -18,30 +19,47 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     getChildren(element?: TestItem): vscode.ProviderResult<TestItem[]> {
         if (element) {
-            return [];
+            return element.getChildren();
         } else {
             return this.tests;
         }
     }
 
-    private updateTest(test: TestItem, status: TestStatus): void {
+    private updateTest(testNameDetails: TestNameDetails, status: TestStatus): void {
+        const test = this.findTest(testNameDetails)!;
         test.setStatus(status);
         test.description = (status as string).toUpperCase();
+        this.findTestPath(testNameDetails.testPath)!.updateStatus();
     }
 
-    private addTest(testName: string, status: TestStatus): void {
-        const newTest = new TestItem(testName, vscode.TreeItemCollapsibleState.None, status);
-        this.tests.push(newTest);
-    }
-
-    addOrUpdateTest(testName: string, status: TestStatus): void {
-        const test = this.tests.find(t => t.label === testName);
-        if (test) {
-            this.updateTest(test, status);
-        } else {
-            this.addTest(testName, status);
+    private addTest(testName: TestNameDetails, status: TestStatus): void {
+        let testPathItem = this.findTestPath(testName.testPath);
+        if (!testPathItem) {
+            testPathItem = new TestItem(testName.testPath, vscode.TreeItemCollapsibleState.Expanded, TestStatus.Running); 
+            this.tests.push(testPathItem);
         }
+        const newTest = new TestItem(testName.testName, vscode.TreeItemCollapsibleState.None, status);
+        // TODO: Add parametrized tests node
+        testPathItem.addChild(newTest);
+        this.lastTest = newTest;
+    }
+
+    addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
+        const test = this.findTest(testName);
+        test ? this.updateTest(testName, status) : this.addTest(testName, status);
         this.refresh();
+    }
+
+    private findTest(testName: TestNameDetails): TestItem | undefined {
+        const testPathNode = this.findTestPath(testName.testPath);
+        if (!testPathNode) {
+            return undefined;
+        }
+        return testPathNode.getChildren().find(t => t.label === testName.testName);
+    }
+
+    private findTestPath(testPath: string): TestItem | undefined {
+        return this.tests.find(t => t.label === testPath);
     }
 
     containsTest(testName: string): boolean {
@@ -50,13 +68,25 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     clearTests(): void {
         this.tests = [];
+        this.lastTest = undefined;
         this.refresh();
     }
 
     updateLastTest(status: TestStatus) {
         if (this.tests) {
-            this.updateTest(this.tests[this.tests.length - 1], status);
+            const lastTest = this.lastTest;
+            if (!lastTest) { 
+                return;
+            }
+            const lastTestNameDetails = this.getTestNameDetails(lastTest);
+            this.updateTest(lastTestNameDetails, status);
             this.refresh();
         }
+    }
+    
+    private getTestNameDetails(test: TestItem) {
+        const testPath = this.tests.find(t => t.getChildren().includes(test))?.label;
+        // TODO: Add parametrized tests node
+        return { fullTestName: `${testPath}::${test.label}`, testName: test.label, testPath: testPath! };
     }
 }
