@@ -11,7 +11,7 @@ export enum TestStatus {
 
 export class TestItem extends vscode.TreeItem {
     private children: TestItem[] = [];
-    private parent?: TestItem;
+    parent?: TestItem;
 
     constructor(
         public readonly label: string,
@@ -55,7 +55,7 @@ export class TestItem extends vscode.TreeItem {
 
     addChild(child: TestItem) {
         this.children.push(child);
-        child.setParent(this);
+        child.parent = this;
     }
 
     getChildren() {
@@ -83,14 +83,10 @@ export class TestItem extends vscode.TreeItem {
         }
     }
 
-    setParent(parent: TestItem) {
-        this.parent = parent;
-    }
-
     update(status: TestStatus) {
         this.setStatus(status);
         this.description = (status as string).toUpperCase();
-        this.updateStatus();
+        this.parent?.updateStatus();
     }
 }
 
