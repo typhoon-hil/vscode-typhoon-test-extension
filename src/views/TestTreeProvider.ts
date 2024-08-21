@@ -112,9 +112,24 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         }
     }
     
-    private getTestNameDetails(test: TestItem) {
-        const testPath = this.tests.find(t => t.getChildren().includes(test))?.label;
-        // TODO: Add parametrized tests node
-        return { fullTestName: `${testPath}::${test.label}`, testName: test.label, testPath: testPath! };
+    private getTestNameDetails(test: TestItem): TestNameDetails {
+        if (test.parent?.parent) {
+            let testName = test.parent.label;
+            let testPath = test.parent.parent.label;
+            let params = test.label;
+            return {
+                fullTestName: `${testPath}::${testName}[${params}]`,
+                testName,
+                testPath,
+                params
+            };
+        }
+        let testName = test.label;
+        let testPath = test.parent!.label;
+        return {
+            fullTestName: `${testPath}::${testName}`,
+            testName,
+            testPath
+        };
     }
 }
