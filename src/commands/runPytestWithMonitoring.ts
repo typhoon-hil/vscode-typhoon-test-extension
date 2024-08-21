@@ -1,6 +1,6 @@
 import * as cp from 'child_process';
 import { TestTreeProvider } from '../views/TestTreeProvider';
-import { TestStatus } from '../models/testMonitoring';
+import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
@@ -41,18 +41,20 @@ function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
     const statusString = statusMatches.find(match => match !== null)?.[0];
 
     if (testNameMatch) {
-        const testName = testNameMatch[1];
+        const TestNameDetails = extractTestNameDetails(testNameMatch[0]);
+        const testName = TestNameDetails.fullTestName;
+
         if (!testTreeProvider.containsTest(testName)) {
-            testTreeProvider.addOrUpdateTest(testName, TestStatus.Running);
+            testTreeProvider.addOrUpdateTest(TestNameDetails, TestStatus.Running);
         }
         
         if (statusString) {
             const status = statusStringToEnum(statusString);
-            testTreeProvider.addOrUpdateTest(testName, status);
+            testTreeProvider.addOrUpdateTest(TestNameDetails, status);
         }
     }
     else if (statusString) {
-        testTreeProvider.updateLastTest(statusStringToEnum(statusString!));
+        testTreeProvider.updateLastTest(statusStringToEnum(statusString));
     }
 }
 
