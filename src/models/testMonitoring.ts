@@ -10,6 +10,8 @@ export enum TestStatus {
 }
 
 export class TestItem extends vscode.TreeItem {
+    private children: TestItem[] = [];
+
     constructor(
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -49,4 +51,43 @@ export class TestItem extends vscode.TreeItem {
         this.status = status;
         this.setIcon();
     }
+
+    addChild(child: TestItem) {
+        this.children.push(child);
+    }
+
+    getChildren() {
+        return [...this.children];
+    }
+
+    updateStatus() {
+        const statuses = this.children.map(child => child.status);
+        if (statuses.includes(TestStatus.Running)) {
+            this.setStatus(TestStatus.Running);
+        } else if (statuses.includes(TestStatus.Failed)) {
+            this.setStatus(TestStatus.Failed);
+        } else if (statuses.includes(TestStatus.XFailed)) {
+            this.setStatus(TestStatus.XFailed);
+        } else if (statuses.includes(TestStatus.Skipped)) {
+            this.setStatus(TestStatus.Skipped);
+        } else if (statuses.includes(TestStatus.XPassed)) {
+            this.setStatus(TestStatus.XPassed);
+        } else {
+            this.setStatus(TestStatus.Passed);
+        }
+    }
+}
+
+export interface TestNameDetails {
+    fullTestName: string;
+    testName: string;
+    testPath: string;
+    params?: string;
+}
+
+export function extractTestNameDetails(fullTestName: string): TestNameDetails {
+    const testPath = fullTestName.split('::')[0];
+    const testName = fullTestName.split('::')[1].split('[')[0];
+    const params = fullTestName.split('[')[1]?.split(']')[0];
+    return { fullTestName, testName, testPath, params };
 }
