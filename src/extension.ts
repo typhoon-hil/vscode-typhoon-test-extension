@@ -14,16 +14,19 @@ import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
 import { getTestRunConfig, refreshConfigs } from './utils/config';
 import { getPlatform } from './utils/platform/index';
-import { runTests } from './commands/runTests';
 import { cleanOldResults } from './commands/cleanOldResults';
+import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
+import { TestTreeProvider } from './views/TestTreeProvider';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
+    let testTreeProvider = new TestTreeProvider();
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
     vscode.window.registerTreeDataProvider('typhoon-test.pythonEntityView', getPythonEntityTreeProvider());
+    vscode.window.registerTreeDataProvider('typhoon-test.pytestMonitorView', testTreeProvider);
 
     context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
@@ -79,7 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
-            runTests();
+            runPytestWithMonitoring(testTreeProvider);
         })
     );
 

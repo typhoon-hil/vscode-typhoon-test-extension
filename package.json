@@ -192,6 +192,11 @@
           "id": "typhoon-test",
           "title": "Typhoon Test API Wizard",
           "icon": "$(rocket)"
+        },
+        {
+          "id": "pytestMonitor",
+          "title": "Pytest Monitor",
+          "icon": "$(beaker)"
         }
       ]
     },
@@ -210,6 +215,12 @@
           "id": "typhoon-test.argumentsView",
           "name": "Function Arguments",
           "type": "webview"
+        }
+      ],
+      "pytestMonitor": [
+        {
+          "id": "typhoon-test.pytestMonitorView",
+          "name": "Pytest Monitor"
         }
       ]
     },

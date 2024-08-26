@@ -2,13 +2,11 @@ import * as vscode from 'vscode';
 import { getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/index";
 
-export class PytestBuilder {
+export class PytestFactory {
     private config = getTestRunConfig();
     private platform = getPlatform();
-    private terminal: vscode.Terminal;
 
-    constructor(terminal: vscode.Terminal) {
-        this.terminal = terminal;
+    constructor() {
     }
 
     private getInterpreterPath(): string {
@@ -46,9 +44,26 @@ export class PytestBuilder {
         return "--alluredir report";
     }
 
+    private getCleanAllResults(): string {
+        return this.config.cleanOldResults ? "--clean-alluredir" : '';
+    }
+
+    private getRealTimeLogs(): string {
+        return this.config.realTimeLogs ? "-s" : '';
+    }
+
     private buildDefaultCommand(): string {
-        let command = `${this.getInterpreterPath()} -m pytest ` +
-            `${this.getNames()} ${this.getMarks()} ${this.getAdditionalOptions()} ${this.getAllureDir()} -v`;
+        let command = concat(
+            this.getInterpreterPath(),
+            "-m pytest",
+            this.getNames(),
+            this.getMarks(),
+            this.getAdditionalOptions(),
+            this.getAllureDir(),
+            this.getCleanAllResults(),
+            this.getRealTimeLogs(),
+            "-v"
+        );
         return command;
     }
 
@@ -56,12 +71,18 @@ export class PytestBuilder {
         return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
     }
 
-    private isPowerShell(): boolean {
-        const shell = vscode.env.shell.toLowerCase();
-        return shell.includes('powershell') || shell.includes('pwsh');
-    }
+    createCommand(): string {
+        return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
+    }   
+}
 
-    build(): string {
-        return this.isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
-    }
+function isPowerShell(): boolean {
+    const shell = vscode.env.shell.toLowerCase();
+    return shell.includes('powershell') || shell.includes('pwsh');
+}
+
+function concat(...args: string[]): string {
+    return args.filter(Boolean)
+    .map(arg => arg.trim())
+    .join(' ');
 }
