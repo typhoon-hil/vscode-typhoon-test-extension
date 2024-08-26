@@ -22,26 +22,26 @@ export class PytestFactory {
         }
     }
 
-    private getMarks(): string {
+    private getMarks(): string[] {
         if (this.config.selectTestByMark) {
-            return `-m ${this.config.selectTestByMark}`;
+            return ["-m", `${this.config.selectTestByMark}`];
         }
-        return '';
+        return [];
     }
 
-    private getNames(): string {
+    private getNames(): string[] {
         if (this.config.selectTestByName) {
-            return `-k ${this.config.selectTestByName}`;
+            return ["-k", `${this.config.selectTestByName}`];
         }
-        return '';
+        return [];
     }
 
     private getAdditionalOptions(): string {
         return this.config.additionalOptions || '';
     }
 
-    private getAllureDir(): string {
-        return "--alluredir report";
+    private getAllureDir(): string[] {
+        return ["--alluredir", "report"];
     }
 
     private getCleanAllResults(): string {
@@ -55,16 +55,17 @@ export class PytestFactory {
     private buildDefaultCommand(): string {
         let command = concat(
             this.getInterpreterPath(),
-            "-m pytest",
-            this.getNames(),
-            this.getMarks(),
-            this.getAdditionalOptions(),
-            this.getAllureDir(),
+            "-m",
+            "pytest",
+            ...this.getNames(),
+            ...this.getMarks(),
+            ...this.getAllureDir(),
             this.getCleanAllResults(),
+            this.getAdditionalOptions(),
             this.getRealTimeLogs(),
             "-v"
         );
-        return command;
+        return "";
     }
 
     private buildPowerShellCommand(): string {
@@ -76,17 +77,17 @@ export class PytestFactory {
     }
 
     getFlags(): string[] {
-        return [
-            this.getInterpreterPath(),
-            "-m pytest",
-            this.getNames(),
-            this.getMarks(),
+        return concat(
+            "-m",
+            "pytest",
+            ...this.getNames(),
+            ...this.getMarks(),
             this.getAdditionalOptions(),
-            this.getAllureDir(),
+            ...this.getAllureDir(),
             this.getCleanAllResults(),
             this.getRealTimeLogs(),
             "-v"
-        ];
+        );
     }
 
     getPythonPath(): string {
@@ -100,8 +101,6 @@ function isPowerShell(): boolean {
     return shell.includes('powershell') || shell.includes('pwsh');
 }
 
-function concat(...args: string[]): string {
-    return args.filter(Boolean)
-    .map(arg => arg.trim())
-    .join(' ');
+function concat(...args: string[]): string[] {
+    return args.filter(Boolean);
 }
