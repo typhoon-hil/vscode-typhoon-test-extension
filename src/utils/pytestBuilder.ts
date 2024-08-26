@@ -11,14 +11,13 @@ export class PytestFactory {
 
     private getInterpreterPath(): string {
         switch (this.config.interpreterType) {
-            case 'system':
-                return this.platform.getPythonCommand();
             case 'embedded':
                 return `"${this.config.embeddedInterpreterPath!}"`;
             case 'custom':
                 return `"${this.config.customInterpreterPath!}"`;
+            case 'system':
             default:
-                return '';
+                return this.platform.getPythonCommand();
         }
     }
 
@@ -50,30 +49,6 @@ export class PytestFactory {
 
     private getRealTimeLogs(): string {
         return this.config.realTimeLogs ? "-s" : '';
-    }
-
-    private buildDefaultCommand(): string {
-        let command = concat(
-            this.getInterpreterPath(),
-            "-m",
-            "pytest",
-            ...this.getNames(),
-            ...this.getMarks(),
-            ...this.getAllureDir(),
-            this.getCleanAllResults(),
-            this.getAdditionalOptions(),
-            this.getRealTimeLogs(),
-            "-v"
-        );
-        return "";
-    }
-
-    private buildPowerShellCommand(): string {
-        return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
-    }
-
-    createCommand(): string {
-        return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
     }
 
     getFlags(): string[] {
