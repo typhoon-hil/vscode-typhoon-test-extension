@@ -4,7 +4,6 @@ import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
 import { PytestFactory } from '../utils/pytestBuilder';
 import { getTestRunConfig } from '../utils/config';
-import { getPlatform } from '../utils/platform/index';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     if (!vscode.workspace.workspaceFolders) {
