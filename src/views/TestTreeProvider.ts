@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { extractTestNameDetails, TestItem, TestNameDetails, TestStatus } from '../models/testMonitoring';
+import { TestItem, TestNameDetails, TestStatus } from '../models/testMonitoring';
 
 
 export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
@@ -27,7 +27,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private updateTest(testNameDetails: TestNameDetails, status: TestStatus): void {
         const test = this.findTest(testNameDetails)!;
-        test.update(status)
+        test.update(status);
     }
 
     private addTest(testNameDetails: TestNameDetails, status: TestStatus): void {
@@ -80,7 +80,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
         const test = testPathNode.getChildren().find(t => t.label === testName.testName);
         if (!test || !testName.params) {
-            return test
+            return test;
         }
         
         return test.getChildren().find(t => t.label === testName.params);
