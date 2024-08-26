@@ -1,71 +1,59 @@
-# typhoon-test README
+# Typhoon Test
 
-This is the README for your extension "typhoon-test". After writing up a brief description, we recommend including the following sections.
+Typhoon Test is a Visual Studio Code extension for Python projects, offering seamless integration, real-time test results, and easy navigation. Boost your productivity and ensure code quality with unit, integration, and end-to-end tests.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* **Seamless Integration with Visual Studio Code**
+The Typhoon Test extension integrates seamlessly with Visual Studio Code, providing a user-friendly interface to manage and run your tests directly from the editor.
 
-For example if there is an image subfolder under your extension project workspace:
+* **Comprehensive Testing Framework**
+Supports unit tests, integration tests, and end-to-end tests, ensuring that you can cover all aspects of your Python projects.
 
-\!\[feature X\]\(images/feature-x.png\)
+* **Real-Time Test Results**
+View test results in real-time within the editor. The extension highlights passed, failed, and skipped tests, making it easy to identify issues.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+* **Easy Navigation**
+Quickly navigate to test definitions and related code with just a few clicks. This feature boosts productivity by reducing the time spent searching for test files.
+
+* **Customizable Test Configurations**
+Configure your test runs with various options such as custom interpreter paths, real-time logs, and additional options. Refer to the `typhoon-test.testRun` settings for more details.
+
+* **Automated Test Execution**
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code v1.91.1 or higher
+- Python 3.6 or higher (for running Python scripts)
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
+## Extension Settings
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+* `typhoon-test.apiWizardWorkspace`: Configure the workspace for the API Wizard.
+* `typhoon-test.testRun`: Configure the test run settings.
+
+These settings can be configured in `Preferences: Open User Settings`. For example:
+
+```json
+{
+    "typhoon-test.apiWizardWorkspace": "path/to/workspace",
+    "typhoon-test.testRun": {
+        "interpreterPath": "path/to/python"
+    },
+}
+```
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* The API Wizard currently does not support importing custom classes and modules. This feature is planned for a future release.
 
 ## Release Notes
 
 Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.0.1
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Demo release of Typhoon Test
