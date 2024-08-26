@@ -94,6 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
     
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
+            refreshConfigs();
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
         }
         if (event.affectsConfiguration('typhoon-test.testRun')) {
