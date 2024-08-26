@@ -54,8 +54,9 @@ function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
     const skipMatch = line.match(/SKIPPED/i);
     const xfailMatch = line.match(/XFAIL/i);
     const xpassMatch = line.match(/XPASS/i);
+    const errorMatch = line.match(/ERROR/i);
 
-    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch];
+    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch, errorMatch];
     const statusString = statusMatches.find(match => match !== null)?.[0];
 
     if (testNameMatch) {
@@ -89,6 +90,8 @@ function statusStringToEnum(status: string): TestStatus {
             return TestStatus.Skipped;
         case 'xpass':
             return TestStatus.XPassed;
+        case 'error':
+            return TestStatus.Error;
         default:
             return TestStatus.Running;
     }

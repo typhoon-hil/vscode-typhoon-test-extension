@@ -66,8 +66,7 @@ export class PytestFactory {
     }
 
     getPythonPath(): string {
-        const pythonPath = this.getInterpreterPath();
-        return isPowerShell() ? pythonPath.replace(/"/g, "'") : pythonPath;
+        return this.getInterpreterPath();
     }
 }
 
