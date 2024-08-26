@@ -1,14 +1,22 @@
 {
-  "name": "typhoon-test",
-  "displayName": "Typhoon Test",
-  "description": "",
+  "name": "tt-demo",
+  "displayName": "TT Demo",
+  "description": "Typhoon Test Demo",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.91.0"
   },
+  "publisher": "balsabulatovic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BulatovicBalsa/vscode-typhoon-test"
+  },
   "categories": [
+    "Testing",
+    "Snippets",
     "Other"
   ],
+  "license": "MIT",
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
