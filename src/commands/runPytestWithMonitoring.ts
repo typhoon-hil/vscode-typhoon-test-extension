@@ -3,15 +3,24 @@ import { TestTreeProvider } from '../views/TestTreeProvider';
 import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
 import { PytestFactory } from '../utils/pytestBuilder';
+import { getTestRunConfig } from '../utils/config';
+import { getPlatform } from '../utils/platform/index';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
-    hasTestRunEnded().reset();
-    testTreeProvider.clearTests();
-    const pythonPath = new PytestFactory()
+    if (!vscode.workspace.workspaceFolders) {
+        vscode.window.showErrorMessage('No workspace is open');
+        return;
+    }
 
-    const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], {
+    resetTestRun(testTreeProvider);
+
+    const factory = new PytestFactory();
+    const path = factory.getPythonPath();
+    const flags = factory.getFlags();
+
+    const pytestProcess = cp.spawn(path, flags, {
         shell: true,
-        cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
+        cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
     });
     
     const outputChannel = initOutputChannel();
@@ -26,6 +35,15 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
             }
         });
     });
+
+    pytestProcess.stdout.on('end', () => {
+        runAllureReport();
+    });
+}
+
+function resetTestRun(testTreeProvider: TestTreeProvider) {
+    hasTestRunEnded().reset();
+    testTreeProvider.clearTests();
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
@@ -97,4 +115,12 @@ function hasTestRunEnded() {
     }
 
     return { check, reset };
+}
+
+function runAllureReport() {
+    if (getTestRunConfig().openReport) {
+        const terminal = vscode.window.createTerminal('Allure Report');
+        terminal.show();
+        terminal.sendText('allure serve report');
+    }
 }
