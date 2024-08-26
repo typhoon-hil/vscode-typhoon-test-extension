@@ -10,6 +10,12 @@ import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
 import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
+import {pickInterpreterPath} from "./commands/pickInterpreterPath";
+import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
+import { getTestRunConfig, refreshConfigs } from './utils/config';
+import { getPlatform } from './utils/platform/index';
+import { runTests } from './commands/runTests';
+import { cleanOldResults } from './commands/cleanOldResults';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -53,11 +59,68 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.openTestRunConfiguration', () => {
+            vscode.commands.executeCommand('workbench.action.openSettings', 'testRun');
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.pickInterpreterPath', () => {
+            pickInterpreterPath();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.updateEmbeddedInterpreterPath', () => {
+            updateEmbeddedInterpreterPath();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTests', () => {
+            runTests();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.cleanOldResults', () => {
+            cleanOldResults();
+        })
+    );
+    
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
             getPythonEntityTreeProvider().loadEntitiesFromWorkspace().then();
         }
+        if (event.affectsConfiguration('typhoon-test.testRun')) {
+            refreshConfigs();
+            checkEmbeddedInterpreterPath();
+        }
+        if (event.affectsConfiguration('typhoon-test')) {
+            refreshConfigs();
+        }
     });
+
+    checkEmbeddedInterpreterPath();
+}
+
+function checkEmbeddedInterpreterPath() {
+    const currentPath = getTestRunConfig().embeddedInterpreterPath;
+    const possiblePath = getPlatform().getEmbeddedPythonPath();
+    
+    if (!currentPath) {
+        vscode.commands.executeCommand('typhoon-test.updateEmbeddedInterpreterPath');
+        return;
+    }
+
+    if (currentPath !== possiblePath) {
+        vscode.window.showWarningMessage('We have detected a new embedded interpreter path. Do you want to update it?', 'Yes', 'No').then(value => {
+            if (value === 'Yes') {
+                updateEmbeddedInterpreterPath();
+            }
+        });
+    }
 }
 
 export function deactivate() {
