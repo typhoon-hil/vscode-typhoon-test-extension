@@ -38,6 +38,11 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     pytestProcess.stdout.on('end', () => {
         runAllureReport();
     });
+
+    pytestProcess.stderr.on('data', (data: Buffer) => {
+        const output = data.toString();
+        outputChannel.append(output);
+    });
 }
 
 function resetTestRun(testTreeProvider: TestTreeProvider) {

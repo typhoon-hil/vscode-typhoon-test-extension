@@ -11,11 +11,12 @@ export class PytestFactory {
 
     private getInterpreterPath(): string {
         switch (this.config.interpreterType) {
+            case 'system':
+                return this.platform.getPythonCommand();
             case 'embedded':
                 return `"${this.config.embeddedInterpreterPath!}"`;
             case 'custom':
                 return `"${this.config.customInterpreterPath!}"`;
-            case 'system':
             default:
                 return this.platform.getPythonCommand();
         }
@@ -48,7 +49,7 @@ export class PytestFactory {
     }
 
     private getRealTimeLogs(): string {
-        return this.config.realTimeLogs ? "-s" : '';
+        return this.config.realTimeLogs ? "--log-cli-level=INFO" : '';
     }
 
     getFlags(): string[] {
