@@ -73,7 +73,26 @@ export class PytestFactory {
 
     createCommand(): string {
         return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
-    }   
+    }
+
+    getFlags(): string[] {
+        return [
+            this.getInterpreterPath(),
+            "-m pytest",
+            this.getNames(),
+            this.getMarks(),
+            this.getAdditionalOptions(),
+            this.getAllureDir(),
+            this.getCleanAllResults(),
+            this.getRealTimeLogs(),
+            "-v"
+        ];
+    }
+
+    getPythonPath(): string {
+        const pythonPath = this.getInterpreterPath();
+        return isPowerShell() ? pythonPath.replace(/"/g, "'") : pythonPath;
+    }
 }
 
 function isPowerShell(): boolean {

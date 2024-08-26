@@ -2,18 +2,19 @@ import * as cp from 'child_process';
 import { TestTreeProvider } from '../views/TestTreeProvider';
 import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
+import { PytestFactory } from '../utils/pytestBuilder';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     hasTestRunEnded().reset();
     testTreeProvider.clearTests();
-
-    const outputChannel = initOutputChannel();
+    const pythonPath = new PytestFactory()
 
     const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], {
         shell: true,
         cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
     });
-
+    
+    const outputChannel = initOutputChannel();
     pytestProcess.stdout.on('data', (data: Buffer) => {
         const output = data.toString();
         outputChannel.append(output);
