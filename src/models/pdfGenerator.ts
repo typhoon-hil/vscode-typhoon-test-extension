@@ -36,7 +36,7 @@ export class PdfComposer {
     }
 
     private addMotto(): PdfComposer {
-        this.command += `--pdf-motto=${this.pdfConfig.organizationalMotto?.join('')} `;
+        this.command += `--pdf-slogan=${this.pdfConfig.organizationalMotto?.join('')} `;
         return this;
     }
 
