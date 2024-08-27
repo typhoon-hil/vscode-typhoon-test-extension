@@ -239,6 +239,11 @@
         "command": "typhoon-test.cleanOldResults",
         "title": "Clean Old Results",
         "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.pickOrganizationalLogoFilepath",
+        "title": "Select File Path",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
@@ -329,6 +334,10 @@
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
           "when": "view.typhoon-test.pythonEntityView.visible"
+        },
+        {
+          "command": "typhoon-test.pickOrganizationalLogoFilepath",
+          "when": "false"
         }
       ]
     }
