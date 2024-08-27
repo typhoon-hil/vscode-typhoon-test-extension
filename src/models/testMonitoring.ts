@@ -7,6 +7,7 @@ export enum TestStatus {
     XFailed = 'xfailed',
     Skipped = 'skipped',
     XPassed = 'xpassed',
+    Error = 'error',
 }
 
 export class TestItem extends vscode.TreeItem {
@@ -42,8 +43,8 @@ export class TestItem extends vscode.TreeItem {
             case TestStatus.XPassed:
                 this.iconPath = new vscode.ThemeIcon('check');
                 break;
-            default:
-                this.iconPath = new vscode.ThemeIcon('question');
+            case TestStatus.Error:
+                this.iconPath = new vscode.ThemeIcon('error');
                 break;
         }
     }
@@ -66,7 +67,11 @@ export class TestItem extends vscode.TreeItem {
         const statuses = this.children.map(child => child.status);
         if (statuses.includes(TestStatus.Running)) {
             this.setStatus(TestStatus.Running);
-        } else if (statuses.includes(TestStatus.Failed)) {
+        }
+        else if (statuses.includes(TestStatus.Error)) {
+            this.setStatus(TestStatus.Error);
+        }
+        else if (statuses.includes(TestStatus.Failed)) {
             this.setStatus(TestStatus.Failed);
         } else if (statuses.includes(TestStatus.XFailed)) {
             this.setStatus(TestStatus.XFailed);

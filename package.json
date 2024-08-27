@@ -90,7 +90,7 @@
           "description": "The path to the embedded Python interpreter",
           "scope": "application"
         },
-        "typhoon-test.testRun.real-timeLogs": {
+        "typhoon-test.testRun.realTimeLogs": {
           "type": "boolean",
           "default": true,
           "description": "Enable real-time logging of steps in console",

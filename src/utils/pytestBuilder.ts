@@ -18,30 +18,30 @@ export class PytestFactory {
             case 'custom':
                 return `"${this.config.customInterpreterPath!}"`;
             default:
-                return '';
+                return this.platform.getPythonCommand();
         }
     }
 
-    private getMarks(): string {
+    private getMarks(): string[] {
         if (this.config.selectTestByMark) {
-            return `-m ${this.config.selectTestByMark}`;
+            return ["-m", `${this.config.selectTestByMark}`];
         }
-        return '';
+        return [];
     }
 
-    private getNames(): string {
+    private getNames(): string[] {
         if (this.config.selectTestByName) {
-            return `-k ${this.config.selectTestByName}`;
+            return ["-k", `${this.config.selectTestByName}`];
         }
-        return '';
+        return [];
     }
 
     private getAdditionalOptions(): string {
         return this.config.additionalOptions || '';
     }
 
-    private getAllureDir(): string {
-        return "--alluredir report";
+    private getAllureDir(): string[] {
+        return ["--alluredir", "report"];
     }
 
     private getCleanAllResults(): string {
@@ -49,31 +49,26 @@ export class PytestFactory {
     }
 
     private getRealTimeLogs(): string {
-        return this.config.realTimeLogs ? "-s" : '';
+        return this.config.realTimeLogs ? "--log-cli-level=INFO" : '';
     }
 
-    private buildDefaultCommand(): string {
-        let command = concat(
-            this.getInterpreterPath(),
-            "-m pytest",
-            this.getNames(),
-            this.getMarks(),
+    getFlags(): string[] {
+        return concat(
+            "-m",
+            "pytest",
+            ...this.getNames(),
+            ...this.getMarks(),
             this.getAdditionalOptions(),
-            this.getAllureDir(),
+            ...this.getAllureDir(),
             this.getCleanAllResults(),
             this.getRealTimeLogs(),
             "-v"
         );
-        return command;
     }
 
-    private buildPowerShellCommand(): string {
-        return `& ${this.buildDefaultCommand()}`.replace(/"/g, "'");
+    getPythonPath(): string {
+        return this.getInterpreterPath();
     }
-
-    createCommand(): string {
-        return isPowerShell() ? this.buildPowerShellCommand() : this.buildDefaultCommand();
-    }   
 }
 
 function isPowerShell(): boolean {
@@ -81,8 +76,6 @@ function isPowerShell(): boolean {
     return shell.includes('powershell') || shell.includes('pwsh');
 }
 
-function concat(...args: string[]): string {
-    return args.filter(Boolean)
-    .map(arg => arg.trim())
-    .join(' ');
+function concat(...args: string[]): string[] {
+    return args.filter(Boolean);
 }

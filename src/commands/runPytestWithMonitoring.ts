@@ -2,18 +2,27 @@ import * as cp from 'child_process';
 import { TestTreeProvider } from '../views/TestTreeProvider';
 import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
+import { PytestFactory } from '../utils/pytestBuilder';
+import { getTestRunConfig } from '../utils/config';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
-    hasTestRunEnded().reset();
-    testTreeProvider.clearTests();
+    if (!vscode.workspace.workspaceFolders) {
+        vscode.window.showErrorMessage('No workspace is open');
+        return;
+    }
 
-    const outputChannel = initOutputChannel();
+    resetTestRun(testTreeProvider);
 
-    const pytestProcess = cp.spawn('python', ['-m', 'pytest', '-v'], {
+    const factory = new PytestFactory();
+    const path = factory.getPythonPath();
+    const flags = factory.getFlags();
+
+    const pytestProcess = cp.spawn(path, flags, {
         shell: true,
-        cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
+        cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
     });
-
+    
+    const outputChannel = initOutputChannel();
     pytestProcess.stdout.on('data', (data: Buffer) => {
         const output = data.toString();
         outputChannel.append(output);
@@ -25,6 +34,20 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
             }
         });
     });
+
+    pytestProcess.stdout.on('end', () => {
+        runAllureReport();
+    });
+
+    pytestProcess.stderr.on('data', (data: Buffer) => {
+        const output = data.toString();
+        outputChannel.append(output);
+    });
+}
+
+function resetTestRun(testTreeProvider: TestTreeProvider) {
+    hasTestRunEnded().reset();
+    testTreeProvider.clearTests();
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
@@ -36,8 +59,9 @@ function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
     const skipMatch = line.match(/SKIPPED/i);
     const xfailMatch = line.match(/XFAIL/i);
     const xpassMatch = line.match(/XPASS/i);
+    const errorMatch = line.match(/ERROR/i);
 
-    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch];
+    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch, errorMatch];
     const statusString = statusMatches.find(match => match !== null)?.[0];
 
     if (testNameMatch) {
@@ -71,6 +95,8 @@ function statusStringToEnum(status: string): TestStatus {
             return TestStatus.Skipped;
         case 'xpass':
             return TestStatus.XPassed;
+        case 'error':
+            return TestStatus.Error;
         default:
             return TestStatus.Running;
     }
@@ -96,4 +122,12 @@ function hasTestRunEnded() {
     }
 
     return { check, reset };
+}
+
+function runAllureReport() {
+    if (getTestRunConfig().openReport) {
+        const terminal = vscode.window.createTerminal('Allure Report');
+        terminal.show();
+        terminal.sendText('allure serve report');
+    }
 }
