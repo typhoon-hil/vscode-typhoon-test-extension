@@ -1,6 +1,6 @@
-import * as vscode from 'vscode';
 import { getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/index";
+import { PdfComposer } from '../models/pdfGenerator';
 
 export class PytestFactory {
     private config = getTestRunConfig();
@@ -52,6 +52,13 @@ export class PytestFactory {
         return this.config.realTimeLogs ? "--log-cli-level=INFO" : '';
     }
 
+    private getPdfConfig(): string {
+        if (!this.config.pdfReport) {
+            return '';
+        }
+        return "--generate-pdf " + new PdfComposer().getCommand();
+    }
+
     getFlags(): string[] {
         return concat(
             "-m",
@@ -62,6 +69,7 @@ export class PytestFactory {
             ...this.getAllureDir(),
             this.getCleanAllResults(),
             this.getRealTimeLogs(),
+            this.getPdfConfig(),
             "-v"
         );
     }
@@ -69,11 +77,6 @@ export class PytestFactory {
     getPythonPath(): string {
         return this.getInterpreterPath();
     }
-}
-
-function isPowerShell(): boolean {
-    const shell = vscode.env.shell.toLowerCase();
-    return shell.includes('powershell') || shell.includes('pwsh');
 }
 
 function concat(...args: string[]): string[] {

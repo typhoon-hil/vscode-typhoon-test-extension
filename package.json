@@ -131,6 +131,53 @@
           "default": "",
           "description": "Pass additional options to pytest",
           "scope": "application"
+        },
+        "typhoon-test.pdfConfiguration.pdfCoverageTitle": {
+          "type": "string",
+          "default": "Typhoon HIL Test Coverage",
+          "description": "The title of the coverage section in the PDF report"
+        },
+        "typhoon-test.pdfConfiguration.organizationalMotto": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**Test**",
+            "**_Design_**",
+            "_Deploy_"
+          ]
+        },
+        "typhoon-test.pdfConfiguration.typhoonHilLogo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Set Typhoon HIL logo in the PDF report"
+        },
+        "typhoon-test.pdfConfiguration.organizationalLogoFilepath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The path to the organizational logo to include in the PDF report\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickOrganizationalLogoFilepath?true)"
+        },
+        "typhoon-test.pdfConfiguration.headerColor": {
+          "type": "string",
+          "default": "#333333",
+          "format": "color-hex",
+          "description": "The color of the header text in the PDF report"
+        },
+        "typhoon-test.pdfConfiguration.trace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include trace in the report."
+        },
+        "typhoon-test.pdfConfiguration.steps": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include steps in the report."
+        },
+        "typhoon-test.pdfConfiguration.plots": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include plots in the report."
         }
       }
     },
@@ -191,6 +238,11 @@
       {
         "command": "typhoon-test.cleanOldResults",
         "title": "Clean Old Results",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.pickOrganizationalLogoFilepath",
+        "title": "Select File Path",
         "category": "Typhoon Test"
       }
     ],
@@ -282,6 +334,10 @@
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
           "when": "view.typhoon-test.pythonEntityView.visible"
+        },
+        {
+          "command": "typhoon-test.pickOrganizationalLogoFilepath",
+          "when": "false"
         }
       ]
     }

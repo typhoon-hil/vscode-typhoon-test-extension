@@ -17,6 +17,8 @@ import { getPlatform } from './utils/platform/index';
 import { cleanOldResults } from './commands/cleanOldResults';
 import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
 import { TestTreeProvider } from './views/TestTreeProvider';
+import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
+import { refreshPdfConfig } from './utils/pdfConfig';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -91,6 +93,13 @@ export function activate(context: vscode.ExtensionContext) {
             cleanOldResults();
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
+            vscode.window.showInformationMessage('Global? ' + isGlobal);
+            pickOrganizationalLogoFilepath();
+        })
+    );
     
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
@@ -103,6 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
+        }
+        if (event.affectsConfiguration('typhoon-test.pdfConfiguration')) {
+            refreshPdfConfig();
         }
     });
 

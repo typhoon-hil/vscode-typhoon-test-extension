@@ -2,7 +2,7 @@ import * as cp from 'child_process';
 import { TestTreeProvider } from '../views/TestTreeProvider';
 import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
-import { PytestFactory } from '../utils/pytestBuilder';
+import { PytestFactory } from '../utils/pytestFactory';
 import { getTestRunConfig } from '../utils/config';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
