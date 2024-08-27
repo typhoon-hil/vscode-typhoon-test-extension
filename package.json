@@ -156,7 +156,7 @@
         "typhoon-test.pdfConfiguration.organizationalLogoFilepath": {
           "type": "string",
           "default": "",
-          "markdownDescription": "The path to the organizational logo to include in the PDF report\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickOrganizationalLogoFilepath)"
+          "markdownDescription": "The path to the organizational logo to include in the PDF report\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickOrganizationalLogoFilepath?true)"
         },
         "typhoon-test.pdfConfiguration.headerColor": {
           "type": "string",
