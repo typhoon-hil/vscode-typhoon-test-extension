@@ -65,6 +65,6 @@ export class PdfComposer {
     }
 
     getCommand(): string {
-        return this.command;
+        return this.command.trim();
     }
 }
