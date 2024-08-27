@@ -71,11 +71,6 @@ export class PytestFactory {
     }
 }
 
-function isPowerShell(): boolean {
-    const shell = vscode.env.shell.toLowerCase();
-    return shell.includes('powershell') || shell.includes('pwsh');
-}
-
 function concat(...args: string[]): string[] {
     return args.filter(Boolean);
 }
