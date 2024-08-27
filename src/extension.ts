@@ -18,6 +18,7 @@ import { cleanOldResults } from './commands/cleanOldResults';
 import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
+import { refreshPdfConfig } from './utils/pdfConfig';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -111,6 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
+        }
+        if (event.affectsConfiguration('typhoon-test.pdfConfiguration')) {
+            refreshPdfConfig();
         }
     });
 
