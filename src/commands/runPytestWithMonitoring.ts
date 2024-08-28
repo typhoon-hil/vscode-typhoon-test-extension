@@ -1,13 +1,13 @@
 import * as cp from 'child_process';
-import { TestTreeProvider } from '../views/TestTreeProvider';
-import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
+import {TestTreeProvider} from '../views/TestTreeProvider';
+import {extractTestNameDetails, TestStatus} from '../models/testMonitoring';
 import * as vscode from 'vscode';
-import { PytestFactory } from '../utils/pytestFactory';
-import { getTestRunConfig } from '../utils/config';
+import {PytestFactory} from '../utils/pytestFactory';
+import {getTestRunConfig} from '../utils/config';
 
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     if (!vscode.workspace.workspaceFolders) {
-        vscode.window.showErrorMessage('No workspace is open');
+        vscode.window.showErrorMessage('No workspace is open').then();
         return;
     }
 

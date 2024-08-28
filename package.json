@@ -225,11 +225,6 @@
         "category": "Typhoon Test"
       },
       {
-        "command": "typhoon-test.cleanOldResults",
-        "title": "Clean Old Results",
-        "category": "Typhoon Test"
-      },
-      {
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"

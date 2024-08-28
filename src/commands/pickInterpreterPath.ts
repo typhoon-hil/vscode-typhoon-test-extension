@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { isWindows } from '../utils/platform/selector';
-import { updateCustomInterpreterPath } from '../utils/config';
+import {isWindows} from '../utils/platform/selector';
+import {updateCustomInterpreterPath} from '../utils/config';
 
 export function pickInterpreterPath() {
     vscode.window.showOpenDialog({  
@@ -13,7 +13,10 @@ export function pickInterpreterPath() {
     }).then(result => {
         if (result && result.length > 0) {
             const interpreterPath = result[0].fsPath;
-            updateCustomInterpreterPath(interpreterPath);
+            updateCustomInterpreterPath(interpreterPath).then(
+                () => vscode.window.showInformationMessage('Custom interpreter path updated successfully'),
+                () => vscode.window.showErrorMessage('Failed to update custom interpreter path')
+            );
         }
     });
 }

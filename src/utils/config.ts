@@ -1,6 +1,6 @@
 import vscode from 'vscode';
-import { PythonImport } from "../models/pythonEntity";
-import { interpreterType, TestRunConfig } from '../models/testRun';
+import {PythonImport} from "../models/pythonEntity";
+import {interpreterType, TestRunConfig} from '../models/testRun';
 
 let config = vscode.workspace.getConfiguration('typhoon-test');
 let testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
@@ -25,8 +25,8 @@ export function getLineSpacing(): string {
 
 export function getTestRunConfig(): TestRunConfig {
     return {
-        interpreterType: getinterpreterType() as interpreterType,
-        customInterpreterPath: getcustomInterpreterPath(),
+        interpreterType: getInterpreterType() as interpreterType,
+        customInterpreterPath: getCustomInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
         cleanOldResults: getCleanOldResults(),
@@ -37,11 +37,11 @@ export function getTestRunConfig(): TestRunConfig {
     };
 }
 
-function getinterpreterType(): interpreterType {
+function getInterpreterType(): interpreterType {
     return testRunConfig.get<string>('interpreter', "embedded") as interpreterType;
 }
 
-function getcustomInterpreterPath(): string | undefined {
+function getCustomInterpreterPath(): string | undefined {
     let path = testRunConfig.get<string | undefined>('customInterpreterPath');
     return path && path.trim() ? path : undefined;
 }
@@ -77,6 +77,6 @@ function getAdditionalOptions(): string | undefined {
     return options && options.trim() ? options : undefined;
 }
 
-export function updateCustomInterpreterPath(path: string) {
-    testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
+export async function updateCustomInterpreterPath(path: string) {
+    await testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
 }

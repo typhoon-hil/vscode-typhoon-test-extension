@@ -14,8 +14,8 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
-        token: vscode.CancellationToken
+        _: vscode.WebviewViewResolveContext,
+        __: vscode.CancellationToken
     ) {
         this._view = webviewView;
 

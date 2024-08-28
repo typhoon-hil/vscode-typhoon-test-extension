@@ -10,12 +10,11 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
-import { refreshConfigs } from './utils/config';
-import { cleanOldResults } from './commands/cleanOldResults';
-import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
-import { TestTreeProvider } from './views/TestTreeProvider';
-import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
-import { refreshPdfConfig } from './utils/pdfConfig';
+import {refreshConfigs} from './utils/config';
+import {runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
+import {TestTreeProvider} from './views/TestTreeProvider';
+import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
+import {refreshPdfConfig} from './utils/pdfConfig';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -33,15 +32,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.showArgumentsView', (item: TreeNode) => {
-                showArgumentsView(formProvider, item);
-            }
-        ));
+            showArgumentsView(formProvider, item);
+        })
+    );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.handleTreeViewItemClicked', (item: TreeNode) => {
-                handleTreeViewItemClicked(item);
-            }
-        ));
+            handleTreeViewItemClicked(item);
+        })
+    );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.addPythonEntity', () => {
@@ -63,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.openTestRunConfiguration', () => {
-            vscode.commands.executeCommand('workbench.action.openSettings', 'typhoon-test.testRun');
+            vscode.commands.executeCommand('workbench.action.openSettings', 'typhoon-test.testRun').then();
         })
     );
 
@@ -80,18 +79,11 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.cleanOldResults', () => {
-            cleanOldResults();
+        vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
+            pickOrganizationalLogoFilepath(isGlobal);
         })
     );
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
-            vscode.window.showInformationMessage('Global? ' + isGlobal);
-            pickOrganizationalLogoFilepath();
-        })
-    );
-    
     vscode.workspace.onDidChangeConfiguration(event => {
         if (event.affectsConfiguration('typhoon-test.apiWizardWorkspace')) {
             refreshConfigs();
