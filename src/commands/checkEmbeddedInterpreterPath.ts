@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 
 export function checkEmbeddedInterpreterPath() {
     const currentPath = getTestRunConfig().embeddedInterpreterPath;
-    const possiblePath = getPlatform().getEmbeddedPythonPath();
+    const possiblePath = getPlatform().getEmbeddedPythonCommand();
     
     if (!currentPath) {
         vscode.commands.executeCommand('typhoon-test.updateEmbeddedInterpreterPath');
