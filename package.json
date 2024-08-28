@@ -2,7 +2,7 @@
   "name": "tt-demo",
   "displayName": "TT Demo",
   "description": "Typhoon Test Demo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -17,9 +17,7 @@
     "Other"
   ],
   "license": "MIT",
-  "activationEvents": [
-    "*"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "keybindings": [

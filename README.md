@@ -57,3 +57,26 @@ Users appreciate release notes as you update your extension.
 ### 0.0.1
 
 Demo release of Typhoon Test
+
+### 0.0.3
+
+### 0.0.3
+
+Added PDF Generator feature
+
+The latest release of Typhoon Test (version 0.0.3) introduces a new feature: PDF Generator. With this feature, you can now generate PDF reports of your test results directly from the extension.
+
+To use the PDF Generator, simply run your tests as usual and then navigate to the test results view within the editor. From there, you will find a new option to generate a PDF report. Clicking on this option will initiate the PDF generation process.
+
+The generated PDF report will include detailed information about your test results, including passed, failed, and skipped tests. It will also provide a summary of the overall test coverage and any issues encountered during the test run.
+
+The PDF Generator feature is highly customizable, allowing you to configure various options such as the layout, styling, and inclusion of additional information in the report. Refer to the `typhoon-test.pdfGenerator` settings for more details on how to customize the PDF generation process.
+
+We hope that this new feature enhances your testing workflow and helps you generate comprehensive test reports for your Python projects. Give it a try and let us know your feedback!
+
+### 0.0.4 (Upcoming Release)
+
+In the upcoming release of Typhoon Test (version 0.0.4), we are planning to introduce additional enhancements and bug fixes. Stay tuned for more details in the release notes.
+
+Thank you for using Typhoon Test and happy testing!
+
