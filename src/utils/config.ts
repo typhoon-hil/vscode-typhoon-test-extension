@@ -1,6 +1,6 @@
 import vscode from 'vscode';
-import { PythonImport } from "../models/pythonEntity";
-import { interpreterType, TestRunConfig } from '../models/testRun';
+import {PythonImport} from "../models/pythonEntity";
+import {interpreterType, TestRunConfig} from '../models/testRun';
 
 let config = vscode.workspace.getConfiguration('typhoon-test');
 let testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
@@ -77,6 +77,6 @@ function getAdditionalOptions(): string | undefined {
     return options && options.trim() ? options : undefined;
 }
 
-export function updateCustomInterpreterPath(path: string) {
-    testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
+export async function updateCustomInterpreterPath(path: string) {
+    await testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
 }
