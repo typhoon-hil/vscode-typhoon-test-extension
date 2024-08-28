@@ -11,7 +11,6 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {cleanOldResults} from './commands/cleanOldResults';
 import {runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
@@ -76,12 +75,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
             runPytestWithMonitoring(testTreeProvider);
-        })
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.cleanOldResults', () => {
-            cleanOldResults();
         })
     );
 
