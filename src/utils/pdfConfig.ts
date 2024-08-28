@@ -21,5 +21,5 @@ export function getPdfConfig() {
 
 export function updateOrganizationalLogoFilepath(filepath: string, isGlobal: boolean) {
     const target = isGlobal ? vscode.ConfigurationTarget.Global : vscode.ConfigurationTarget.Workspace;
-    pdfConfig.update('organizationalLogoFilepath', filepath, target);
+    pdfConfig.update('organizationalLogoFilepath', filepath, target).then();
 }
