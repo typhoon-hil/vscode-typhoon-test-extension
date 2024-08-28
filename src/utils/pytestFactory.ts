@@ -1,5 +1,5 @@
 import { getTestRunConfig } from "./config";
-import { getPlatform } from "./platform/index";
+import { getPlatform } from "./platform/selector";
 import { PdfComposer } from '../models/pdfGenerator';
 
 export class PytestFactory {

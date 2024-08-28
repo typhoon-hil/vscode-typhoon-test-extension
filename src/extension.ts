@@ -12,7 +12,7 @@ import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
 import { getTestRunConfig, refreshConfigs } from './utils/config';
-import { getPlatform } from './utils/platform/index';
+import { getPlatform } from './utils/platform/selector';
 import { cleanOldResults } from './commands/cleanOldResults';
 import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
 import { TestTreeProvider } from './views/TestTreeProvider';

@@ -1,5 +1,5 @@
 import { getTestRunConfig } from "../utils/config";
-import { getPlatform } from "../utils/platform";
+import { getPlatform } from "../utils/platform/selector";
 import * as vscode from 'vscode';
 
 export function checkEmbeddedInterpreterPath() {

@@ -1,4 +1,4 @@
-import { getPlatform } from "../utils/platform/index";
+import { getPlatform } from "../utils/platform/selector";
 import { updateEmbeddedInterpreterPath as update } from "../utils/config";
 
 export function updateEmbeddedInterpreterPath() {
