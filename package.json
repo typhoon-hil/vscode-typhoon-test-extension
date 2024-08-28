@@ -17,7 +17,9 @@
     "Other"
   ],
   "license": "MIT",
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "keybindings": [
@@ -231,6 +233,11 @@
         "category": "Typhoon Test"
       },
       {
+        "command": "typhoon-test.checkEmbeddedInterpreterPath",
+        "title": "Check Embedded Interpreter Path",
+        "category": "Typhoon Test"
+      },
+      {
         "command": "typhoon-test.runTests",
         "title": "Run Tests",
         "category": "Typhoon Test"
@@ -337,6 +344,10 @@
         },
         {
           "command": "typhoon-test.pickOrganizationalLogoFilepath",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.checkEmbeddedInterpreterPath",
           "when": "false"
         }
       ]

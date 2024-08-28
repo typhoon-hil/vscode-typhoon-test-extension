@@ -1,4 +1,3 @@
-// extension.ts
 import * as vscode from 'vscode';
 import {DocumentationProvider} from './views/DocumentationProvider';
 import {showDocstringView} from './commands/showDocstringView';
@@ -19,6 +18,7 @@ import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
+import { checkEmbeddedInterpreterPath } from './commands/checkEmbeddedInterpreterPath';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.openTestRunConfiguration', () => {
-            vscode.commands.executeCommand('workbench.action.openSettings', 'testRun');
+            vscode.commands.executeCommand('workbench.action.openSettings', 'typhoon-test.testRun');
         })
     );
 
@@ -79,6 +79,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.updateEmbeddedInterpreterPath', () => {
             updateEmbeddedInterpreterPath();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.checkEmbeddedInterpreterPath', () => {
+            checkEmbeddedInterpreterPath();
         })
     );
 
@@ -108,7 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test.testRun')) {
             refreshConfigs();
-            checkEmbeddedInterpreterPath();
+            vscode.commands.executeCommand('typhoon-test.checkEmbeddedInterpreterPath');
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
@@ -118,26 +124,5 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    checkEmbeddedInterpreterPath();
-}
-
-function checkEmbeddedInterpreterPath() {
-    const currentPath = getTestRunConfig().embeddedInterpreterPath;
-    const possiblePath = getPlatform().getEmbeddedPythonPath();
-    
-    if (!currentPath) {
-        vscode.commands.executeCommand('typhoon-test.updateEmbeddedInterpreterPath');
-        return;
-    }
-
-    if (currentPath !== possiblePath) {
-        vscode.window.showWarningMessage('We have detected a new embedded interpreter path. Do you want to update it?', 'Yes', 'No').then(value => {
-            if (value === 'Yes') {
-                updateEmbeddedInterpreterPath();
-            }
-        });
-    }
-}
-
-export function deactivate() {
+    vscode.commands.executeCommand('typhoon-test.checkEmbeddedInterpreterPath');
 }
