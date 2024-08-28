@@ -1,5 +1,5 @@
 export interface Platform {
     getPythonCommand(): string;
-    getEmbeddedPythonPath(): string;
+    getEmbeddedPythonCommand(): string;
     getPythonExecutableExtension(): string;
 }

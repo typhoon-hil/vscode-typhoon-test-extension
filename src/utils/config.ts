@@ -27,7 +27,6 @@ export function getTestRunConfig(): TestRunConfig {
     return {
         interpreterType: getinterpreterType() as interpreterType,
         customInterpreterPath: getcustomInterpreterPath(),
-        embeddedInterpreterPath: getEmbeddedInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
         cleanOldResults: getCleanOldResults(),
@@ -44,11 +43,6 @@ function getinterpreterType(): interpreterType {
 
 function getcustomInterpreterPath(): string | undefined {
     let path = testRunConfig.get<string | undefined>('customInterpreterPath');
-    return path && path.trim() ? path : undefined;
-}
-
-function getEmbeddedInterpreterPath(): string | undefined {
-    let path = testRunConfig.get<string | undefined>('embeddedInterpreterPath');
     return path && path.trim() ? path : undefined;
 }
 
@@ -85,8 +79,4 @@ function getAdditionalOptions(): string | undefined {
 
 export function updateCustomInterpreterPath(path: string) {
     testRunConfig.update('customInterpreterPath', path, vscode.ConfigurationTarget.Global);
-}
-
-export function updateEmbeddedInterpreterPath(path: string) {
-    testRunConfig.update('embeddedInterpreterPath', path, vscode.ConfigurationTarget.Global);
 }

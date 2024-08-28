@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { isWindows } from '../utils/platform/index';
+import { isWindows } from '../utils/platform/selector';
 import { updateCustomInterpreterPath } from '../utils/config';
 
 export function pickInterpreterPath() {

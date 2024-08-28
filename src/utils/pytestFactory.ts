@@ -1,5 +1,5 @@
 import { getTestRunConfig } from "./config";
-import { getPlatform } from "./platform/index";
+import { getPlatform } from "./platform/selector";
 import { PdfComposer } from '../models/pdfGenerator';
 
 export class PytestFactory {
@@ -14,7 +14,7 @@ export class PytestFactory {
             case 'system':
                 return this.platform.getPythonCommand();
             case 'embedded':
-                return `"${this.config.embeddedInterpreterPath!}"`;
+                return `"${this.platform.getEmbeddedPythonCommand()}"`;
             case 'custom':
                 return `"${this.config.customInterpreterPath!}"`;
             default:
