@@ -128,6 +128,6 @@ function runAllureReport() {
     if (getTestRunConfig().openReport) {
         const terminal = vscode.window.createTerminal('Allure Report');
         terminal.show();
-        terminal.sendText('allure serve report');
+        terminal.sendText('typhoon-allure serve report');
     }
 }
