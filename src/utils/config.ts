@@ -25,8 +25,8 @@ export function getLineSpacing(): string {
 
 export function getTestRunConfig(): TestRunConfig {
     return {
-        interpreterType: getinterpreterType() as interpreterType,
-        customInterpreterPath: getcustomInterpreterPath(),
+        interpreterType: getInterpreterType() as interpreterType,
+        customInterpreterPath: getCustomInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
         cleanOldResults: getCleanOldResults(),
@@ -37,11 +37,11 @@ export function getTestRunConfig(): TestRunConfig {
     };
 }
 
-function getinterpreterType(): interpreterType {
+function getInterpreterType(): interpreterType {
     return testRunConfig.get<string>('interpreter', "embedded") as interpreterType;
 }
 
-function getcustomInterpreterPath(): string | undefined {
+function getCustomInterpreterPath(): string | undefined {
     let path = testRunConfig.get<string | undefined>('customInterpreterPath');
     return path && path.trim() ? path : undefined;
 }
