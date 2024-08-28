@@ -76,7 +76,4 @@ We hope that this new feature enhances your testing workflow and helps you gener
 
 ### 0.0.4 (Upcoming Release)
 
-In the upcoming release of Typhoon Test (version 0.0.4), we are planning to introduce additional enhancements and bug fixes. Stay tuned for more details in the release notes.
-
-Thank you for using Typhoon Test and happy testing!
-
+Embedded Python Interpreter Path feature is completely removed
