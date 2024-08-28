@@ -84,12 +84,6 @@
           "markdownDescription": "The path to the custom Python interpreter to use for running tests. This path will be used if `#typhoon-test.testRun.interpreter#` is set to `custom`.\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickInterpreterPath)",
           "scope": "application"
         },
-        "typhoon-test.testRun.embeddedInterpreterPath": {
-          "type": "string",
-          "default": "",
-          "description": "The path to the embedded Python interpreter",
-          "scope": "application"
-        },
         "typhoon-test.testRun.realTimeLogs": {
           "type": "boolean",
           "default": true,
@@ -223,11 +217,6 @@
       {
         "command": "typhoon-test.pickInterpreterPath",
         "title": "Select File Path",
-        "category": "Typhoon Test"
-      },
-      {
-        "command": "typhoon-test.updateEmbeddedInterpreterPath",
-        "title": "Update Embedded Interpreter Path",
         "category": "Typhoon Test"
       },
       {

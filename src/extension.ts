@@ -10,7 +10,6 @@ import {TreeNode} from "./models/TreeNode";
 import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
-import { updateEmbeddedInterpreterPath } from './commands/updateEmbeddedInterpreterPath';
 import { refreshConfigs } from './utils/config';
 import { cleanOldResults } from './commands/cleanOldResults';
 import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
@@ -71,12 +70,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickInterpreterPath', () => {
             pickInterpreterPath();
-        })
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.updateEmbeddedInterpreterPath', () => {
-            updateEmbeddedInterpreterPath();
         })
     );
 
