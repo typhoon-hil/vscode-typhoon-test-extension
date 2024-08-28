@@ -17,7 +17,6 @@ import { runPytestWithMonitoring } from './commands/runPytestWithMonitoring';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
-import { checkEmbeddedInterpreterPath } from './commands/checkEmbeddedInterpreterPath';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -82,12 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.checkEmbeddedInterpreterPath', () => {
-            checkEmbeddedInterpreterPath();
-        })
-    );
-
-    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
             runPytestWithMonitoring(testTreeProvider);
         })
@@ -113,7 +106,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test.testRun')) {
             refreshConfigs();
-            vscode.commands.executeCommand('typhoon-test.checkEmbeddedInterpreterPath');
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
@@ -122,6 +114,4 @@ export function activate(context: vscode.ExtensionContext) {
             refreshPdfConfig();
         }
     });
-
-    vscode.commands.executeCommand('typhoon-test.checkEmbeddedInterpreterPath');
 }
