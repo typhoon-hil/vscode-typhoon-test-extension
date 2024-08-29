@@ -53,6 +53,9 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
             const command = pythonCommands[i];
             try {
                 const entity = await loadPythonEntity(command, pythonImport.name, pythonImport.type);
+                if ("error" in entity) {
+                    throw entity.error;
+                }
                 const node = TreeNode.parsePythonEntity(entity, pythonImport.alias);
                 this.rootNodes.push(node);
                 this.refresh();
