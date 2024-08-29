@@ -58,8 +58,19 @@ th {
     border-color: var(--vscode-button-active-border);
   }
 
-  .vscode-button:disabled {
-    background-color: var(--vscode-button-disabled-background);
-    color: var(--vscode-button-disabled-foreground);
-    cursor: not-allowed;
+  .vscode-input {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 2px;
+    padding: 4px;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    outline: none;
+    box-sizing: border-box; /* Ensure padding and border are included in the width/height */
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .vscode-input:focus {
+    outline: 1px solid var(--vscode-focusBorder);
   }
