@@ -74,6 +74,11 @@ The PDF Generator feature is highly customizable, allowing you to configure vari
 
 We hope that this new feature enhances your testing workflow and helps you generate comprehensive test reports for your Python projects. Give it a try and let us know your feedback!
 
-### 0.0.4 (Upcoming Release)
+### 0.0.4
 
 Embedded Python Interpreter Path feature is completely removed
+
+### 0.0.5
+
+* Function Arguments View: Updated style of input boxes and buttons
+* API Wizard Function List: Added support for imports of any Python module or class the user wants, regardless of which Python interpreter has been selected.
