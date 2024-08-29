@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import {TreeNode} from "../models/TreeNode";
-import {isPythonEntityType, PythonImport} from "../models/pythonEntity";
-import {loadPythonEntity} from "../utils/pythonConverter";
-import {loadWorkspaceElements} from "../utils/config";
+import { TreeNode } from "../models/TreeNode";
+import { isPythonEntityType, PythonImport } from "../models/pythonEntity";
+import { loadPythonEntity } from "../utils/pythonConverter";
+import { getPythonInterpreterCommandOptions, loadWorkspaceElements } from "../utils/config";
 
 export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNode> {
     static instance: PythonEntityTreeProvider | undefined;
@@ -48,13 +48,23 @@ export class PythonEntityTreeProvider implements vscode.TreeDataProvider<TreeNod
     }
 
     public async addEntity(pythonImport: PythonImport): Promise<void> {
-        try {
-            const entity = await loadPythonEntity(pythonImport.name, pythonImport.type);
-            const node = TreeNode.parsePythonEntity(entity, pythonImport.alias);
-            this.rootNodes.push(node);
-            this.refresh();
-        } catch (error) {
-            vscode.window.showErrorMessage(`Error loading ${pythonImport.type}: ${error}`);
+        const pythonCommands = getPythonInterpreterCommandOptions();
+        for (let i = 0; i < pythonCommands.length; i++) {
+            const command = pythonCommands[i];
+            try {
+                const entity = await loadPythonEntity(command, pythonImport.name, pythonImport.type);
+                if ("error" in entity) {
+                    throw entity.error;
+                }
+                const node = TreeNode.parsePythonEntity(entity, pythonImport.alias);
+                this.rootNodes.push(node);
+                this.refresh();
+                break;
+            } catch (error) {
+                if (i === pythonCommands.length - 1) {
+                    vscode.window.showErrorMessage(`Error loading ${pythonImport.type}: ${error}`);
+                }
+            }
         }
     }
 

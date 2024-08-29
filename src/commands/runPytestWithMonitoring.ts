@@ -23,8 +23,13 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     });
     
     const outputChannel = initOutputChannel();
+    outputChannel.appendLine('TEST RUN STARTED...');
+
     pytestProcess.stdout.on('data', (data: Buffer) => {
         const output = data.toString();
+        if (output.includes('Report successfully generated')) {
+            outputChannel.appendLine('');
+        }
         outputChannel.append(output);
 
         const lines = output.split('\n');

@@ -1,11 +1,11 @@
-export enum interpreterType {
+export enum InterpreterType {
     System = 'system',
     Embedded = 'embedded',
     Custom = 'custom'
 }
 
 export interface TestRunConfig {
-    interpreterType: interpreterType;
+    interpreterType: InterpreterType;
     customInterpreterPath?: string;
     realTimeLogs: boolean;
     openReport: boolean;

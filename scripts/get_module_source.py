@@ -2,7 +2,7 @@ import sys
 import inspect
 import importlib
 import json
-from utils import *
+from utils import is_public, get_doc, get_parameters
 
 
 def get_methods_from_module(module_name):
@@ -18,14 +18,19 @@ def get_methods_from_module(module_name):
     # Iterate over all the members of the module
     for name, obj in inspect.getmembers(module):
         if (inspect.isfunction(obj) or inspect.isbuiltin(obj)) and is_public(name):
-            function_info = {
-                "name": name,
-                "doc": get_doc(obj),
-                "args": get_parameters(obj)
-            }
-            functions_data["callables"].append(function_info)
+            try:
+                function_info = {
+                    "name": name,
+                    "doc": get_doc(obj),
+                    "args": get_parameters(obj)
+                }
+                functions_data["callables"].append(function_info)
+            except ValueError:
+                # Skip functions that do not have a signature (e.g., built-in functions)
+                continue
 
     return json.dumps(functions_data, indent=2)
+
 
 if __name__ == "__main__":
     # Check if the module name is provided as an argument

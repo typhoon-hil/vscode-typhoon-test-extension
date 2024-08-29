@@ -271,7 +271,11 @@
     "viewsWelcome": [
       {
         "view": "typhoon-test.pythonEntityView",
-        "contents": "Select a module to view its classes, methods, and functions"
+        "contents": "Add a module or class to view its methods or functions"
+      },
+      {
+        "view": "typhoon-test.pytestMonitorView",
+        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests)"
       }
     ],
     "menus": {

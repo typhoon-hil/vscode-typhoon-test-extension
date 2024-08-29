@@ -1,6 +1,7 @@
 import vscode from 'vscode';
 import {PythonImport} from "../models/pythonEntity";
-import {interpreterType, TestRunConfig} from '../models/testRun';
+import {InterpreterType, TestRunConfig} from '../models/testRun';
+import { getPlatform } from './platform/selector';
 
 let config = vscode.workspace.getConfiguration('typhoon-test');
 let testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
@@ -25,7 +26,7 @@ export function getLineSpacing(): string {
 
 export function getTestRunConfig(): TestRunConfig {
     return {
-        interpreterType: getInterpreterType() as interpreterType,
+        interpreterType: getInterpreterType() as InterpreterType,
         customInterpreterPath: getCustomInterpreterPath(),
         realTimeLogs: getRealTimeLogs(),
         openReport: getOpenReport(),
@@ -37,8 +38,25 @@ export function getTestRunConfig(): TestRunConfig {
     };
 }
 
-function getInterpreterType(): interpreterType {
-    return testRunConfig.get<string>('interpreter', "embedded") as interpreterType;
+export function getPythonInterpreterCommand(): string {
+    const platform = getPlatform();
+    switch (getInterpreterType()) {
+        case InterpreterType.System:
+            return platform.getPythonCommand();
+        case InterpreterType.Embedded:
+            return platform.getEmbeddedPythonCommand();
+        case InterpreterType.Custom:
+            return `"${getCustomInterpreterPath()}"`;
+    }
+}
+
+export function getPythonInterpreterCommandOptions(): string[] {
+    const platform = getPlatform();
+    return [platform.getEmbeddedPythonCommand(), platform.getPythonCommand(), getCustomInterpreterPath() || ''].filter(Boolean);
+}
+
+function getInterpreterType(): InterpreterType {
+    return testRunConfig.get<string>('interpreter', "embedded") as InterpreterType;
 }
 
 function getCustomInterpreterPath(): string | undefined {
