@@ -1,5 +1,5 @@
-import inspect
 import sys
+import inspect
 import importlib
 import json
 from utils import is_public, get_doc, get_parameters
@@ -11,13 +11,13 @@ def get_methods_from_module(module_name):
         module = importlib.import_module(module_name)
     except ModuleNotFoundError:
         return json.dumps({"error": f"Module '{module_name}' not found."})
-
+    
     # Dictionary to store all functions
     functions_data = {"type": "module", "name": module_name, "callables": []}
 
     # Iterate over all the members of the module
     for name, obj in inspect.getmembers(module):
-        if inspect.isfunction(obj) and is_public(name) and obj.__module__ == module_name:
+        if (inspect.isfunction(obj) or inspect.isbuiltin(obj)) and is_public(name):
             try:
                 function_info = {
                     "name": name,
