@@ -1,4 +1,4 @@
-import { getTestRunConfig } from "./config";
+import { getPythonInterpreterCommand, getTestRunConfig } from "./config";
 import { getPlatform } from "./platform/selector";
 import { PdfComposer } from '../models/pdfGenerator';
 
@@ -10,16 +10,7 @@ export class PytestFactory {
     }
 
     private getInterpreterPath(): string {
-        switch (this.config.interpreterType) {
-            case 'system':
-                return this.platform.getPythonCommand();
-            case 'embedded':
-                return `"${this.platform.getEmbeddedPythonCommand()}"`;
-            case 'custom':
-                return `"${this.config.customInterpreterPath!}"`;
-            default:
-                return this.platform.getPythonCommand();
-        }
+        return getPythonInterpreterCommand();
     }
 
     private getMarks(): string[] {

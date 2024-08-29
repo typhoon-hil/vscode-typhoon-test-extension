@@ -1,6 +1,7 @@
 import vscode from 'vscode';
 import {PythonImport} from "../models/pythonEntity";
 import {InterpreterType, TestRunConfig} from '../models/testRun';
+import { getPlatform } from './platform/selector';
 
 let config = vscode.workspace.getConfiguration('typhoon-test');
 let testRunConfig = vscode.workspace.getConfiguration('typhoon-test.testRun');
@@ -35,6 +36,18 @@ export function getTestRunConfig(): TestRunConfig {
         selectTestByMark: getSelectTestByMark(),
         additionalOptions: getAdditionalOptions()
     };
+}
+
+export function getPythonInterpreterCommand(): string {
+    const platform = getPlatform();
+    switch (getInterpreterType()) {
+        case InterpreterType.System:
+            return platform.getPythonCommand();
+        case InterpreterType.Embedded:
+            return platform.getEmbeddedPythonCommand();
+        case InterpreterType.Custom:
+            return `"${getCustomInterpreterPath()}"`;
+    }
 }
 
 function getInterpreterType(): InterpreterType {
