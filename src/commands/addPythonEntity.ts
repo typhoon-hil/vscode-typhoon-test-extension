@@ -13,8 +13,8 @@ const apiOptions: { [key: string]: ApiOption } = {
 };
 
 const importOptions: { label: string, type: PythonEntityType }[] = [
-    { label: 'Import another class', type: 'class' },
-    { label: 'Import another module', type: 'module' }
+    { label: 'Import other class', type: 'class' },
+    { label: 'Import other module', type: 'module' }
 ];
 
 export async function addPythonEntity() {
@@ -36,17 +36,23 @@ export async function addPythonEntity() {
         return;
     }
 
-    if (selectedOption.label in apiOptions) {
-        let alias = await getAlias(selectedOption.label);
-        let { path, type } = apiOptions[selectedOption.label];
+    selectedOption.label in apiOptions ? 
+        await addApiEntity(selectedOption) :
+        await addCustomEntity(selectedOption.label);
+}
 
-        if (alias) {
-            getPythonEntityTreeProvider()
-                .addEntity({ name: path, type, alias }).then();
-        }
-        return;
+async function addApiEntity(selectedOption: vscode.QuickPickItem) {
+    let alias = await getAlias(selectedOption.label);
+    let { path, type } = apiOptions[selectedOption.label];
+
+    if (alias) {
+        getPythonEntityTreeProvider()
+            .addEntity({ name: path, type, alias }).then();
     }
-    let path = await vscode.window.showInputBox({
+}
+
+async function addCustomEntity(label: string) {
+    const path = await vscode.window.showInputBox({
         prompt: 'Enter the path of the Python entity:'
     });
 
@@ -54,8 +60,8 @@ export async function addPythonEntity() {
         return;
     }
 
-    let alias = await getAlias(path);
-    let type = importOptions.find(option => option.label === selectedOption.label)!.type;
+    const alias = await getAlias(label);
+    const type = importOptions.find(option => option.label === label)!.type;
 
     if (alias) {
         getPythonEntityTreeProvider()
