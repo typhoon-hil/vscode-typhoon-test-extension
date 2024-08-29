@@ -50,6 +50,11 @@ export function getPythonInterpreterCommand(): string {
     }
 }
 
+export function getPythonInterpreterCommandOptions(): string[] {
+    const platform = getPlatform();
+    return [platform.getEmbeddedPythonCommand(), platform.getPythonCommand(), getCustomInterpreterPath() || ''].filter(Boolean);
+}
+
 function getInterpreterType(): InterpreterType {
     return testRunConfig.get<string>('interpreter', "embedded") as InterpreterType;
 }
