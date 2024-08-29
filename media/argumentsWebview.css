@@ -21,7 +21,7 @@ th {
 
 .stick {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: flex-end;
     position: fixed;
     bottom: 0;
@@ -31,7 +31,46 @@ th {
     background-color: var(--vscode-editor-background);
 }
 
-.stick button {
-    margin: 8px 4px;
+.vscode-button {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: 1px solid var(--vscode-button-border);
+    border-radius: 2px;
+    margin: 4px 8px;
+    padding: 6px 8px;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s, border-color 0.2s;
+    flex: 1;
+    min-width: 10.5em;
+    max-width: 20em;
+  }
+
+  .vscode-button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+	cursor: pointer;
+  }
+
+  .vscode-button:active {
+    background-color: var(--vscode-button-active-background);
+    border-color: var(--vscode-button-active-border);
+  }
+
+  .vscode-input {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 2px;
     padding: 4px;
-}
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    outline: none;
+    box-sizing: border-box; /* Ensure padding and border are included in the width/height */
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .vscode-input:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+  }

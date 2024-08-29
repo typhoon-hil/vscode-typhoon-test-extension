@@ -1,5 +1,6 @@
 const vscode = acquireVsCodeApi();
 let data = {};
+const inputClassName = 'vscode-input';
 
 (function () {
     window.addEventListener('message', event => {
@@ -16,7 +17,7 @@ let data = {};
             const label = `<label for="${arg.name}">${arg.name}</label>`;
             const inputType = 'text';
             const inputValue = arg.default === undefined ? '' : arg.default === null ? 'None' : `value="${arg.default}"`;
-            const input = `<input type="${inputType}" id="${arg.name}" name="${arg.name}" ${inputValue}>`;
+            const input = `<input class="${inputClassName}" type="${inputType}" id="${arg.name}" name="${arg.name}" ${inputValue}>`;
 
             htmlContent += `
                 <tr class="form-group">
