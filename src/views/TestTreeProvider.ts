@@ -8,6 +8,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private tests: TestItem[] = [];
     private lastTest: TestItem | undefined;
+    private readonly dummyTest = new TestItem('Starting', vscode.TreeItemCollapsibleState.None, TestStatus.Running);
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -67,6 +68,9 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
+        if (this.tests.includes(this.dummyTest)) {
+            this.tests.splice(this.tests.indexOf(this.dummyTest), 1);
+        }
         const test = this.findTest(testName);
         test ? this.updateTest(testName, status) : this.addTest(testName, status);
         this.refresh();
@@ -110,6 +114,11 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             this.updateTest(lastTestNameDetails, status);
             this.refresh();
         }
+    }
+
+    init() {
+        this.tests.push(this.dummyTest);
+        this.refresh();
     }
     
     private getTestNameDetails(test: TestItem): TestNameDetails {

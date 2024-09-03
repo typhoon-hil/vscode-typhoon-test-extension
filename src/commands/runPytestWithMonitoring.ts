@@ -16,6 +16,7 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
 
     resetTestRun(testTreeProvider);
 
+
     const factory = new PytestFactory();
     const path = factory.getPythonPath();
     const flags = factory.getFlags();
@@ -67,6 +68,7 @@ export function cancelPytestRun() {
 function resetTestRun(testTreeProvider: TestTreeProvider) {
     hasTestRunEnded().reset();
     testTreeProvider.clearTests();
+    testTreeProvider.init();
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
