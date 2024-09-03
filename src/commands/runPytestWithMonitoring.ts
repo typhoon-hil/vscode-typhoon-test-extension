@@ -5,6 +5,9 @@ import * as vscode from 'vscode';
 import {PytestFactory} from '../utils/pytestFactory';
 import {getTestRunConfig} from '../utils/config';
 
+let pytestProcess: cp.ChildProcess | undefined;
+let outputChannel: vscode.OutputChannel | undefined;
+
 export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     if (!vscode.workspace.workspaceFolders) {
         vscode.window.showErrorMessage('No workspace is open').then();
@@ -17,20 +20,20 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     const path = factory.getPythonPath();
     const flags = factory.getFlags();
 
-    const pytestProcess = cp.spawn(path, flags, {
+    pytestProcess = cp.spawn(path, flags, {
         shell: true,
         cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
     });
     
-    const outputChannel = initOutputChannel();
+    outputChannel = initOutputChannel();
     outputChannel.appendLine('TEST RUN STARTED...');
 
-    pytestProcess.stdout.on('data', (data: Buffer) => {
+    pytestProcess.stdout?.on('data', (data: Buffer) => {
         const output = data.toString();
         if (output.includes('Report successfully generated')) {
-            outputChannel.appendLine('');
+            outputChannel?.appendLine('');
         }
-        outputChannel.append(output);
+        outputChannel?.append(output);
 
         const lines = output.split('\n');
         lines.forEach(line => {
@@ -40,14 +43,25 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
         });
     });
 
-    pytestProcess.stdout.on('end', () => {
+    pytestProcess.stdout?.on('end', () => {
         runAllureReport();
     });
 
-    pytestProcess.stderr.on('data', (data: Buffer) => {
+    pytestProcess.stderr?.on('data', (data: Buffer) => {
         const output = data.toString();
-        outputChannel.append(output);
+        outputChannel?.append(output);
     });
+}
+
+export function cancelPytestRun() {
+    if (pytestProcess) {
+        pytestProcess.kill();
+        pytestProcess.stdout?.removeAllListeners();
+        pytestProcess.stderr?.removeAllListeners();
+        pytestProcess = undefined;
+        hasTestRunEnded().reset();
+        outputChannel?.appendLine('\nTEST RUN CANCELLED');
+    }
 }
 
 function resetTestRun(testTreeProvider: TestTreeProvider) {

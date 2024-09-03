@@ -11,7 +11,7 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
+import {cancelPytestRun, runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
 import {refreshPdfConfig} from './utils/pdfConfig';
@@ -74,7 +74,19 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
-            runPytestWithMonitoring(testTreeProvider);
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: 'Running tests...',
+                cancellable: true
+            }, (_, token) => {
+                token.onCancellationRequested(() => {
+                    cancelPytestRun();
+                });
+
+                return new Promise((_, __) => {
+                    runPytestWithMonitoring(testTreeProvider);
+                });
+            });
         })
     );
 
