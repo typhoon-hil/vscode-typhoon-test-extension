@@ -1,84 +1,68 @@
 # Typhoon Test
 
-Typhoon Test is a Visual Studio Code extension for Python projects, offering seamless integration, real-time test results, and easy navigation. Boost your productivity and ensure code quality with unit, integration, and end-to-end tests.
+[Typhoon Test](https://marketplace.visualstudio.com/items?itemName=balsabulatovic.tt-demo)
+is an extension that is used to write, run python tests and display the result and log of each test,
+using appropriate Typhoon API libraries.
+
+When you install Typhoon Test, you get two main features:
+
+- **API Wizard**: A tool which provides an easy way to add API commands
+- **Pytest Monitor**: A tool which provides an easy way to run tests and monitor the results
 
 ## Features
 
-* **Seamless Integration with Visual Studio Code**
-The Typhoon Test extension integrates seamlessly with Visual Studio Code, providing a user-friendly interface to manage and run your tests directly from the editor.
+### API Wizard
 
-* **Comprehensive Testing Framework**
-Supports unit tests, integration tests, and end-to-end tests, ensuring that you can cover all aspects of your Python projects.
+The API Wizard is a panel available in TyphoonTest IDE which provides a list of functions defined
+in any python-importable module or class, and for any selected function users have quick access to
+a formatted docstring and can easily add the function call with proper arguments
 
-* **Real-Time Test Results**
-View test results in real-time within the editor. The extension highlights passed, failed, and skipped tests, making it easy to identify issues.
+![API Wizard Demo](/assets/api-wizard-demo.gif)
 
-* **Easy Navigation**
-Quickly navigate to test definitions and related code with just a few clicks. This feature boosts productivity by reducing the time spent searching for test files.
+The API Wizard panel is divided in 3 main parts
 
-* **Customizable Test Configurations**
-Configure your test runs with various options such as custom interpreter paths, real-time logs, and additional options. Refer to the `typhoon-test.testRun` settings for more details.
+#### Function list
 
-* **Automated Test Execution**
+Contains all the found functions/methods in the selected library in a searchable list. 
+The list also provides commands for importing python modules and classes (`typhoon-test.addPythonEntity`),
+as well as saving the current workspace for future use (`typhoon-test.saveApiWizardWorkspace`).
+
+![Function List](/assets/function-list.png)
+
+#### Function documentation
+
+Presents the HTML-formatted docstring of the selected function. Useful for knowing function arguments and other 
+important information without having to open the documentation in a separate browser.
+
+#### Function arguments
+
+Provides an easy way of defining the function arguments and inserting them into your test code in the editor.
+The unchanged default arguments can be omitted for a more concise test code and the function call can also be copied
+to the clipboard and pasted in another editor/program.
+
+### Pytest Monitor
+
+Pytest Monitor provides a way to run tests and monitor the results in real-time.
+The panel shows the test results in a tree view, where each test is represented by a node with a status icon.
+The extension also provides a way to quick run a tests by executing the `typhoon-test.runTest` command.
+
+![Pytest Monitor Demo](/assets/pytest-demo.gif)
+
+Pytest Monitor creates a new output channel, **Pytest Output**, in the Output panel, where the test results are printed.
+If the `typhoon-test.testRun.openReport` setting is enabled, the extension will create a new terminal **Allure Report**,
+where the Allure server will be started and the test results will be displayed in a web browser.
+If the `typhoon-test.testRun.pdfReport` will also generate a PDF report of the test results in the workspace directory.
+Execution results will be stored in the `report` directory. If the `typhoon-test.testRun.cleanOldResults` setting is enabled,
+the extension will clean the old results before new tests are run.
+
+#### Extension Configuration
+
+The extension needs to be configured in order to work properly. The configuration can be accessed by executing the
+`typhoon-test.openTestRunConfiguration` command.
 
 ## Requirements
 
 - Visual Studio Code v1.91.1 or higher
 - Python 3.6 or higher (for running Python scripts)
-
-## Extension Settings
-
-## Extension Settings
-
-This extension contributes the following settings:
-
-* `typhoon-test.apiWizardWorkspace`: Configure the workspace for the API Wizard.
-* `typhoon-test.testRun`: Configure the test run settings.
-
-These settings can be configured in `Preferences: Open User Settings`. For example:
-
-```json
-{
-    "typhoon-test.apiWizardWorkspace": "path/to/workspace",
-    "typhoon-test.testRun": {
-        "interpreterPath": "path/to/python"
-    },
-}
-```
-
-## Known Issues
-
-* The API Wizard currently does not support importing custom classes and modules. This feature is planned for a future release.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 0.0.1
-
-Demo release of Typhoon Test
-
-### 0.0.3
-
-### 0.0.3
-
-Added PDF Generator feature
-
-The latest release of Typhoon Test (version 0.0.3) introduces a new feature: PDF Generator. With this feature, you can now generate PDF reports of your test results directly from the extension.
-
-To use the PDF Generator, simply run your tests as usual and then navigate to the test results view within the editor. From there, you will find a new option to generate a PDF report. Clicking on this option will initiate the PDF generation process.
-
-The generated PDF report will include detailed information about your test results, including passed, failed, and skipped tests. It will also provide a summary of the overall test coverage and any issues encountered during the test run.
-
-The PDF Generator feature is highly customizable, allowing you to configure various options such as the layout, styling, and inclusion of additional information in the report. Refer to the `typhoon-test.pdfGenerator` settings for more details on how to customize the PDF generation process.
-
-We hope that this new feature enhances your testing workflow and helps you generate comprehensive test reports for your Python projects. Give it a try and let us know your feedback!
-
-### 0.0.4
-
-Embedded Python Interpreter Path feature is completely removed
-
-### 0.0.5
-
-* Function Arguments View: Updated style of input boxes and buttons
-* API Wizard Function List: Added support for imports of any Python module or class the user wants, regardless of which Python interpreter has been selected.
+- pytest 6.2.4 or higher (for running tests)
+- Typhoon HIL (recommended for full usage of the extension)
