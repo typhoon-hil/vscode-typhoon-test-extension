@@ -30,6 +30,11 @@
         "command": "typhoon-test.stopTests",
         "key": "F8",
         "when": "true"
+      },
+      {
+        "command": "typhoon-test.runTestsFromFile",
+        "key": "Shift+F7",
+        "when": "true"
       }
     ],
     "configuration": {
@@ -240,6 +245,16 @@
         "category": "Typhoon Test"
       },
       {
+        "command": "typhoon-test.runTestsFromFile",
+        "title": "Run Tests From File",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.runCurrentlySelectedTest",
+        "title": "Run Currently Selected Test",
+        "category": "Typhoon Test"
+      },
+      {
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"
@@ -341,6 +356,62 @@
         {
           "command": "typhoon-test.pickOrganizationalLogoFilepath",
           "when": "false"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runCurrentlySelectedTest",
+          "when": "editorLangId == python"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "typhoon-test.openTestRunConfiguration",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.openPdfConfiguration",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runTests",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.stopTests",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "editorLangId == python"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runTests",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.stopTests",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.openTestRunConfiguration",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.openPdfConfiguration",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runCurrentlySelectedTest",
+          "when": "editorLangId == python"
         }
       ]
     }

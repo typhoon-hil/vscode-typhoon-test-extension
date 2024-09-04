@@ -5,8 +5,14 @@ import { PdfComposer } from '../models/pdfGenerator';
 export class PytestFactory {
     private config = getTestRunConfig();
     private platform = getPlatform();
+    private readonly activeFile?: string;
 
-    constructor() {
+    constructor(activeFile?: string) {
+        this.activeFile = activeFile;
+    }
+
+    private getActiveFile(): string {
+        return this.activeFile ? `"${this.activeFile}"` : '';
     }
 
     private getInterpreterPath(): string {
@@ -54,6 +60,7 @@ export class PytestFactory {
         return concat(
             "-m",
             "pytest",
+            this.getActiveFile(),
             ...this.getNames(),
             ...this.getMarks(),
             this.getAdditionalOptions(),

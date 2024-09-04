@@ -13,24 +13,19 @@ let wasKilled = false;
 let errorOccured = false;
 
 
-export function runTests(provider: TestTreeProvider): Promise<void> {
+export function runTests(provider: TestTreeProvider, activeFile?: string): Promise<void> {
     return new Promise((resolve, reject) => {
         testTreeProvider = provider;
     
-        if (!vscode.workspace.workspaceFolders) {
-            vscode.window.showErrorMessage('No workspace is open').then();
-            return;
-        }
-    
         resetTestRun(testTreeProvider);
     
-        const factory = new PytestFactory();
+        const factory = new PytestFactory(activeFile);
         const path = factory.getPythonPath();
         const flags = factory.getFlags();
     
         pytestProcess = cp.spawn(path, flags, {
             shell: true,
-            cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
+            cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
         });
     
         outputChannel = initOutputChannel();
