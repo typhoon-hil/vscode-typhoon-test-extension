@@ -13,7 +13,7 @@ let wasKilled = false;
 let errorOccured = false;
 
 
-export function runTests(provider: TestTreeProvider): Promise<void> {
+export function runTests(provider: TestTreeProvider, activeFile?: string): Promise<void> {
     return new Promise((resolve, reject) => {
         testTreeProvider = provider;
     
@@ -24,7 +24,7 @@ export function runTests(provider: TestTreeProvider): Promise<void> {
     
         resetTestRun(testTreeProvider);
     
-        const factory = new PytestFactory();
+        const factory = new PytestFactory(activeFile);
         const path = factory.getPythonPath();
         const flags = factory.getFlags();
     
