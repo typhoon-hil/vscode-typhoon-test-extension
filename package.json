@@ -250,6 +250,11 @@
         "category": "Typhoon Test"
       },
       {
+        "command": "typhoon-test.runCurrentlySelectedTest",
+        "title": "Run Currently Selected Test",
+        "category": "Typhoon Test"
+      },
+      {
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"
@@ -355,6 +360,10 @@
         {
           "command": "typhoon-test.runTestsFromFile",
           "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runCurrentlySelectedTest",
+          "when": "editorLangId == python"
         }
       ],
       "editor/title": [
@@ -398,6 +407,10 @@
         },
         {
           "command": "typhoon-test.openPdfConfiguration",
+          "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.runCurrentlySelectedTest",
           "when": "editorLangId == python"
         }
       ]
