@@ -11,7 +11,7 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {cancelPytestRun, runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
+import {cancelPytestRun, runPytestWithMonitoring} from './commands/runTests';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
 import {refreshPdfConfig} from './utils/pdfConfig';
