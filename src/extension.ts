@@ -73,6 +73,12 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.stopTests', () => {
+            cancelPytestRun();
+        })
+    );
+
+    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
@@ -80,10 +86,12 @@ export function activate(context: vscode.ExtensionContext) {
                 cancellable: true
             }, (_, token) => {
                 token.onCancellationRequested(() => {
-                    cancelPytestRun();
+                    vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
+                        vscode.window.showInformationMessage('Test run was cancelled');
+                    });
                 });
 
-                return new Promise((_, __) => {
+                return new Promise(() => {
                     runPytestWithMonitoring(testTreeProvider);
                 });
             });
