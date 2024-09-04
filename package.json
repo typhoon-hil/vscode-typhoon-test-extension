@@ -25,6 +25,11 @@
         "command": "typhoon-test.runTests",
         "key": "F7",
         "when": "true"
+      },
+      {
+        "command": "typhoon-test.stopTests",
+        "key": "F8",
+        "when": "true"
       }
     ],
     "configuration": {
@@ -222,6 +227,11 @@
       {
         "command": "typhoon-test.runTests",
         "title": "Run Tests",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.stopTests",
+        "title": "Stop Tests",
         "category": "Typhoon Test"
       },
       {

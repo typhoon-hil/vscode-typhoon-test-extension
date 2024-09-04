@@ -8,6 +8,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private tests: TestItem[] = [];
     private lastTest: TestItem | undefined;
+    private readonly dummyTest = new TestItem('Starting', vscode.TreeItemCollapsibleState.None, TestStatus.Running);
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -67,6 +68,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
+        this.clearInit();
         const test = this.findTest(testName);
         test ? this.updateTest(testName, status) : this.addTest(testName, status);
         this.refresh();
@@ -111,6 +113,18 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             this.refresh();
         }
     }
+
+    init() {
+        this.tests.push(this.dummyTest);
+        this.refresh();
+    }
+
+    clearInit() {
+        if (this.tests.includes(this.dummyTest)) {
+            this.tests.splice(this.tests.indexOf(this.dummyTest), 1);
+        }
+        this.refresh();
+    }
     
     private getTestNameDetails(test: TestItem): TestNameDetails {
         if (test.parent?.parent) {
@@ -131,5 +145,20 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             testName,
             testPath
         };
+    }
+
+    private getRunningTests(): TestItem[] {
+        return this.getFlattenTests().filter(test => test.status === TestStatus.Running)
+        .filter(test => test.getChildren().length === 0);
+    }
+
+    private getFlattenTests(tests: TestItem[] = this.tests): TestItem[] {
+        return tests.flatMap(test => [test, ...this.getFlattenTests(test.getChildren())]);
+    }
+
+    handleInterrupt() {
+        let t = this.getFlattenTests(this.tests);
+        this.getRunningTests().forEach(test => test.update(TestStatus.Interrupted));
+        this.refresh();
     }
 }

@@ -11,15 +11,17 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {runPytestWithMonitoring} from './commands/runPytestWithMonitoring';
+import {runTests} from './commands/runTests';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
 import {refreshPdfConfig} from './utils/pdfConfig';
+import { stopTests } from './commands/stopTests';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
     let testTreeProvider = new TestTreeProvider();
+    let resolveTestPromise: (() => void) | undefined;
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
@@ -73,8 +75,36 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.stopTests', () => {
+            stopTests();
+            resolveTestPromise?.();
+            resolveTestPromise = undefined;
+        })
+    );
+
+    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
-            runPytestWithMonitoring(testTreeProvider);
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: 'Running tests...',
+                cancellable: true
+            }, (_, token) => {
+                return new Promise<void>((resolve, reject) => {
+                    resolveTestPromise = resolve;
+
+                    token.onCancellationRequested(() => {
+                        vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
+                            vscode.window.showInformationMessage('Test run was cancelled');
+                        });
+                    });
+    
+                    runTests(testTreeProvider).then(() => {
+                        resolve();
+                    }).catch(() => {
+                        resolve();
+                    });
+                });
+            });
         })
     );
 

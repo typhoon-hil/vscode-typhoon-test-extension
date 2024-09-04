@@ -8,6 +8,7 @@ export enum TestStatus {
     Skipped = 'skipped',
     XPassed = 'xpassed',
     Error = 'error',
+    Interrupted = 'interrupted'
 }
 
 export class TestItem extends vscode.TreeItem {
@@ -46,17 +47,22 @@ export class TestItem extends vscode.TreeItem {
             case TestStatus.Error:
                 this.iconPath = new vscode.ThemeIcon('error');
                 break;
+            case TestStatus.Interrupted:
+                this.iconPath = new vscode.ThemeIcon('stop');
+                break;
         }
     }
 
     setStatus(status: TestStatus) {
         this.status = status;
         this.setIcon();
+        this.description = (status as string).toUpperCase();
     }
 
     addChild(child: TestItem) {
         this.children.push(child);
         child.parent = this;
+        this.updateStatus();
     }
 
     getChildren() {
@@ -65,7 +71,10 @@ export class TestItem extends vscode.TreeItem {
 
     private updateStatus() {
         const statuses = this.children.map(child => child.status);
-        if (statuses.includes(TestStatus.Running)) {
+        if (statuses.includes(TestStatus.Interrupted)) {
+            this.setStatus(TestStatus.Interrupted);
+        }
+        else if (statuses.includes(TestStatus.Running)) {
             this.setStatus(TestStatus.Running);
         }
         else if (statuses.includes(TestStatus.Error)) {
@@ -90,7 +99,6 @@ export class TestItem extends vscode.TreeItem {
 
     update(status: TestStatus) {
         this.setStatus(status);
-        this.description = (status as string).toUpperCase();
         this.parent?.updateStatus();
     }
 }

@@ -12,4 +12,10 @@ export class LinuxPlatform implements Platform {
     getPythonExecutableExtension(): string {
         return '';
     }
+
+    killProcess(pid: number | undefined): void {
+        if (pid) {
+            process.kill(pid);
+        }
+    }
 }
