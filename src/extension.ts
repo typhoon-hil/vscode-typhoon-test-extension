@@ -92,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: 'Running tests...',
+                title: 'Running tests from workspace',
                 cancellable: true
             }, (_, token) => {
                 return new Promise<void>((resolve, reject) => {
@@ -113,6 +113,39 @@ export function activate(context: vscode.ExtensionContext) {
             });
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTestsFromFile', () => {
+            const activeFile = vscode.window.activeTextEditor?.document.fileName;
+            if (!activeFile) {
+                vscode.window.showErrorMessage('No file is currently open');
+                return;
+            }
+
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: 'Running tests from file',
+                cancellable: true
+            }, (_, token) => {
+                return new Promise<void>((resolve, reject) => {
+                    resolveTestPromise = resolve;
+
+                    token.onCancellationRequested(() => {
+                        vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
+                            vscode.window.showInformationMessage('Test run was cancelled');
+                        });
+                    });
+    
+                    runTests(testTreeProvider, activeFile).then(() => {
+                        resolve();
+                    }).catch(() => {
+                        reject();
+                    });
+                });
+            });
+        })
+    );
+
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
