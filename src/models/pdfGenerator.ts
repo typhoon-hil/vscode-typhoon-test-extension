@@ -36,7 +36,7 @@ export class PdfComposer {
     }
 
     private addMotto(): PdfComposer {
-        this.command += `--pdf-slogan=${this.pdfConfig.organizationalMotto?.join('')} `;
+        this.command += `--pdf-slogan="${this.formatMotto()}" `;
         return this;
     }
 
@@ -62,6 +62,43 @@ export class PdfComposer {
         if (this.pdfConfig.plots) { return this; }
         this.command += `--pdf-skip-plots `;
         return this;
+    }
+
+    private formatMotto(): string {
+        let motto = this.pdfConfig.organizationalMotto;
+        if (!motto) { return ""; }
+        return this.applyHtmlTags(motto.join("\n"));
+    }
+
+    private applyHtmlTags(text: string): string {
+        const boldPattern = /\*\*[^\*\*]+\*\*/g;
+        const italicPattern = /_[^_]+_/g;
+        const newLinePattern = /\n/g;
+
+        let tmpText = text;
+
+        // Replace new lines with <br>
+        tmpText = tmpText.replace(newLinePattern, '</br>');
+
+        // Replace bold patterns
+        const boldMatches = tmpText.match(boldPattern);
+        if (boldMatches) {
+            boldMatches.forEach(match => {
+                const replacement = `<span style="font-weight: 700;">${match.replace(/\*\*/g, '')}</span>`;
+                tmpText = tmpText.replace(match, replacement);
+            });
+        }
+
+        // Replace italic patterns
+        const italicMatches = tmpText.match(italicPattern);
+        if (italicMatches) {
+            italicMatches.forEach(match => {
+                const replacement = `<i>${match.replace(/_/g, '')}</i>`;
+                tmpText = tmpText.replace(match, replacement);
+            });
+        }
+
+        return tmpText.replaceAll('"', '\\"');
     }
 
     getCommand(): string {
