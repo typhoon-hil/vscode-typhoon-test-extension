@@ -10,6 +10,7 @@ let pytestProcess: cp.ChildProcess | undefined;
 let outputChannel: vscode.OutputChannel | undefined;
 let testTreeProvider: TestTreeProvider | undefined;
 let wasKilled = false;
+let errorOccured = false;
 
 
 export function runTests(provider: TestTreeProvider): Promise<void> {
@@ -53,10 +54,16 @@ export function runTests(provider: TestTreeProvider): Promise<void> {
         pytestProcess.stderr?.on('data', (data: Buffer) => {
             const output = data.toString();
             outputChannel?.append(output);
+            errorOccured = true;
         });
     
         pytestProcess.on('exit', () => {
             if (wasKilled) { 
+                return;
+            }
+            if (errorOccured) {
+                reject();
+                testTreeProvider?.clearInit();
                 return;
             }
             runAllureReport();
@@ -90,6 +97,7 @@ function resetTestRun(testTreeProvider: TestTreeProvider) {
     testTreeProvider.clearTests();
     testTreeProvider.init();
     wasKilled = false;
+    errorOccured = false;
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {

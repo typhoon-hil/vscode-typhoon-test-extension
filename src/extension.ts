@@ -101,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
                     runTests(testTreeProvider).then(() => {
                         resolve();
                     }).catch(() => {
-                        resolve();
+                        reject();
                     });
                 });
             });
