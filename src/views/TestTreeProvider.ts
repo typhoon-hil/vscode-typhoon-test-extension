@@ -68,9 +68,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
-        if (this.tests.includes(this.dummyTest)) {
-            this.tests.splice(this.tests.indexOf(this.dummyTest), 1);
-        }
+        this.clearInit();
         const test = this.findTest(testName);
         test ? this.updateTest(testName, status) : this.addTest(testName, status);
         this.refresh();
@@ -118,6 +116,13 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     init() {
         this.tests.push(this.dummyTest);
+        this.refresh();
+    }
+
+    clearInit() {
+        if (this.tests.includes(this.dummyTest)) {
+            this.tests.splice(this.tests.indexOf(this.dummyTest), 1);
+        }
         this.refresh();
     }
     

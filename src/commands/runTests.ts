@@ -1,21 +1,25 @@
 import * as cp from 'child_process';
-import {TestTreeProvider} from '../views/TestTreeProvider';
-import {extractTestNameDetails, TestStatus} from '../models/testMonitoring';
+import { TestTreeProvider } from '../views/TestTreeProvider';
+import { extractTestNameDetails, TestStatus } from '../models/testMonitoring';
 import * as vscode from 'vscode';
-import {PytestFactory} from '../utils/pytestFactory';
-import {getTestRunConfig} from '../utils/config';
+import { PytestFactory } from '../utils/pytestFactory';
+import { getTestRunConfig } from '../utils/config';
+import { getPlatform } from '../utils/platform/selector';
 
 let pytestProcess: cp.ChildProcess | undefined;
 let outputChannel: vscode.OutputChannel | undefined;
+let testTreeProvider: TestTreeProvider | undefined;
+let wasKilled = false;
 
-export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
+export function runPytestWithMonitoring(provider: TestTreeProvider) {
+    testTreeProvider = provider;
+
     if (!vscode.workspace.workspaceFolders) {
         vscode.window.showErrorMessage('No workspace is open').then();
         return;
     }
 
     resetTestRun(testTreeProvider);
-
 
     const factory = new PytestFactory();
     const path = factory.getPythonPath();
@@ -25,7 +29,7 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
         shell: true,
         cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
     });
-    
+
     outputChannel = initOutputChannel();
     outputChannel.appendLine('TEST RUN STARTED...');
 
@@ -39,28 +43,39 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
         const lines = output.split('\n');
         lines.forEach(line => {
             if (!hasTestRunEnded().check(line)) {
-                handleTestLine(line, testTreeProvider);
+                handleTestLine(line, testTreeProvider!);
             }
         });
-    });
-
-    pytestProcess.stdout?.on('end', () => {
-        runAllureReport();
     });
 
     pytestProcess.stderr?.on('data', (data: Buffer) => {
         const output = data.toString();
         outputChannel?.append(output);
     });
+
+    pytestProcess.on('exit', () => {
+        if (wasKilled) { 
+            return;
+        }
+        runAllureReport();
+    });
 }
 
 export function stopPytestRun() {
     if (pytestProcess) {
-        pytestProcess.kill();
-        pytestProcess.stdout?.removeAllListeners();
-        pytestProcess.stderr?.removeAllListeners();
+        wasKilled = true;
+
+        try {
+            getPlatform().killProcess(pytestProcess.pid);
+        } catch (e) {
+            console.error(e);
+            wasKilled = false;
+            return;
+        }
+        
         pytestProcess = undefined;
         hasTestRunEnded().reset();
+        testTreeProvider?.clearInit();
         outputChannel?.appendLine('\nTEST RUN CANCELLED');
     }
 }
@@ -69,6 +84,7 @@ function resetTestRun(testTreeProvider: TestTreeProvider) {
     hasTestRunEnded().reset();
     testTreeProvider.clearTests();
     testTreeProvider.init();
+    wasKilled = false;
 }
 
 function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
@@ -92,7 +108,7 @@ function handleTestLine(line: string, testTreeProvider: TestTreeProvider) {
         if (!testTreeProvider.containsTest(testName)) {
             testTreeProvider.addOrUpdateTest(TestNameDetails, TestStatus.Running);
         }
-        
+
         if (statusString) {
             const status = statusStringToEnum(statusString);
             testTreeProvider.addOrUpdateTest(TestNameDetails, status);
