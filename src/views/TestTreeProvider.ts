@@ -148,10 +148,16 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     private getRunningTests(): TestItem[] {
-        return this.tests.flatMap(test => test.getChildren().filter(child => child.status === TestStatus.Running));
+        return this.getFlattenTests().filter(test => test.status === TestStatus.Running)
+        .filter(test => test.getChildren().length === 0);
+    }
+
+    private getFlattenTests(tests: TestItem[] = this.tests): TestItem[] {
+        return tests.flatMap(test => [test, ...this.getFlattenTests(test.getChildren())]);
     }
 
     handleInterrupt() {
+        let t = this.getFlattenTests(this.tests);
         this.getRunningTests().forEach(test => test.update(TestStatus.Interrupted));
         this.refresh();
     }
