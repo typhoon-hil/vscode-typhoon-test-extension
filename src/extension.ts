@@ -1,21 +1,22 @@
 import * as vscode from 'vscode';
-import {DocumentationProvider} from './views/DocumentationProvider';
-import {showDocstringView} from './commands/showDocstringView';
-import {ArgumentsProvider} from './views/ArgumentsProvider';
-import {showArgumentsView} from './commands/showArgumentsView';
-import {handleTreeViewItemClicked} from './commands/handleTreeViewItemClicked';
-import {addPythonEntity} from './commands/addPythonEntity';
-import {saveApiWizardWorkspace} from './commands/saveApiWizardWorkspace';
-import {TreeNode} from "./models/TreeNode";
-import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
-import {removePythonEntity} from "./commands/removePythonEntity";
-import {pickInterpreterPath} from "./commands/pickInterpreterPath";
-import {refreshConfigs} from './utils/config';
-import {runTests} from './commands/runTests';
-import {TestTreeProvider} from './views/TestTreeProvider';
-import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
-import {refreshPdfConfig} from './utils/pdfConfig';
+import { DocumentationProvider } from './views/DocumentationProvider';
+import { showDocstringView } from './commands/showDocstringView';
+import { ArgumentsProvider } from './views/ArgumentsProvider';
+import { showArgumentsView } from './commands/showArgumentsView';
+import { handleTreeViewItemClicked } from './commands/handleTreeViewItemClicked';
+import { addPythonEntity } from './commands/addPythonEntity';
+import { saveApiWizardWorkspace } from './commands/saveApiWizardWorkspace';
+import { TreeNode } from "./models/TreeNode";
+import { getPythonEntityTreeProvider } from "./views/PythonEntityTreeProvider";
+import { removePythonEntity } from "./commands/removePythonEntity";
+import { pickInterpreterPath } from "./commands/pickInterpreterPath";
+import { refreshConfigs } from './utils/config';
+import { runTests } from './commands/runTests';
+import { TestTreeProvider } from './views/TestTreeProvider';
+import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
+import { refreshPdfConfig } from './utils/pdfConfig';
 import { stopTests } from './commands/stopTests';
+import { getFullTestName } from './utils/editor';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -90,26 +91,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
+            const rootDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+            if (!rootDir) {
+                vscode.window.showErrorMessage('No workspace is open');
+                return;
+            }
+
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: 'Running tests from workspace',
+                title: `Running tests from ${rootDir}`,
                 cancellable: true
             }, (_, token) => {
-                return new Promise<void>((resolve, reject) => {
-                    resolveTestPromise = resolve;
-
-                    token.onCancellationRequested(() => {
-                        vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
-                            vscode.window.showInformationMessage('Test run was cancelled');
-                        });
-                    });
-    
-                    runTests(testTreeProvider).then(() => {
-                        resolve();
-                    }).catch(() => {
-                        reject();
-                    });
-                });
+                return getRunTestPromise(token);
             });
         })
     );
@@ -124,27 +117,32 @@ export function activate(context: vscode.ExtensionContext) {
 
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: 'Running tests from file',
+                title: `Running tests from ${activeFile}`,
                 cancellable: true
             }, (_, token) => {
-                return new Promise<void>((resolve, reject) => {
-                    resolveTestPromise = resolve;
-
-                    token.onCancellationRequested(() => {
-                        vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
-                            vscode.window.showInformationMessage('Test run was cancelled');
-                        });
-                    });
-    
-                    runTests(testTreeProvider, activeFile).then(() => {
-                        resolve();
-                    }).catch(() => {
-                        reject();
-                    });
-                });
+                return getRunTestPromise(token, activeFile);
             });
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
+            const fullTestName = getFullTestName();
+
+            if (!fullTestName) {
+                vscode.window.showErrorMessage('No test is currently selected');
+                return;
+            }
+
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: `Running test ${fullTestName}`,
+                cancellable: true
+            }, (_, token) => {
+                return getRunTestPromise(token, fullTestName);
+            });
+        }
+        ));
 
 
     context.subscriptions.push(
@@ -168,4 +166,22 @@ export function activate(context: vscode.ExtensionContext) {
             refreshPdfConfig();
         }
     });
+    
+    function getRunTestPromise(token: any, testName?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            resolveTestPromise = resolve;
+    
+            token.onCancellationRequested(() => {
+                vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
+                    vscode.window.showInformationMessage('Test run was cancelled');
+                });
+            });
+    
+            runTests(testTreeProvider, testName).then(() => {
+                resolve();
+            }).catch(() => {
+                reject();
+            });
+        });
+    }
 }
