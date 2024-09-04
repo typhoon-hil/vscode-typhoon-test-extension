@@ -220,6 +220,11 @@
         "category": "Typhoon Test"
       },
       {
+        "command": "typhoon-test.openPdfConfiguration",
+        "title": "Open PDF Configuration",
+        "category": "Typhoon Test"
+      },
+      {
         "command": "typhoon-test.pickInterpreterPath",
         "title": "Select File Path",
         "category": "Typhoon Test"

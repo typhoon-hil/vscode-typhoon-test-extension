@@ -69,6 +69,12 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.openPdfConfiguration', () => {
+            vscode.commands.executeCommand('workbench.action.openSettings', 'typhoon-test.pdfConfiguration').then();
+        })
+    );
+
+    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickInterpreterPath', () => {
             pickInterpreterPath();
         })
