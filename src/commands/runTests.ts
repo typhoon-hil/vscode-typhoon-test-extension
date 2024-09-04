@@ -11,53 +11,57 @@ let outputChannel: vscode.OutputChannel | undefined;
 let testTreeProvider: TestTreeProvider | undefined;
 let wasKilled = false;
 
-export function runTests(provider: TestTreeProvider) {
-    testTreeProvider = provider;
 
-    if (!vscode.workspace.workspaceFolders) {
-        vscode.window.showErrorMessage('No workspace is open').then();
-        return;
-    }
-
-    resetTestRun(testTreeProvider);
-
-    const factory = new PytestFactory();
-    const path = factory.getPythonPath();
-    const flags = factory.getFlags();
-
-    pytestProcess = cp.spawn(path, flags, {
-        shell: true,
-        cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
-    });
-
-    outputChannel = initOutputChannel();
-    outputChannel.appendLine('TEST RUN STARTED...');
-
-    pytestProcess.stdout?.on('data', (data: Buffer) => {
-        const output = data.toString();
-        if (output.includes('Report successfully generated')) {
-            outputChannel?.appendLine('');
-        }
-        outputChannel?.append(output);
-
-        const lines = output.split('\n');
-        lines.forEach(line => {
-            if (!hasTestRunEnded().check(line)) {
-                handleTestLine(line, testTreeProvider!);
-            }
-        });
-    });
-
-    pytestProcess.stderr?.on('data', (data: Buffer) => {
-        const output = data.toString();
-        outputChannel?.append(output);
-    });
-
-    pytestProcess.on('exit', () => {
-        if (wasKilled) { 
+export function runTests(provider: TestTreeProvider): Promise<void> {
+    return new Promise((resolve, reject) => {
+        testTreeProvider = provider;
+    
+        if (!vscode.workspace.workspaceFolders) {
+            vscode.window.showErrorMessage('No workspace is open').then();
             return;
         }
-        runAllureReport();
+    
+        resetTestRun(testTreeProvider);
+    
+        const factory = new PytestFactory();
+        const path = factory.getPythonPath();
+        const flags = factory.getFlags();
+    
+        pytestProcess = cp.spawn(path, flags, {
+            shell: true,
+            cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
+        });
+    
+        outputChannel = initOutputChannel();
+        outputChannel.appendLine('TEST RUN STARTED...');
+    
+        pytestProcess.stdout?.on('data', (data: Buffer) => {
+            const output = data.toString();
+            if (output.includes('Report successfully generated')) {
+                outputChannel?.appendLine('');
+            }
+            outputChannel?.append(output);
+    
+            const lines = output.split('\n');
+            lines.forEach(line => {
+                if (!hasTestRunEnded().check(line)) {
+                    handleTestLine(line, testTreeProvider!);
+                }
+            });
+        });
+    
+        pytestProcess.stderr?.on('data', (data: Buffer) => {
+            const output = data.toString();
+            outputChannel?.append(output);
+        });
+    
+        pytestProcess.on('exit', () => {
+            if (wasKilled) { 
+                return;
+            }
+            runAllureReport();
+            resolve();
+        });
     });
 }
 

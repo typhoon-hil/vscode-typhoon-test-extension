@@ -21,6 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
     let testTreeProvider = new TestTreeProvider();
+    let resolveTestPromise: (() => void) | undefined;
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
@@ -76,6 +77,8 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.stopTests', () => {
             stopTests();
+            resolveTestPromise?.();
+            resolveTestPromise = undefined;
         })
     );
 
@@ -86,14 +89,20 @@ export function activate(context: vscode.ExtensionContext) {
                 title: 'Running tests...',
                 cancellable: true
             }, (_, token) => {
-                token.onCancellationRequested(() => {
-                    vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
-                        vscode.window.showInformationMessage('Test run was cancelled');
-                    });
-                });
+                return new Promise<void>((resolve, reject) => {
+                    resolveTestPromise = resolve;
 
-                return new Promise(() => {
-                    runTests(testTreeProvider);
+                    token.onCancellationRequested(() => {
+                        vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
+                            vscode.window.showInformationMessage('Test run was cancelled');
+                        });
+                    });
+    
+                    runTests(testTreeProvider).then(() => {
+                        resolve();
+                    }).catch(() => {
+                        resolve();
+                    });
                 });
             });
         })
