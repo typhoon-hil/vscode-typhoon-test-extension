@@ -66,3 +66,8 @@ The extension needs to be configured in order to work properly. The configuratio
 - Python 3.6 or higher (for running Python scripts)
 - pytest 6.2.4 or higher (for running tests)
 - Typhoon HIL (recommended for full usage of the extension)
+
+## What's New
+
+- **Run Tests from Active File or Specific Test**: Quickly execute all tests in the active Python file or run a specific test by placing the cursor on the test name.
+- **Stop Running Tests**: Easily terminate ongoing test executions with a dedicated stop command.
