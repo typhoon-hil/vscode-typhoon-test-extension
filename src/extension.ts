@@ -11,10 +11,11 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {cancelPytestRun, runPytestWithMonitoring} from './commands/runTests';
+import {runPytestWithMonitoring} from './commands/runTests';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
 import {refreshPdfConfig} from './utils/pdfConfig';
+import { stopTests } from './commands/stopTests';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -74,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.stopTests', () => {
-            cancelPytestRun();
+            stopTests();
         })
     );
 

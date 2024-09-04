@@ -54,7 +54,7 @@ export function runPytestWithMonitoring(testTreeProvider: TestTreeProvider) {
     });
 }
 
-export function cancelPytestRun() {
+export function stopPytestRun() {
     if (pytestProcess) {
         pytestProcess.kill();
         pytestProcess.stdout?.removeAllListeners();
