@@ -77,7 +77,7 @@ export function stopPytestRun() {
         hasTestRunEnded().reset();
         testTreeProvider?.clearInit();
         testTreeProvider?.handleInterrupt();
-        outputChannel?.appendLine('\nTEST RUN CANCELLED');
+        outputChannel?.appendLine('\nTEST RUN INTERRUPTED');
     }
 }
 
