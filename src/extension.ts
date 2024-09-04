@@ -11,7 +11,7 @@ import {getPythonEntityTreeProvider} from "./views/PythonEntityTreeProvider";
 import {removePythonEntity} from "./commands/removePythonEntity";
 import {pickInterpreterPath} from "./commands/pickInterpreterPath";
 import {refreshConfigs} from './utils/config';
-import {runPytestWithMonitoring} from './commands/runTests';
+import {runTests} from './commands/runTests';
 import {TestTreeProvider} from './views/TestTreeProvider';
 import {pickOrganizationalLogoFilepath} from './commands/pickOrganizationalLogoFilepath';
 import {refreshPdfConfig} from './utils/pdfConfig';
@@ -93,7 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
                 });
 
                 return new Promise(() => {
-                    runPytestWithMonitoring(testTreeProvider);
+                    runTests(testTreeProvider);
                 });
             });
         })

@@ -11,7 +11,7 @@ let outputChannel: vscode.OutputChannel | undefined;
 let testTreeProvider: TestTreeProvider | undefined;
 let wasKilled = false;
 
-export function runPytestWithMonitoring(provider: TestTreeProvider) {
+export function runTests(provider: TestTreeProvider) {
     testTreeProvider = provider;
 
     if (!vscode.workspace.workspaceFolders) {
