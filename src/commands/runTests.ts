@@ -17,11 +17,6 @@ export function runTests(provider: TestTreeProvider, activeFile?: string): Promi
     return new Promise((resolve, reject) => {
         testTreeProvider = provider;
     
-        if (!vscode.workspace.workspaceFolders) {
-            vscode.window.showErrorMessage('No workspace is open').then();
-            return;
-        }
-    
         resetTestRun(testTreeProvider);
     
         const factory = new PytestFactory(activeFile);
@@ -30,7 +25,7 @@ export function runTests(provider: TestTreeProvider, activeFile?: string): Promi
     
         pytestProcess = cp.spawn(path, flags, {
             shell: true,
-            cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
+            cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
         });
     
         outputChannel = initOutputChannel();
