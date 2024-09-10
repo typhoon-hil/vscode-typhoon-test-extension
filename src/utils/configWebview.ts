@@ -1,34 +1,37 @@
 import * as vscode from 'vscode';
 import { Config, ConfigType } from "../models/config";
+import * as fs from 'fs';
+import * as path from 'path';
+
+const configSchema = getConfigurationSchema();
 
 export function generateConfigElement(config: Config): string {
+    const label = `<label>${config.label}</label>`;
     switch (config.type) {
         case 'string':
-            return `<input type="text" value="${config.value}" />`;
+            return `${label}<input type="text" value="${config.value}" />`;
         case 'number':
         case 'integer':
-            return `<input type="number" value="${config.value}" />`;
+            return `${label}<input type="number" value="${config.value}" />`;
         case 'boolean':
-            return `<input type="checkbox" ${config.value ? 'checked' : ''} />`;
+            return `${label}<input type="checkbox" ${config.value ? 'checked' : ''} />`;
         case 'object':
         case 'array':
-            return `<textarea>${JSON.stringify(config.value, null, 2)}</textarea>`;
+            return `${label}<textarea>${JSON.stringify(config.value, null, 2)}</textarea>`;
         case 'null':
-            return `<p>null</p>`;
+            return `${label}<p>null</p>`;
     }
 }
 
 export function generateConfigHtml(configs: Config[]): string {
-    return `
-        <div>
-            ${configs.map(generateConfigElement).join('\n')}
-        </div>
-    `;
+    return configs.map(generateConfigElement).map(element => wrap(element, 'div')).join('\n');
 }
 
 export function getConfigs(configGroup: string): Config[] {
     const configs = vscode.workspace.getConfiguration(configGroup);
-    return Object.keys(configs).map(key => {
+    const schemaKeys = Object.keys(configSchema);
+
+    return Object.keys(configs).filter(key => schemaKeys.includes(`${configGroup}.${key}`)).map(key => {
         const config = configs.inspect(key);
         if (!config) {
             throw new Error(`Config ${key} not found`);
@@ -64,4 +67,15 @@ function determineType(value: any): ConfigType {
 export function updateConfig(configGroup: string, key: string, value: any) {
     const config = vscode.workspace.getConfiguration(configGroup);
     config.update(key, value, vscode.ConfigurationTarget.Global);
+}
+
+function wrap(content: string, wrapper: string): string {
+    return `<${wrapper}>${content}</${wrapper}>`;
+}
+
+function getConfigurationSchema() {
+    const extensionPath = vscode.extensions.getExtension('balsabulatovic.tt-demo')?.extensionPath || '';
+    const packageJsonPath = path.join(extensionPath, 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    return packageJson.contributes?.configuration?.properties || {};
 }

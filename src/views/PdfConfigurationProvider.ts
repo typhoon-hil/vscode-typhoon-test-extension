@@ -1,9 +1,14 @@
 import * as vscode from 'vscode';
+import { generateConfigHtml, getConfigs } from '../utils/configWebview';
 
 export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
+    private _cssPath: vscode.Uri;
+    private _jsPath: vscode.Uri;
 
     constructor(private readonly _extensionUri: vscode.Uri) {
+        this._cssPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'argumentsWebview.css');
+        this._jsPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'pdfConfiguration', 'pdfConfiguration.js');
     }
 
     public resolveWebviewView(
@@ -21,9 +26,21 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     }
 
     private getInitHtml(): string {
+        const configs = getConfigs('typhoon-test.pdfConfiguration');
+        const elements = generateConfigHtml(configs);
         return `
-            <h1>PDF Configuration</h1>
-            <p>Configure your PDF settings here.</p>
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <link rel="stylesheet" type="text/css" href="${this._cssPath}" />
+                    <script src="${this._jsPath}"></script>
+                </head>
+                <body>
+                    <div id="pdf-configuration">
+                        ${elements}
+                    </div>
+                </body>
+            </html>
         `;
     }
 }
