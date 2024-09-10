@@ -6,8 +6,8 @@ import * as path from 'path';
 const configSchema = getConfigurationSchema();
 
 export function generateConfigElement(config: Config): string {
-    const title = `<div class="setting-item-title">${config.label}</div>`;
-    const description = config.description ? `<div class="setting-item-description">${config.description}</div>` : '';
+    const title = `<div class="config-item-title">${config.label}</div>`;
+    const description = config.description ? `<div class="config-item-description">${config.description}</div>` : '';
 
     switch (config.type) {
         case 'string':
@@ -18,7 +18,7 @@ export function generateConfigElement(config: Config): string {
             return `
             ${title}
             ${description}
-            <div class="setting-item-value">
+            <div class="config-item-value">
                 <input type="${type}" value="${config.value}" />
             </div>
             `;
@@ -26,7 +26,7 @@ export function generateConfigElement(config: Config): string {
         case 'boolean':
             return `
                 ${title}
-                <div class="setting-item-value-description">
+                <div class="config-item-value-description">
                     <input type="checkbox" class="checkbox" ${config.value ? 'checked' : ''} />
                     ${description}
                 </div>
@@ -37,7 +37,7 @@ export function generateConfigElement(config: Config): string {
             return `
                 ${title}
                 ${description}
-                <textarea class="setting-item-value">${JSON.stringify(config.value, null, 2)}</textarea>
+                <textarea class="config-item-value">${JSON.stringify(config.value, null, 2)}</textarea>
             `;
         case 'null':
             return `${title}<p>null</p>`;
@@ -46,7 +46,7 @@ export function generateConfigElement(config: Config): string {
 
 export function generateConfigHtml(configs: Config[]): string {
     return configs.map(generateConfigElement)
-    .map(element => wrap(element, 'div class="setting-item"', 'div')).join('\n');
+    .map(element => wrap(element, 'div class="config-item"', 'div')).join('\n');
 }
 
 export function getConfigs(configGroup: string): Config[] {
@@ -54,7 +54,7 @@ export function getConfigs(configGroup: string): Config[] {
     const schemaKeys = Object.keys(configSchema);
 
     return Object.keys(configs).filter(key => schemaKeys.includes(`${configGroup}.${key}`)).map(key => {
-        const settingName = `${configGroup}.${key}`;
+        const configName = `${configGroup}.${key}`;
         const config = configs.inspect(key);
         if (!config) {
             throw new Error(`Config ${key} not found`);
@@ -63,10 +63,11 @@ export function getConfigs(configGroup: string): Config[] {
         const value = config.globalValue ?? config.workspaceValue ?? config.defaultValue;
 
         return {
-            label: config.key,
-            type: configSchema[settingName].type as ConfigType,
-            description: configSchema[settingName].description,
-            value: value
+            label: key,
+            type: configSchema[configName].type as ConfigType,
+            description: configSchema[configName].description,
+            value: value,
+            group: configGroup
         };
     });
 }

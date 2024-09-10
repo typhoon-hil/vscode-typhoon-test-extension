@@ -1,4 +1,4 @@
-.setting-item-title {
+.config-item-title {
     display: inline-block;
     padding-bottom: 2px;
     text-overflow: ellipsis;
@@ -6,7 +6,7 @@
     color: var(--vscode-foreground);
 }
 
-.setting-item-description {
+.config-item-description {
     color: var(--vscode-foreground);
     margin-top: -1px;
     opacity: .7;
@@ -45,11 +45,11 @@ textarea {
     border: 1px solid var(--vscode-settings-textInputBorder, transparent);
 }
 
-.setting-item {
+.config-item {
     padding: 12px 14px 18px;
 }
 
-.setting-item:hover {
+.config-item:hover {
     background-color: var(--vscode-settings-focusedRowBackground);
     outline: 1px solid var(--vscode-settings-focusedRowBorder);
 }
@@ -65,12 +65,12 @@ input[type="checkbox"] {
     margin-right: 8px;
 }
 
-.setting-item-value {
+.config-item-value {
     display: flex;
     margin-top: 9px;
 }
 
-.setting-item-value-description {
+.config-item-value-description {
     cursor: pointer;
     display: flex;
     align-items: center;

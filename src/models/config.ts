@@ -5,4 +5,5 @@ export interface Config {
     type: ConfigType;
     value: any;
     description?: string;
+    group: string;
 }
