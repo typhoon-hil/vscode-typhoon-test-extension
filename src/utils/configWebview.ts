@@ -3,9 +3,9 @@ import { Config, ConfigType } from "../models/config";
 import * as fs from 'fs';
 import * as path from 'path';
 
-const configSchema = getConfigurationSchema();
+const configSchema = getConfigSchema();
 
-export function generateConfigElement(config: Config): string {
+function generateConfigElement(config: Config): string {
     const title = `<div class="config-item-title">${config.label}</div>`;
     const description = config.description ? `<div class="config-item-description">${config.description}</div>` : '';
 
@@ -44,9 +44,8 @@ export function generateConfigElement(config: Config): string {
     }
 }
 
-export function generateConfigHtml(configs: Config[]): string {
-    return configs.map(generateConfigElement)
-    .map(element => wrap(element, 'div class="config-item"', 'div')).join('\n');
+export function generateConfigElements(configs: Config[]): string {
+    return configs.map(wrapAndGenerateConfigElement).join('\n');
 }
 
 export function getConfigs(configGroup: string): Config[] {
@@ -81,7 +80,14 @@ function wrap(content: string, startWrapper: string, endWrapper: string): string
     return `<${startWrapper}>${content}</${endWrapper}>`;
 }
 
-function getConfigurationSchema() {
+function wrapAndGenerateConfigElement(config: Config): string {
+    const id = config.group + '.' + config.label;
+    return `<div class="config-item" id="${id}">
+        ${generateConfigElement(config)}
+    </div>`;
+}
+
+function getConfigSchema() {
     const extensionPath = vscode.extensions.getExtension('balsabulatovic.tt-demo')?.extensionPath || '';
     const packageJsonPath = path.join(extensionPath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { generateConfigHtml, getConfigs } from '../utils/configWebview';
+import { generateConfigElements, getConfigs } from '../utils/configWebview';
 
 export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -23,7 +23,7 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
 
     private getInitHtml(): string {
         const configs = getConfigs('typhoon-test.pdfConfiguration');
-        const elements = generateConfigHtml(configs);
+        const elements = generateConfigElements(configs);
 
         const cssPath = this._view?.webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'media', 'pdfConfiguration', 'pdfConfiguration.css')
