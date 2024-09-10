@@ -6,25 +6,39 @@ import * as path from 'path';
 const configSchema = getConfigurationSchema();
 
 export function generateConfigElement(config: Config): string {
-    const label = `<label>${config.label}</label>`;
+    const title = `<div class="setting-item-title">${config.label}</div>`;
     switch (config.type) {
         case 'string':
-            return `${label}<input type="text" value="${config.value}" />`;
         case 'number':
         case 'integer':
-            return `${label}<input type="number" value="${config.value}" />`;
+            const type = config.type === 'string' ? 'text' : 'number';
+
+            return `
+            ${title}
+            <div class="setting-item-value">
+                <input type="${type}" value="${config.value}" />
+            </div>
+            `;
+            
         case 'boolean':
-            return `${label}<input type="checkbox" ${config.value ? 'checked' : ''} />`;
+            return `
+                ${title}
+                <div class="setting-item-value-description">
+                    <input type="checkbox" class="checkbox" ${config.value ? 'checked' : ''} />
+                </div>
+            `;
+        
         case 'object':
         case 'array':
-            return `${label}<textarea>${JSON.stringify(config.value, null, 2)}</textarea>`;
+            return `${title}<textarea class="setting-item-value">${JSON.stringify(config.value, null, 2)}</textarea>`;
         case 'null':
-            return `${label}<p>null</p>`;
+            return `${title}<p>null</p>`;
     }
 }
 
 export function generateConfigHtml(configs: Config[]): string {
-    return configs.map(generateConfigElement).map(element => wrap(element, 'div')).join('\n');
+    return configs.map(generateConfigElement)
+    .map(element => wrap(element, 'div class="setting-item"', 'div')).join('\n');
 }
 
 export function getConfigs(configGroup: string): Config[] {
@@ -69,8 +83,8 @@ export function updateConfig(configGroup: string, key: string, value: any) {
     config.update(key, value, vscode.ConfigurationTarget.Global);
 }
 
-function wrap(content: string, wrapper: string): string {
-    return `<${wrapper}>${content}</${wrapper}>`;
+function wrap(content: string, startWrapper: string, endWrapper: string): string {
+    return `<${startWrapper}>${content}</${endWrapper}>`;
 }
 
 function getConfigurationSchema() {
