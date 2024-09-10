@@ -295,6 +295,11 @@
         {
           "id": "typhoon-test.pytestMonitorView",
           "name": "Pytest Monitor"
+        },
+        {
+          "id": "typhoon-test.pdfConfigurationView",
+          "name": "PDF Configuration",
+          "type": "webview"
         }
       ]
     },
