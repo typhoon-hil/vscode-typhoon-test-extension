@@ -4,4 +4,5 @@ export interface Config {
     label: string;
     type: ConfigType;
     value: any;
+    description?: string;
 }

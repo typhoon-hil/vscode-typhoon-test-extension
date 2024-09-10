@@ -9,7 +9,7 @@
 .setting-item-description {
     color: var(--vscode-foreground);
     margin-top: -1px;
-    opacity: .9;
+    opacity: .7;
     user-select: text;
     -webkit-user-select: text;
 }
@@ -32,6 +32,19 @@ input[type="text"]:focus {
     outline: 1px solid var(--vscode-settings-focusedRowBorder);
 }
 
+textarea {
+    border: none;
+    box-sizing: border-box;
+    color: var(--vscode-settings-textInputForeground);
+    background-color: var(--vscode-input-background);
+    display: inline-block;
+    height: fit-content;
+    overflow-y: hidden;
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid var(--vscode-settings-textInputBorder, transparent);
+}
+
 .setting-item {
     padding: 12px 14px 18px;
 }
@@ -47,6 +60,9 @@ input[type="checkbox"] {
     color: var(--vscode-settings-checkboxForeground) !important;
     cursor: pointer;
     display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
 }
 
 .setting-item-value {
@@ -57,4 +73,5 @@ input[type="checkbox"] {
 .setting-item-value-description {
     cursor: pointer;
     display: flex;
+    align-items: center;
 }

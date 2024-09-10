@@ -7,6 +7,8 @@ const configSchema = getConfigurationSchema();
 
 export function generateConfigElement(config: Config): string {
     const title = `<div class="setting-item-title">${config.label}</div>`;
+    const description = config.description ? `<div class="setting-item-description">${config.description}</div>` : '';
+
     switch (config.type) {
         case 'string':
         case 'number':
@@ -15,6 +17,7 @@ export function generateConfigElement(config: Config): string {
 
             return `
             ${title}
+            ${description}
             <div class="setting-item-value">
                 <input type="${type}" value="${config.value}" />
             </div>
@@ -25,12 +28,17 @@ export function generateConfigElement(config: Config): string {
                 ${title}
                 <div class="setting-item-value-description">
                     <input type="checkbox" class="checkbox" ${config.value ? 'checked' : ''} />
+                    ${description}
                 </div>
             `;
         
         case 'object':
         case 'array':
-            return `${title}<textarea class="setting-item-value">${JSON.stringify(config.value, null, 2)}</textarea>`;
+            return `
+                ${title}
+                ${description}
+                <textarea class="setting-item-value">${JSON.stringify(config.value, null, 2)}</textarea>
+            `;
         case 'null':
             return `${title}<p>null</p>`;
     }
@@ -46,6 +54,7 @@ export function getConfigs(configGroup: string): Config[] {
     const schemaKeys = Object.keys(configSchema);
 
     return Object.keys(configs).filter(key => schemaKeys.includes(`${configGroup}.${key}`)).map(key => {
+        const settingName = `${configGroup}.${key}`;
         const config = configs.inspect(key);
         if (!config) {
             throw new Error(`Config ${key} not found`);
@@ -55,27 +64,11 @@ export function getConfigs(configGroup: string): Config[] {
 
         return {
             label: config.key,
-            type: determineType(value),
+            type: configSchema[settingName].type as ConfigType,
+            description: configSchema[settingName].description,
             value: value
         };
     });
-}
-
-function determineType(value: any): ConfigType {
-    switch (typeof value) {
-        case 'string':
-            return 'string';
-        case 'number':
-            return Number.isInteger(value) ? 'integer' : 'number';
-        case 'boolean':
-            return 'boolean';
-        case 'object':
-            return Array.isArray(value) ? 'array' : 'object';
-        case 'undefined':
-            return 'null';
-        default:
-            throw new Error(`Unsupported config type: ${typeof value}`);
-    }
 }
 
 export function updateConfig(configGroup: string, key: string, value: any) {
