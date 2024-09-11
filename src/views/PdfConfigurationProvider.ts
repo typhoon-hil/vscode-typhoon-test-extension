@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { generateConfigElements, getConfigs } from '../utils/configWebview';
-import { TakenActionMessage } from '../models/snippet';
-import { ConfigResponse } from '../models/config';
+import { ConfigError, ConfigResponse } from '../models/config';
 
 export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -53,7 +52,11 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
         `;
     }
 
-    handleMessage(message: ConfigResponse) {
+    handleMessage(message: ConfigResponse | ConfigError) {
+        if ('error' in message) {
+            vscode.window.showErrorMessage(message.error);
+            return;
+        }
         vscode.workspace.getConfiguration().update(message.configName, message.value, vscode.ConfigurationTarget.Global);
     }
 }

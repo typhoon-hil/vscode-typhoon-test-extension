@@ -13,6 +13,7 @@ function autoResize(textarea) {
 window.onload = function() {
     addTextareaEventListeners();
     addCheckboxEventListeners();
+    addTextInputEventListeners();
 };
 
 function addTextareaEventListeners() {
@@ -21,11 +22,8 @@ function addTextareaEventListeners() {
     textareas.forEach(textarea => {
         autoResize(textarea); // Initial resize based on existing content
 
-
         // Add input event listener for dynamic resizing
-        textarea.addEventListener('input', function () {
-            autoResize(this);
-        });
+        textarea.addEventListener('input', debounce(handleTextareaChange, 500));
     });
 }
 
@@ -41,9 +39,50 @@ function addCheckboxEventListeners() {
     });
 }
 
+function addTextInputEventListeners() {
+    const textInputs = document.querySelectorAll('input[type="text"]'); // Catch all text inputs
+
+    textInputs.forEach(textInput => {
+        textInput.addEventListener('input', debounce(handleInputChange, 500));
+    });
+}
+
+// Debounce function
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Function to be executed after debouncing
+function handleInputChange(event) {
+    let value = event.target.value;
+    let configName = event.target.id;
+    sendMessage(configName, value);
+}
+
+function handleTextareaChange(event) {
+    let value;
+    try {
+        value = JSON.parse(event.target.value);
+    } catch (error) {
+        return sendErrorMessage("Invalid JSON format");
+    }
+    let configName = event.target.id;
+    sendMessage(configName, value);
+}
+
 function sendMessage(configName, value) {
     vscode.postMessage({
         configName: configName,
         value: value
+    });
+}
+
+function sendErrorMessage(message) {
+    vscode.postMessage({
+        error: message
     });
 }

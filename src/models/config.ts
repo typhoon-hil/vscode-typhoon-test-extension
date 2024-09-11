@@ -12,3 +12,7 @@ export interface ConfigResponse {
     configName: string;
     value: any;
 }
+
+export interface ConfigError {
+    error: string;
+}
