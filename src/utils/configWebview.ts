@@ -6,8 +6,8 @@ import * as path from 'path';
 const configSchema = getConfigSchema();
 
 function generateConfigElement(config: Config): string {
-    const title = `<div class="config-item-title">${config.label}</div>`;
-    const description = config.description ? `<div class="config-item-description">${config.description}</div>` : '';
+    const title = `<div class="config-item-title">${convertCamelCaseToNormal(config.label)}</div>`;
+    const description = config.description ? `<div class="config-item-description">${descriptionToHtml(config.description)}</div>` : '';
     const id = config.group + '.' + config.label;
 
     switch (config.type) {
@@ -65,7 +65,7 @@ export function getConfigs(configGroup: string): Config[] {
         return {
             label: key,
             type: configSchema[configName].type as ConfigType,
-            description: configSchema[configName].description,
+            description: configSchema[configName].description || configSchema[configName].markdownDescription,
             value: value,
             group: configGroup
         };
@@ -78,8 +78,7 @@ export function updateConfig(configGroup: string, key: string, value: any) {
 }
 
 function wrapAndGenerateConfigElement(config: Config): string {
-    const id = config.group + '.' + config.label;
-    return `<div class="config-item">
+    return `<div class="config-item" id="${config.group}.${config.label}_div"> // Add _div to the id to link with descriptionToHtml
         ${generateConfigElement(config)}
     </div>`;
 }
@@ -89,4 +88,14 @@ function getConfigSchema() {
     const packageJsonPath = path.join(extensionPath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
     return packageJson.contributes?.configuration?.properties || {};
+}
+
+function convertCamelCaseToNormal(text: string): string {
+    return text
+        .replace(/^./, str => str.toUpperCase())
+        .replace(/([A-Z])/g, ' $1');
+}
+
+function descriptionToHtml(description: string): string {
+    return description.replace(/`#([^#]+)#`/g, '<a href="#$1_div">$1</a>'); // Add _div to the id to link with wrapAndGenerateConfigElement
 }
