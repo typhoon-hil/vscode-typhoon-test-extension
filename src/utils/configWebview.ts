@@ -77,8 +77,8 @@ export function updateConfig(configGroup: string, key: string, value: any) {
     config.update(key, value, vscode.ConfigurationTarget.Global);
 }
 
-function wrapAndGenerateConfigElement(config: Config): string {
-    return `<div class="config-item" id="${config.group}.${config.label}_div"> // Add _div to the id to link with descriptionToHtml
+function wrapAndGenerateConfigElement(config: Config): string { // Add _div to the id to link with descriptionToHtml
+    return `<div class="config-item" id="${config.group}.${config.label}_div"> 
         ${generateConfigElement(config)}
     </div>`;
 }
@@ -97,5 +97,7 @@ function convertCamelCaseToNormal(text: string): string {
 }
 
 function descriptionToHtml(description: string): string {
-    return description.replace(/`#([^#]+)#`/g, '<a href="#$1_div">$1</a>'); // Add _div to the id to link with wrapAndGenerateConfigElement
+    return description.replace(/`#([^#]+)#`/g, '<a href="#$1_div">$1</a>') // Add _div to the id to link with wrapAndGenerateConfigElement
+        .replace(/[^.\n]*\[[^\]]+\]\([^)]+\)[^.\n]*[.]*\n*/g, '')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
 }
