@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { generateConfigElements, getConfigs } from '../utils/configWebview';
+import { TakenActionMessage } from '../models/snippet';
+import { ConfigResponse } from '../models/config';
 
 export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -19,8 +21,10 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
         };
 
         webviewView.webview.html = this.getInitHtml();
-    }
 
+        webviewView.webview.onDidReceiveMessage(this.handleMessage);
+    }
+    
     private getInitHtml(): string {
         const configs = getConfigs('typhoon-test.pdfConfiguration');
         const elements = generateConfigElements(configs);
@@ -47,5 +51,9 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
                 </body>
             </html>
         `;
+    }
+
+    handleMessage(message: ConfigResponse) {
+        vscode.workspace.getConfiguration().update(message.configName, message.value, vscode.ConfigurationTarget.Global);
     }
 }

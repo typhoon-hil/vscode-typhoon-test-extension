@@ -8,6 +8,7 @@ const configSchema = getConfigSchema();
 function generateConfigElement(config: Config): string {
     const title = `<div class="config-item-title">${config.label}</div>`;
     const description = config.description ? `<div class="config-item-description">${config.description}</div>` : '';
+    const id = config.group + '.' + config.label;
 
     switch (config.type) {
         case 'string':
@@ -19,7 +20,7 @@ function generateConfigElement(config: Config): string {
             ${title}
             ${description}
             <div class="config-item-value">
-                <input type="${type}" value="${config.value}" />
+                <input id="${id}" type="${type}" value="${config.value}" />
             </div>
             `;
             
@@ -27,7 +28,7 @@ function generateConfigElement(config: Config): string {
             return `
                 ${title}
                 <div class="config-item-value-description">
-                    <input type="checkbox" class="checkbox" ${config.value ? 'checked' : ''} />
+                    <input id="${id}" type="checkbox" class="checkbox" ${config.value ? 'checked' : ''} />
                     ${description}
                 </div>
             `;
@@ -37,7 +38,7 @@ function generateConfigElement(config: Config): string {
             return `
                 ${title}
                 ${description}
-                <textarea class="config-item-value">${JSON.stringify(config.value, null, 2)}</textarea>
+                <textarea id="${id}" class="config-item-value">${JSON.stringify(config.value, null, 2)}</textarea>
             `;
         case 'null':
             return `${title}<p>null</p>`;
@@ -76,13 +77,9 @@ export function updateConfig(configGroup: string, key: string, value: any) {
     config.update(key, value, vscode.ConfigurationTarget.Global);
 }
 
-function wrap(content: string, startWrapper: string, endWrapper: string): string {
-    return `<${startWrapper}>${content}</${endWrapper}>`;
-}
-
 function wrapAndGenerateConfigElement(config: Config): string {
     const id = config.group + '.' + config.label;
-    return `<div class="config-item" id="${id}">
+    return `<div class="config-item">
         ${generateConfigElement(config)}
     </div>`;
 }

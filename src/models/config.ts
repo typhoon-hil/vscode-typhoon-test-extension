@@ -7,3 +7,8 @@ export interface Config {
     description?: string;
     group: string;
 }
+
+export interface ConfigResponse {
+    configName: string;
+    value: any;
+}
