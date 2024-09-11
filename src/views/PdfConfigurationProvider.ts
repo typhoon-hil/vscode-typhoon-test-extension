@@ -5,11 +5,11 @@ import { ConfigError, ConfigResponse } from '../models/config';
 export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
 
-    constructor(private readonly _extensionUri: vscode.Uri) {
+    constructor(private readonly _extensionUri: vscode.Uri, private readonly _configGroup: string) {
     }
 
     refresh(): void {
-        getConfigs('typhoon-test.pdfConfiguration')
+        getConfigs(this._configGroup)
         .forEach(config => {
             this._view?.webview.postMessage({
                 configName: config.group + '.' + config.label,
@@ -35,7 +35,7 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     }
     
     private getInitHtml(): string {
-        const configs = getConfigs('typhoon-test.pdfConfiguration');
+        const configs = getConfigs(this._configGroup);
         const elements = generateConfigElements(configs);
 
         const cssPath = this._view?.webview.asWebviewUri(

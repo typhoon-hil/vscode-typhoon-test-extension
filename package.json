@@ -300,6 +300,11 @@
           "id": "typhoon-test.pdfConfigurationView",
           "name": "PDF Configuration",
           "type": "webview"
+        },
+        {
+          "id": "typhoon-test.testRunConfigurationView",
+          "name": "Test Run Configuration",
+          "type": "webview"
         }
       ]
     },

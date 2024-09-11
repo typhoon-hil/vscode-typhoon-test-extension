@@ -23,7 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
     let testTreeProvider = new TestTreeProvider();
-    let pdfConfigurationProvider = new PdfConfigurationProvider(context.extensionUri);
+    let pdfConfigurationProvider = new PdfConfigurationProvider(context.extensionUri, 'typhoon-test.pdfConfiguration');
+    let testRunConfigurationProvider = new PdfConfigurationProvider(context.extensionUri, 'typhoon-test.testRun');
     let resolveTestPromise: (() => void) | undefined;
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
@@ -31,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider('typhoon-test.pythonEntityView', getPythonEntityTreeProvider());
     vscode.window.registerTreeDataProvider('typhoon-test.pytestMonitorView', testTreeProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.pdfConfigurationView', pdfConfigurationProvider);
+    vscode.window.registerWebviewViewProvider('typhoon-test.testRunConfigurationView', testRunConfigurationProvider);
 
     context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
@@ -160,6 +162,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test.testRun')) {
             refreshConfigs();
+            testRunConfigurationProvider.refresh();
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
