@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { generateConfigElements, getConfigs } from '../utils/configWebview';
 import { ConfigError, ConfigResponse } from '../models/config';
 
-export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
+export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
 
     constructor(private readonly _extensionUri: vscode.Uri, private readonly _configGroup: string) {
@@ -39,11 +39,11 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
         const elements = generateConfigElements(configs);
 
         const cssPath = this._view?.webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'pdfConfiguration', 'pdfConfiguration.css')
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'configuration', 'configuration.css')
         );
         
         const jsPath = this._view?.webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'pdfConfiguration', 'pdfConfiguration.js')
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'configuration', 'configuration.js')
         );
 
         return `

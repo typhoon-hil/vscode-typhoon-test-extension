@@ -17,14 +17,14 @@ import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLog
 import { refreshPdfConfig } from './utils/pdfConfig';
 import { stopTests } from './commands/stopTests';
 import { getFullTestName } from './utils/editor';
-import { PdfConfigurationProvider } from './views/PdfConfigurationProvider';
+import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
     let testTreeProvider = new TestTreeProvider();
-    let pdfConfigurationProvider = new PdfConfigurationProvider(context.extensionUri, 'typhoon-test.pdfConfiguration');
-    let testRunConfigurationProvider = new PdfConfigurationProvider(context.extensionUri, 'typhoon-test.testRun');
+    let pdfConfigurationProvider = new ConfigurationWebviewProvider(context.extensionUri, 'typhoon-test.pdfConfiguration');
+    let testRunConfigurationProvider = new ConfigurationWebviewProvider(context.extensionUri, 'typhoon-test.testRun');
     let resolveTestPromise: (() => void) | undefined;
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
