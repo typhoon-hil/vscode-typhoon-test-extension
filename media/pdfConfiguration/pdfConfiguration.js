@@ -11,10 +11,41 @@ function autoResize(textarea) {
 
 // Function to add event listeners to all textareas on page load
 window.onload = function() {
+    addWindowMessageListener();
     addTextareaEventListeners();
     addCheckboxEventListeners();
     addTextInputEventListeners();
 };
+
+function addWindowMessageListener() {
+    window.addEventListener('message', event => {
+        const data = event.data;
+
+        if (data.configName === undefined || data.value === undefined) {
+            return;
+        }
+
+        const element = document.getElementById(data.configName);
+
+        const originalDispatchEvent = element.dispatchEvent;
+        element.dispatchEvent = () => true; // Override to suppress events
+
+        try {
+            if (element.type === 'checkbox') {
+                element.checked = data.value;
+            }
+            if (element.type === 'text') {
+                element.value = data.value;
+            }
+            if (element.tagName === 'TEXTAREA') {
+                element.value = JSON.stringify(data.value, null, 2);
+                autoResize(element);
+            }
+        } finally {
+            element.dispatchEvent = originalDispatchEvent;
+        }
+    });
+}
 
 function addTextareaEventListeners() {
     const textareas = document.querySelectorAll('textarea'); // Catch all textareas

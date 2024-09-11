@@ -126,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return getRunTestPromise(token, activeFile);
             });
         })
-    );
+    );  
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
@@ -166,6 +166,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test.pdfConfiguration')) {
             refreshPdfConfig();
+            pdfConfigurationProvider.refresh();
         }
     });
 

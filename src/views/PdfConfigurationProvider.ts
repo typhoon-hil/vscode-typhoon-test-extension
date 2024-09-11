@@ -8,6 +8,16 @@ export class PdfConfigurationProvider implements vscode.WebviewViewProvider {
     constructor(private readonly _extensionUri: vscode.Uri) {
     }
 
+    refresh(): void {
+        getConfigs('typhoon-test.pdfConfiguration')
+        .forEach(config => {
+            this._view?.webview.postMessage({
+                configName: config.group + '.' + config.label,
+                value: config.value
+            });
+        });
+    }
+
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
         _: vscode.WebviewViewResolveContext,
