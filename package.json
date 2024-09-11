@@ -2,7 +2,7 @@
   "name": "tt-demo",
   "displayName": "TT Demo",
   "description": "Typhoon Test Demo",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "engines": {
     "vscode": "^1.91.0"
   },

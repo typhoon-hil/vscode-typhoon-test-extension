@@ -7,6 +7,7 @@ using appropriate Typhoon API libraries.
 When you install Typhoon Test, you get two main features:
 
 - **API Wizard**: A tool which provides an easy way to add API commands
+
 - **Pytest Monitor**: A tool which provides an easy way to run tests and monitor the results
 
 ## Features
@@ -55,6 +56,12 @@ If the `typhoon-test.testRun.pdfReport` will also generate a PDF report of the t
 Execution results will be stored in the `report` directory. If the `typhoon-test.testRun.cleanOldResults` setting is enabled,
 the extension will clean the old results before new tests are run.
 
+#### Running options
+
+- **Run Tests from Active File or Specific Test**: Quickly execute all tests in the active Python file or run a specific test by placing the cursor on the test name.
+
+- **Stop Running Tests**: Easily terminate ongoing test executions with a dedicated stop command.
+
 #### Extension Configuration
 
 The extension needs to be configured in order to work properly. The configuration can be accessed by executing the
@@ -69,5 +76,6 @@ The extension needs to be configured in order to work properly. The configuratio
 
 ## What's New
 
-- **Run Tests from Active File or Specific Test**: Quickly execute all tests in the active Python file or run a specific test by placing the cursor on the test name.
-- **Stop Running Tests**: Easily terminate ongoing test executions with a dedicated stop command.
+- **PDF Configuration Webview**: Configure PDF settings directly in the new Webview.
+
+- **Test Run Configuration Webview**: Set up test run options directly in the new Webview.
