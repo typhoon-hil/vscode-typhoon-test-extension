@@ -2,7 +2,7 @@
   "name": "tt-demo",
   "displayName": "TT Demo",
   "description": "Typhoon Test Demo",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -295,6 +295,16 @@
         {
           "id": "typhoon-test.pytestMonitorView",
           "name": "Pytest Monitor"
+        },
+        {
+          "id": "typhoon-test.pdfConfigurationView",
+          "name": "PDF Configuration",
+          "type": "webview"
+        },
+        {
+          "id": "typhoon-test.testRunConfigurationView",
+          "name": "Test Run Configuration",
+          "type": "webview"
         }
       ]
     },

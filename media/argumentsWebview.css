@@ -28,7 +28,7 @@ th {
     left: 0;
     width: 100%;
     flex-wrap: wrap;
-    background-color: var(--vscode-editor-background);
+    background-color: transparent;
 }
 
 .vscode-button {

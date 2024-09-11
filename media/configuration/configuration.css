@@ -1,0 +1,77 @@
+.config-item-title {
+    display: inline-block;
+    padding-bottom: 2px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: var(--vscode-foreground);
+}
+
+.config-item-description {
+    color: var(--vscode-foreground);
+    margin-top: -1px;
+    opacity: .7;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+input[type="text"] {
+    border: none;
+    box-sizing: border-box;
+    color: var(--vscode-settings-textInputForeground);
+    background-color: var(--vscode-input-background);
+    display: inline-block;
+    height: 100%;
+    resize: none;
+    width: 100%;
+    padding: 4px 6px;
+    border-radius: 2px;
+    border: 1px solid var(--vscode-settings-textInputBorder, transparent);
+}
+
+input[type="text"]:focus {
+    outline: 1px solid var(--vscode-settings-focusedRowBorder);
+}
+
+textarea {
+    border: none;
+    box-sizing: border-box;
+    color: var(--vscode-settings-textInputForeground);
+    background-color: var(--vscode-input-background);
+    display: inline-block;
+    height: fit-content;
+    overflow-y: hidden;
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid var(--vscode-settings-textInputBorder, transparent);
+}
+
+.config-item {
+    padding: 12px 14px 18px;
+}
+
+.config-item:hover {
+    background-color: var(--vscode-settings-focusedRowBackground);
+    outline: 1px solid var(--vscode-settings-focusedRowBorder);
+}
+
+input[type="checkbox"] {
+    background-color: var(--vscode-settings-checkboxBackground) !important;
+    border-color: var(--vscode-settings-checkboxBorder) !important;
+    color: var(--vscode-settings-checkboxForeground) !important;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
+}
+
+.config-item-value {
+    display: flex;
+    margin-top: 9px;
+}
+
+.config-item-value-description {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}

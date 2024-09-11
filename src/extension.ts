@@ -17,17 +17,22 @@ import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLog
 import { refreshPdfConfig } from './utils/pdfConfig';
 import { stopTests } from './commands/stopTests';
 import { getFullTestName } from './utils/editor';
+import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
     let formProvider = new ArgumentsProvider(context.extensionUri);
     let testTreeProvider = new TestTreeProvider();
+    let pdfConfigurationProvider = new ConfigurationWebviewProvider(context.extensionUri, 'typhoon-test.pdfConfiguration');
+    let testRunConfigurationProvider = new ConfigurationWebviewProvider(context.extensionUri, 'typhoon-test.testRun');
     let resolveTestPromise: (() => void) | undefined;
 
     vscode.window.registerWebviewViewProvider('typhoon-test.docstringView', sidebarProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.argumentsView', formProvider);
     vscode.window.registerTreeDataProvider('typhoon-test.pythonEntityView', getPythonEntityTreeProvider());
     vscode.window.registerTreeDataProvider('typhoon-test.pytestMonitorView', testTreeProvider);
+    vscode.window.registerWebviewViewProvider('typhoon-test.pdfConfigurationView', pdfConfigurationProvider);
+    vscode.window.registerWebviewViewProvider('typhoon-test.testRunConfigurationView', testRunConfigurationProvider);
 
     context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
@@ -123,7 +128,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return getRunTestPromise(token, activeFile);
             });
         })
-    );
+    );  
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
@@ -141,9 +146,8 @@ export function activate(context: vscode.ExtensionContext) {
             }, (_, token) => {
                 return getRunTestPromise(token, fullTestName);
             });
-        }
-        ));
-
+        })
+    );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
@@ -158,25 +162,27 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (event.affectsConfiguration('typhoon-test.testRun')) {
             refreshConfigs();
+            testRunConfigurationProvider.refresh();
         }
         if (event.affectsConfiguration('typhoon-test')) {
             refreshConfigs();
         }
         if (event.affectsConfiguration('typhoon-test.pdfConfiguration')) {
             refreshPdfConfig();
+            pdfConfigurationProvider.refresh();
         }
     });
-    
+
     function getRunTestPromise(token: any, testName?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             resolveTestPromise = resolve;
-    
+
             token.onCancellationRequested(() => {
                 vscode.commands.executeCommand('typhoon-test.stopTests').then(() => {
                     vscode.window.showInformationMessage('Test run was cancelled');
                 });
             });
-    
+
             runTests(testTreeProvider, testName).then(() => {
                 resolve();
             }).catch(() => {
