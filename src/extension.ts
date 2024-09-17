@@ -149,8 +149,8 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', (isGlobal) => {
-            pickOrganizationalLogoFilepath(isGlobal);
+        vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', () => {
+            pickOrganizationalLogoFilepath();
         })
     );
 

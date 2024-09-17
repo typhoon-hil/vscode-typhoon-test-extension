@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import {updateOrganizationalLogoFilepath} from "../utils/pdfConfig";
 
-export function pickOrganizationalLogoFilepath(isGlobal: boolean) {
+export function pickOrganizationalLogoFilepath() {
     vscode.window.showOpenDialog({  
         canSelectFiles: true,
         canSelectFolders: false,
@@ -12,7 +12,7 @@ export function pickOrganizationalLogoFilepath(isGlobal: boolean) {
     }).then(result => {
         if (result && result.length > 0) {
             const logoPath = result[0].fsPath;
-            updateOrganizationalLogoFilepath(logoPath, isGlobal);
+            updateOrganizationalLogoFilepath(logoPath);
         }
     });
 }
