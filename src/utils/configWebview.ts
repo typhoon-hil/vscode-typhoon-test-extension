@@ -73,11 +73,6 @@ export function getConfigs(configGroup: string): Config[] {
     });
 }
 
-export function updateConfig(configGroup: string, key: string, value: any) {
-    const config = vscode.workspace.getConfiguration(configGroup);
-    config.update(key, value, vscode.ConfigurationTarget.Global);
-}
-
 function wrapAndGenerateConfigElement(config: Config): string { // Add _div to the id to link with descriptionToHtml
     return `<div class="config-item" id="${config.group}.${config.label}_div"> 
         ${generateConfigElement(config)}
