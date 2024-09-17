@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Config, ConfigType } from "../models/config";
 import * as fs from 'fs';
 import * as path from 'path';
+import { environment } from '../env';
 
 const configSchema = getConfigSchema();
 
@@ -84,7 +85,7 @@ function wrapAndGenerateConfigElement(config: Config): string { // Add _div to t
 }
 
 function getConfigSchema() {
-    const extensionPath = vscode.extensions.getExtension('balsabulatovic.tt-demo')?.extensionPath || '';
+    const extensionPath = vscode.extensions.getExtension(environment.extensionId)?.extensionPath || '';
     const packageJsonPath = path.join(extensionPath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
     return packageJson.contributes?.configuration?.properties || {};
