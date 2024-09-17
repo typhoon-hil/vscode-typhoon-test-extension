@@ -11,6 +11,41 @@ export enum TestStatus {
     Interrupted = 'interrupted'
 }
 
+function statusStringToEnum(status: string): TestStatus {
+    status = status.trim().toLowerCase();
+    switch (status) {
+        case 'passed':
+            return TestStatus.Passed;
+        case 'failed':
+            return TestStatus.Failed;
+        case 'xfail':
+            return TestStatus.XFailed;
+        case 'skipped':
+            return TestStatus.Skipped;
+        case 'xpass':
+            return TestStatus.XPassed;
+        case 'error':
+            return TestStatus.Error;
+        default:
+            return TestStatus.Running;
+    }
+}
+
+export function matchStatus(line: string): TestStatus | undefined {
+    const passMatch = line.match(/PASSED/i);
+    const failMatch = line.match(/FAILED/i);
+    const skipMatch = line.match(/SKIPPED/i);
+    const xfailMatch = line.match(/XFAIL/i);
+    const xpassMatch = line.match(/XPASS/i);
+    const errorMatch = line.match(/ERROR/i);
+
+    const statusMatches = [passMatch, failMatch, skipMatch, xfailMatch, xpassMatch, errorMatch];
+    const statusString = statusMatches.find(match => match !== null)?.[0];
+
+    return statusString ? statusStringToEnum(statusString) : undefined;
+}
+
+
 export class TestItem extends vscode.TreeItem {
     private children: TestItem[] = [];
     parent?: TestItem;

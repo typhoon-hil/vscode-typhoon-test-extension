@@ -11,11 +11,10 @@ import { getPythonEntityTreeProvider } from "./views/PythonEntityTreeProvider";
 import { removePythonEntity } from "./commands/removePythonEntity";
 import { pickInterpreterPath } from "./commands/pickInterpreterPath";
 import { refreshConfigs } from './utils/config';
-import { runTests } from './commands/runTests';
+import { runTests, stopTests } from './commands/runAndStopTests';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
-import { stopTests } from './commands/stopTests';
 import { getFullTestName } from './utils/editor';
 import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 

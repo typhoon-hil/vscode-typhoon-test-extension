@@ -1,18 +1,13 @@
-import { getPythonInterpreterCommand, getTestRunConfig } from "./config";
-import { getPlatform } from "./platform/selector";
-import { PdfComposer } from '../models/pdfGenerator';
+import { getPythonInterpreterCommand, getTestRunConfig } from "../utils/config";
+import { PdfArgumentBuilder } from './pdfGenerator';
 
-export class PytestFactory {
+export class PytestArgumentBuilder {
     private config = getTestRunConfig();
-    private platform = getPlatform();
-    private readonly activeFile?: string;
 
-    constructor(activeFile?: string) {
-        this.activeFile = activeFile;
-    }
+    constructor(private readonly testScope?: string) {}
 
-    private getActiveFile(): string {
-        return this.activeFile ? `"${this.activeFile}"` : '';
+    private getTestScope(): string {
+        return this.testScope ? `"${this.testScope}"` : '';
     }
 
     private getInterpreterPath(): string {
@@ -53,14 +48,14 @@ export class PytestFactory {
         if (!this.config.pdfReport) {
             return '';
         }
-        return "--generate-pdf " + new PdfComposer().getCommand();
+        return "--generate-pdf " + new PdfArgumentBuilder().getCommand();
     }
 
     getFlags(): string[] {
         return concat(
             "-m",
             "pytest",
-            this.getActiveFile(),
+            this.getTestScope(),
             ...this.getNames(),
             ...this.getMarks(),
             this.getAdditionalOptions(),
