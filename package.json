@@ -160,7 +160,7 @@
         "typhoon-test.pdfConfiguration.organizationalLogoFilepath": {
           "type": "string",
           "default": "",
-          "markdownDescription": "The path to the organizational logo to include in the PDF report\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickOrganizationalLogoFilepath?true)"
+          "markdownDescription": "The path to the organizational logo to include in the PDF report\n\nYou can enter the path manually or [browse for the file](command:typhoon-test.pickOrganizationalLogoFilepath).\n\n Note: The `#typhoon-test.pdfConfiguration.typhoonHilLogo#` setting must be set to `false` in order to use this setting"
         },
         "typhoon-test.pdfConfiguration.headerColor": {
           "type": "string",
