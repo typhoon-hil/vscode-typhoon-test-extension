@@ -11,7 +11,7 @@ export interface PdfConfig {
     plots?: boolean;
 }
 
-export class PdfComposer {
+export class PdfArgumentBuilder {
     private pdfConfig: PdfConfig = getPdfConfig();
     private command: string = "";
 
@@ -25,40 +25,40 @@ export class PdfComposer {
             .addPlots();
     }
 
-    private addTitle(): PdfComposer {
+    private addTitle(): PdfArgumentBuilder {
         this.command += `--pdf-title=${this.pdfConfig.pdfCoverageTitle} `;
         return this;
     }
 
-    private addColor(): PdfComposer {
+    private addColor(): PdfArgumentBuilder {
         this.command += `--pdf-title-color=${this.pdfConfig.headerColor} `;
         return this;
     }
 
-    private addMotto(): PdfComposer {
+    private addMotto(): PdfArgumentBuilder {
         this.command += `--pdf-slogan="${this.formatMotto()}" `;
         return this;
     }
 
-    private addLogo(): PdfComposer {
+    private addLogo(): PdfArgumentBuilder {
         if (this.pdfConfig.typhoonHilLogo) { return this; }
         this.command += `--pdf-logo=${this.pdfConfig.organizationalLogoFilepath} `;
         return this;
     }
 
-    private addTrace(): PdfComposer {
+    private addTrace(): PdfArgumentBuilder {
         if (this.pdfConfig.trace) { return this; }
         this.command += `--pdf-skip-trace `;
         return this;
     }
 
-    private addSteps(): PdfComposer {
+    private addSteps(): PdfArgumentBuilder {
         if (this.pdfConfig.steps) { return this; }
         this.command += `--pdf-skip-steps `;
         return this;
     }
 
-    private addPlots(): PdfComposer {
+    private addPlots(): PdfArgumentBuilder {
         if (this.pdfConfig.plots) { return this; }
         this.command += `--pdf-skip-plots `;
         return this;

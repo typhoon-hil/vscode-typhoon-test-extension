@@ -1,5 +1,5 @@
 import { getPythonInterpreterCommand, getTestRunConfig } from "../utils/config";
-import { PdfComposer } from './pdfGenerator';
+import { PdfArgumentBuilder } from './pdfGenerator';
 
 export class PytestArgumentBuilder {
     private config = getTestRunConfig();
@@ -48,7 +48,7 @@ export class PytestArgumentBuilder {
         if (!this.config.pdfReport) {
             return '';
         }
-        return "--generate-pdf " + new PdfComposer().getCommand();
+        return "--generate-pdf " + new PdfArgumentBuilder().getCommand();
     }
 
     getFlags(): string[] {
