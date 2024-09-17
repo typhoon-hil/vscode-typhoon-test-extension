@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { generateConfigElements, getConfigs } from '../utils/configWebview';
-import { ConfigError, ConfigResponse } from '../models/config';
+import { ConfigCommand, ConfigError, ConfigResponse } from '../models/config';
 
 export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -62,9 +62,13 @@ export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider 
         `;
     }
 
-    handleMessage(message: ConfigResponse | ConfigError) {
+    handleMessage(message: ConfigResponse | ConfigError | ConfigCommand) {
         if ('error' in message) {
             vscode.window.showErrorMessage(message.error);
+            return;
+        }
+        if ('command' in message) {
+            vscode.commands.executeCommand(message.command);
             return;
         }
         vscode.workspace.getConfiguration().update(message.configName, message.value, vscode.ConfigurationTarget.Global);

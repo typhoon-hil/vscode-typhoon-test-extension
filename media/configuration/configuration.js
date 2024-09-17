@@ -117,3 +117,9 @@ function sendErrorMessage(message) {
         error: message
     });
 }
+
+function sendExecutionMessage(message) {
+    vscode.postMessage({
+        command: message
+    });
+}

@@ -16,3 +16,7 @@ export interface ConfigResponse {
 export interface ConfigError {
     error: string;
 }
+
+export interface ConfigCommand {
+    command: string;
+}
