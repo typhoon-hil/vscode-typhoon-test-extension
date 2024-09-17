@@ -140,10 +140,6 @@ class TestRunEndChecker {
         return this.hasEnded || (this.hasEnded = this.isTestRunEnd(line));
     }
     
-    reset() {
-        this.hasEnded = false;
-    }
-
     private isTestRunEnd(line: string) {
         return line.includes('===') && !line.includes('test session starts');
     }
