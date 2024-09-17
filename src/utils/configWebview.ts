@@ -95,5 +95,6 @@ function convertCamelCaseToNormal(text: string): string {
 function descriptionToHtml(description: string): string {
     return description.replace(/`#([^#]+)#`/g, '<a href="#$1_div">$1</a>') // Add _div to the id to link with wrapAndGenerateConfigElement
         .replace(/\[(.*?)\]\(command:(.*?)\)/g, '<a href="#" onclick="sendExecutionMessage(\'$2\')">$1</a>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>');
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\n/g, '<br/>');
 }
