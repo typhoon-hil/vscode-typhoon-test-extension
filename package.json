@@ -24,17 +24,17 @@
       {
         "command": "typhoon-test.runTests",
         "key": "F7",
-        "when": "true"
+        "when": "!typhoon-test.isRunning"
       },
       {
         "command": "typhoon-test.stopTests",
         "key": "F8",
-        "when": "true"
+        "when": "typhoon-test.isRunning"
       },
       {
         "command": "typhoon-test.runTestsFromFile",
         "key": "Shift+F7",
-        "when": "true"
+        "when": "!typhoon-test.isRunning"
       }
     ],
     "configuration": {
@@ -237,11 +237,13 @@
       {
         "command": "typhoon-test.runTests",
         "title": "Run Tests",
+        "icon": "$(debug-start)",
         "category": "Typhoon Test"
       },
       {
         "command": "typhoon-test.stopTests",
         "title": "Stop Tests",
+        "icon": "$(debug-stop)",
         "category": "Typhoon Test"
       },
       {
@@ -328,6 +330,16 @@
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
           "when": "view == typhoon-test.pythonEntityView",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.stopTests",
+          "when": "view == typhoon-test.pytestMonitorView && typhoon-test.isRunning",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.runTests",
+          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
           "group": "navigation"
         }
       ],

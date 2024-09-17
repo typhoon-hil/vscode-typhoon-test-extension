@@ -25,7 +25,7 @@ export interface TestRunConfig {
 }
 
 export class PytestRunner {
-    private static isRunning = false;
+    private static running = false;
     private pytestProcess?: cp.ChildProcess;
     private outputChannel: vscode.OutputChannel;
     private testRunEndChecker: TestRunEndChecker;
@@ -129,7 +129,12 @@ export class PytestRunner {
     }
     
     public static get IsRunning(): boolean {
-        return this.isRunning;
+        return this.running;
+    }
+
+    private static set isRunning(value: boolean) {
+        this.running = value;
+        vscode.commands.executeCommand('setContext', 'typhoon-test.isRunning', value);
     }
 }
 
