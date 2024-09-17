@@ -67,6 +67,13 @@ the extension will clean the old results before new tests are run.
 The extension needs to be configured in order to work properly. The configuration can be accessed by executing the
 `typhoon-test.openTestRunConfiguration` command.
 
+For new users, the extension provides an easier way to configure test settings through the following WebViews:
+
+- **PDF Configuration WebView**: Easily customize PDF settings in an intuitive WebView interface.
+
+- **Test Run Configuration WebView**: Simplify the setup of test run options directly within the WebView.
+
+
 ## Requirements
 
 - Visual Studio Code v1.91.1 or higher
@@ -76,6 +83,6 @@ The extension needs to be configured in order to work properly. The configuratio
 
 ## What's New
 
-- **PDF Configuration Webview**: Configure PDF settings directly in the new Webview.
+- **Fixed**: Pytest Monitor no longer shows the `Starting...` node after tests are done when the `--collect-only` flag is used.
 
-- **Test Run Configuration Webview**: Set up test run options directly in the new Webview.
+- **Pytest Output**: Improved user experience by adding text coloring to the output.
