@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TestItem, TestNameDetails, TestStatus } from '../models/testMonitoring';
+import { extractTestNameDetails, matchStatus, TestItem, TestNameDetails, TestStatus } from '../models/testMonitoring';
 
 
 export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
@@ -50,7 +50,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         let testNameItem = parent.getChildren().find(t => t.label === testNameDetails.testName);
         if (testNameItem) {
             return testNameItem;
-        } 
+        }
         const collapsibleState = isExpandable ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
         const newTest = new TestItem(testNameDetails.testName, collapsibleState, status);
         parent.addChild(newTest);
@@ -84,7 +84,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         if (!test || !testName.params) {
             return test;
         }
-        
+
         return test.getChildren().find(t => t.label === testName.params);
     }
 
@@ -105,7 +105,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     updateLastTest(status: TestStatus) {
         if (this.tests) {
             const lastTest = this.lastTest;
-            if (!lastTest) { 
+            if (!lastTest) {
                 return;
             }
             const lastTestNameDetails = this.getTestNameDetails(lastTest);
@@ -125,7 +125,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         }
         this.refresh();
     }
-    
+
     private getTestNameDetails(test: TestItem): TestNameDetails {
         if (test.parent?.parent) {
             let testName = test.parent.label;
@@ -149,7 +149,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private getRunningTests(): TestItem[] {
         return this.getFlattenTests().filter(test => test.status === TestStatus.Running)
-        .filter(test => test.getChildren().length === 0);
+            .filter(test => test.getChildren().length === 0);
     }
 
     private getFlattenTests(tests: TestItem[] = this.tests): TestItem[] {
@@ -160,5 +160,28 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         let t = this.getFlattenTests(this.tests);
         this.getRunningTests().forEach(test => test.update(TestStatus.Interrupted));
         this.refresh();
+    }
+
+    handleTestOutput(line: string) {
+        line = line.replace(/\s+/g, ' ').trim();
+
+        const testNameMatch = line.split(' ')[0]?.match(/^(test_.*|.*_test)/); // TODO: Improve regex
+        const statusMatch = matchStatus(line);
+
+        if (testNameMatch) {
+            const testNameDetails = extractTestNameDetails(testNameMatch[0]);
+            const testName = testNameDetails.fullTestName;
+
+            if (!this.containsTest(testName)) {
+                this.addOrUpdateTest(testNameDetails, TestStatus.Running);
+            }
+
+            if (statusMatch) {
+                this.addOrUpdateTest(testNameDetails, statusMatch);
+            }
+        }
+        else if (statusMatch) {
+            this.updateLastTest(statusMatch);
+        }
     }
 }
