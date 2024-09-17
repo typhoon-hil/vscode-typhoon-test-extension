@@ -169,6 +169,22 @@ function hasTestRunEnded() {
     return { check, reset };
 }
 
+class TestRunEndChecker {
+    private hasEnded = false;
+
+    check(line: string) {
+        return this.hasEnded || (this.hasEnded = this.isTestRunEnd(line));
+    }
+    
+    reset() {
+        this.hasEnded = false;
+    }
+
+    private isTestRunEnd(line: string) {
+        return line.includes('===') && !line.includes('test session starts');
+    }
+}
+
 function runAllureReport() {
     if (getTestRunConfig().openReport) {
         const terminal = vscode.window.createTerminal('Allure Report');
