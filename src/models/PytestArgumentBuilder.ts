@@ -1,8 +1,7 @@
-import { getPythonInterpreterCommand, getTestRunConfig } from "./config";
-import { getPlatform } from "./platform/selector";
-import { PdfComposer } from '../models/pdfGenerator';
+import { getPythonInterpreterCommand, getTestRunConfig } from "../utils/config";
+import { PdfComposer } from './pdfGenerator';
 
-export class PytestFactory {
+export class PytestArgumentBuilder {
     private config = getTestRunConfig();
 
     constructor(private readonly testScope?: string) {}

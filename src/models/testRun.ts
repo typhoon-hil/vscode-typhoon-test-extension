@@ -1,7 +1,7 @@
 import * as cp from 'child_process';
 import { TestTreeProvider } from '../views/TestTreeProvider';
 import * as vscode from 'vscode';
-import { PytestFactory } from '../utils/pytestFactory';
+import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
 
@@ -76,9 +76,9 @@ export class PytestRunner {
     }
 
     private initProcess() {
-        const factory = new PytestFactory(this.testScope);
-        const path = factory.getPythonPath();
-        const flags = factory.getFlags();
+        const builder = new PytestArgumentBuilder(this.testScope);
+        const path = builder.getPythonPath();
+        const flags = builder.getFlags();
         
         return cp.spawn(path, flags, {
             shell: true,
