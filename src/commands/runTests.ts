@@ -34,7 +34,7 @@ export function runTests(provider: TestTreeProvider, activeFile?: string): Promi
         pytestProcess.stdout?.on('data', (data: Buffer) => {
             const output = data.toString();
             if (output.includes('Report successfully generated')) {
-                outputChannel?.appendLine('');
+                outputChannel?.appendLine('\n');
             }
             outputChannel?.append(output);
     
@@ -148,8 +148,8 @@ function statusStringToEnum(status: string): TestStatus {
 }
 
 function initOutputChannel() {
-    const outputChannel = vscode.window.createOutputChannel('Pytest Output');
-    outputChannel.show();
+    const outputChannel = vscode.window.createOutputChannel('Pytest Output', 'python');
+    outputChannel.show(true);
     return outputChannel;
 }
 
