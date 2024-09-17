@@ -86,3 +86,5 @@ For new users, the extension provides an easier way to configure test settings t
 - **Fixed**: Pytest Monitor no longer shows the `Starting...` node after tests are done when the `--collect-only` flag is used.
 
 - **Pytest Output**: Improved user experience by adding text coloring to the output.
+
+- **Enhanced Configuration**: The configuration description has been refined for greater clarity. Additionally, you can now execute commands directly from the description, improving accessibility and workflow efficiency.
