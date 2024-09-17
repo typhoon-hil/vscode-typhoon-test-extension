@@ -53,12 +53,12 @@ export function runTests(provider: TestTreeProvider, activeFile?: string): Promi
         });
     
         pytestProcess.on('exit', () => {
+            testTreeProvider?.clearInit();
             if (wasKilled) { 
                 return;
             }
             if (errorOccured) {
                 reject();
-                testTreeProvider?.clearInit();
                 return;
             }
             runAllureReport();
