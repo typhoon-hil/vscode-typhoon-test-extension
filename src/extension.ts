@@ -17,6 +17,8 @@ import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLog
 import { refreshPdfConfig } from './utils/pdfConfig';
 import { getFullTestName } from './utils/editor';
 import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
+import { TestItem } from './models/testMonitoring';
+import { PytestRunner } from './models/testRun';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -95,6 +97,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTests', () => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
             const rootDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
             if (!rootDir) {
                 vscode.window.showErrorMessage('No workspace is open');
@@ -113,6 +119,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTestsFromFile', () => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
             const activeFile = vscode.window.activeTextEditor?.document.fileName;
             if (!activeFile) {
                 vscode.window.showErrorMessage('No file is currently open');
@@ -131,6 +141,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
             const fullTestName = getFullTestName();
 
             if (!fullTestName) {
@@ -147,6 +161,24 @@ export function activate(context: vscode.ExtensionContext) {
             });
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTestTreeNode', (item: TestItem) => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
+            const fullTestName = item.id;
+
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: `Running ${fullTestName}`,
+                cancellable: true
+            }, (_, token) => {
+                return getRunTestPromise(token, fullTestName);
+            });
+        }
+    ));
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', () => {
@@ -188,5 +220,13 @@ export function activate(context: vscode.ExtensionContext) {
                 reject();
             });
         });
+    }
+
+    function checkTestRunEnd(): boolean {
+        const res = PytestRunner.IsRunning;
+        if (res) {
+            vscode.window.showErrorMessage('Test run is still in progress');
+        }
+        return res;
     }
 }
