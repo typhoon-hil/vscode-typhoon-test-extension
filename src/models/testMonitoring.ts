@@ -48,16 +48,19 @@ export function matchStatus(line: string): TestStatus | undefined {
 
 
 export class TestItem extends vscode.TreeItem {
+    static readonly IgnoreContextValue = 'ignore context value';
     private children: TestItem[] = [];
     parent?: TestItem;
 
     constructor(
+        public readonly id: string,
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
     ) {
         super(label, collapsibleState);
         this.setIcon();
+        this.contextValue = id === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
     }
 
     setIcon(): void {
