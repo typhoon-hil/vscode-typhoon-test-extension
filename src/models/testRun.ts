@@ -5,7 +5,6 @@ import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
 import { createCollectOnlyOutput } from './CollectOnlyOutput';
-import { TestStatus } from './testMonitoring';
 
 
 export enum InterpreterType {
@@ -51,8 +50,8 @@ export class PytestRunner {
         if (this.isCollectOnly) {
             const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Module\s.+?>|<Function\s.+?>)/g)?.join('\n') || '';
             const collectOnlyOutput = createCollectOnlyOutput(rawCollectOnlyOutput);
-            collectOnlyOutput.getOutput().forEach(module => {
-                this.testTreeProvider.addOrUpdateTest(module, TestStatus.Passed);
+            collectOnlyOutput.getOutput().forEach(testDetails => {
+                this.testTreeProvider.addCollectOnlyTest(testDetails);
             });
         }
         
