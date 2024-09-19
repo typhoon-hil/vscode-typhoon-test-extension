@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
+import { createCollectOnlyOutput } from './CollectOnlyOutput';
 
 
 export enum InterpreterType {
@@ -31,18 +32,31 @@ export class PytestRunner {
     private testRunEndChecker: TestRunEndChecker;
     private wasKilled: boolean;
     private errorOccured: boolean;
+    private testOutput: string = '';
+    private isCollectOnly: boolean = false;
+    private argumentBuilder: PytestArgumentBuilder;
     
-    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string) {
+    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
+    ) {
         testTreeProvider.clearTests();
         this.outputChannel = vscode.window.createOutputChannel('Pytest Output', 'python');
         this.testRunEndChecker = new TestRunEndChecker();
         this.wasKilled = false;
         this.errorOccured = false;
+        this.argumentBuilder = new builderType(testScope);
     }
     
     private handleProcessExit(resolve: () => void, reject: () => void) {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
+
+        if (this.isCollectOnly) {
+            const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Module\s.+?>|<Function\s.+?>)/g)?.join('\n') || '';
+            const collectOnlyOutput = createCollectOnlyOutput(rawCollectOnlyOutput);
+            collectOnlyOutput.getOutput().forEach(testDetails => {
+                this.testTreeProvider.addCollectOnlyTest(testDetails);
+            });
+        }
         
         if (this.errorOccured || this.wasKilled) {
             return reject();
@@ -63,6 +77,9 @@ export class PytestRunner {
         
         const lines = output.split('\n');
         lines.forEach(line => {
+            if (this.isCollectOnly) {
+                this.testOutput += line;
+            }
             if (!this.testRunEndChecker.check(line)) {
                 this.testTreeProvider.handleTestOutput(line);
             }
@@ -76,9 +93,10 @@ export class PytestRunner {
     }
 
     private initProcess() {
-        const builder = new PytestArgumentBuilder(this.testScope);
-        const path = builder.getPythonPath();
-        const flags = builder.getFlags();
+        const path = this.argumentBuilder.getPythonPath();
+        const flags = this.argumentBuilder.getFlags();
+
+        this.isCollectOnly = this.argumentBuilder.isCollectOnly();
         
         return cp.spawn(path, flags, {
             shell: true,

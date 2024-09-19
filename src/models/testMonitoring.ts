@@ -8,7 +8,8 @@ export enum TestStatus {
     Skipped = 'skipped',
     XPassed = 'xpassed',
     Error = 'error',
-    Interrupted = 'interrupted'
+    Interrupted = 'interrupted',
+    Collected = 'collected',
 }
 
 function statusStringToEnum(status: string): TestStatus {
@@ -47,16 +48,19 @@ export function matchStatus(line: string): TestStatus | undefined {
 
 
 export class TestItem extends vscode.TreeItem {
+    static readonly IgnoreContextValue = 'ignore context value';
     private children: TestItem[] = [];
     parent?: TestItem;
 
     constructor(
+        public readonly id: string,
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
     ) {
         super(label, collapsibleState);
         this.setIcon();
+        this.contextValue = id === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
     }
 
     setIcon(): void {
@@ -85,6 +89,9 @@ export class TestItem extends vscode.TreeItem {
             case TestStatus.Interrupted:
                 this.iconPath = new vscode.ThemeIcon('stop');
                 break;
+            case TestStatus.Collected:
+                this.iconPath = this.parent ? new vscode.ThemeIcon('symbol-method') : new vscode.ThemeIcon('symbol-class');
+                break;
         }
     }
 
@@ -106,16 +113,15 @@ export class TestItem extends vscode.TreeItem {
 
     private updateStatus() {
         const statuses = this.children.map(child => child.status);
-        if (statuses.includes(TestStatus.Interrupted)) {
+        if (statuses.includes(TestStatus.Collected)) {
+            this.setStatus(TestStatus.Collected);
+        } else if (statuses.includes(TestStatus.Interrupted)) {
             this.setStatus(TestStatus.Interrupted);
-        }
-        else if (statuses.includes(TestStatus.Running)) {
+        } else if (statuses.includes(TestStatus.Running)) {
             this.setStatus(TestStatus.Running);
-        }
-        else if (statuses.includes(TestStatus.Error)) {
+        } else if (statuses.includes(TestStatus.Error)) {
             this.setStatus(TestStatus.Error);
-        }
-        else if (statuses.includes(TestStatus.Failed)) {
+        } else if (statuses.includes(TestStatus.Failed)) {
             this.setStatus(TestStatus.Failed);
         } else if (statuses.includes(TestStatus.XFailed)) {
             this.setStatus(TestStatus.XFailed);
@@ -139,7 +145,7 @@ export class TestItem extends vscode.TreeItem {
 }
 
 export interface TestNameDetails {
-    fullTestName: string;
+    fullTestName: string; // testPath::testName[params]
     testName: string;
     testPath: string;
     params?: string;

@@ -257,6 +257,18 @@
         "category": "Typhoon Test"
       },
       {
+        "command": "typhoon-test.runTestTreeNode",
+        "title": "Run Tests From Node",
+        "category": "Typhoon Test",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "typhoon-test.collectTests",
+        "title": "Collect Tests",
+        "category": "Typhoon Test",
+        "icon": "$(list-flat)"
+      },
+      {
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"
@@ -317,7 +329,7 @@
       },
       {
         "view": "typhoon-test.pytestMonitorView",
-        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests)"
+        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests) \n [Collect Tests](command:typhoon-test.collectTests)"
       }
     ],
     "menus": {
@@ -341,12 +353,22 @@
           "command": "typhoon-test.runTests",
           "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
           "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.collectTests",
+          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "typhoon-test.removePythonEntity",
           "when": "view == typhoon-test.pythonEntityView && (viewItem == class || viewItem == module)",
+          "group": "inline"
+        },
+        {
+          "command": "typhoon-test.runTestTreeNode",
+          "when": "viewItem == testItem",
           "group": "inline"
         }
       ],
