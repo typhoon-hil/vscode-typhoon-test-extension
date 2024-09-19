@@ -6,6 +6,7 @@ export interface Config {
     value: any;
     description?: string;
     group: string;
+    enum?: any[];
 }
 
 export interface ConfigResponse {
