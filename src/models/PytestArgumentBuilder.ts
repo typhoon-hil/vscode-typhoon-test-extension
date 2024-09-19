@@ -70,6 +70,10 @@ export class PytestArgumentBuilder {
     getPythonPath(): string {
         return this.getInterpreterPath();
     }
+
+    isCollectOnly(): boolean {
+        return this.getAdditionalOptions().includes("--collect-only");
+    }
 }
 
 function concat(...args: string[]): string[] {
