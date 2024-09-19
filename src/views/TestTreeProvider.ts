@@ -74,6 +74,12 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         this.refresh();
     }
 
+    addCollectOnlyTest(testName: TestNameDetails): void {
+        this.addTest(testName, TestStatus.Collected);
+        this.lastTest?.setStatus(TestStatus.Collected);
+        this.refresh();
+    }
+
     private findTest(testName: TestNameDetails): TestItem | undefined {
         const testPathNode = this.findTestPath(testName.testPath);
         if (!testPathNode) {
