@@ -139,7 +139,7 @@ export class TestItem extends vscode.TreeItem {
 }
 
 export interface TestNameDetails {
-    fullTestName: string;
+    fullTestName: string; // testPath::testName[params]
     testName: string;
     testPath: string;
     params?: string;
