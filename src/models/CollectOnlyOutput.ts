@@ -105,7 +105,8 @@ class DirWorker implements Worker {
 
 class Factory {
     public static createWorker(line: string, output: CollectOnlyOutput): Worker {
-        const elementType = line.replaceAll('<', '').replaceAll('>', '').split(' ')[0];
+        line = line.replaceAll('<', '').replaceAll('>', '');
+        const elementType = line.split(' ')[0].toLowerCase();
 
         switch (elementType) {
             case 'module': return new ModuleWorker(line, output);
