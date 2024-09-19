@@ -263,6 +263,12 @@
         "icon": "$(debug-start)"
       },
       {
+        "command": "typhoon-test.collectTests",
+        "title": "Collect Tests",
+        "category": "Typhoon Test",
+        "icon": "$(list-flat)"
+      },
+      {
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"
@@ -345,6 +351,11 @@
         },
         {
           "command": "typhoon-test.runTests",
+          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.collectTests",
           "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
           "group": "navigation"
         }
