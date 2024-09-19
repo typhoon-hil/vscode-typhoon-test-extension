@@ -90,6 +90,10 @@ export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
             "-v"
         );
     }
+
+    isCollectOnly(): boolean {
+        return true;
+    }
 }
 
 function concat(...args: string[]): string[] {
