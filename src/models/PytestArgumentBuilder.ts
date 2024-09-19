@@ -4,47 +4,47 @@ import { PdfArgumentBuilder } from './pdfGenerator';
 export class PytestArgumentBuilder {
     private config = getTestRunConfig();
 
-    constructor(private readonly testScope?: string) {}
+    constructor(protected readonly testScope?: string) {}
 
-    private getTestScope(): string {
+    protected getTestScope(): string {
         return this.testScope ? `"${this.testScope}"` : '';
     }
 
-    private getInterpreterPath(): string {
+    protected getInterpreterPath(): string {
         return getPythonInterpreterCommand();
     }
 
-    private getMarks(): string[] {
+    protected getMarks(): string[] {
         if (this.config.selectTestByMark) {
             return ["-m", `${this.config.selectTestByMark}`];
         }
         return [];
     }
 
-    private getNames(): string[] {
+    protected getNames(): string[] {
         if (this.config.selectTestByName) {
             return ["-k", `${this.config.selectTestByName}`];
         }
         return [];
     }
 
-    private getAdditionalOptions(): string {
+    protected getAdditionalOptions(): string {
         return this.config.additionalOptions || '';
     }
 
-    private getAllureDir(): string[] {
+    protected getAllureDir(): string[] {
         return ["--alluredir", "report"];
     }
 
-    private getCleanAllResults(): string {
+    protected getCleanAllResults(): string {
         return this.config.cleanOldResults ? "--clean-alluredir" : '';
     }
 
-    private getRealTimeLogs(): string {
+    protected getRealTimeLogs(): string {
         return this.config.realTimeLogs ? "--log-cli-level=INFO" : '';
     }
 
-    private getPdfConfig(): string {
+    protected getPdfConfig(): string {
         if (!this.config.pdfReport) {
             return '';
         }
@@ -73,6 +73,22 @@ export class PytestArgumentBuilder {
 
     isCollectOnly(): boolean {
         return this.getAdditionalOptions().includes("--collect-only");
+    }
+}
+
+export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
+    constructor(protected readonly testScope?: string) {
+        super(testScope);
+    }
+
+    getFlags(): string[] {
+        return concat(
+            "-m",
+            "pytest",
+            this.getTestScope(),
+            "--collect-only",
+            "-v"
+        );
     }
 }
 
