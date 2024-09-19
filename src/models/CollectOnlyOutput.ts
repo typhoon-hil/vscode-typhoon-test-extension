@@ -17,8 +17,13 @@ export class CollectOnlyOutput {
         const output: TestNameDetails[] = [];
         this.modules.forEach(m => {
             m.getFunctions().forEach(f => {
+                let fullTestName = `${m.getName()}::${f.getName()}`;
+                if (f.getParams()) {
+                    fullTestName += `[${f.getParams()}]`;
+                }
+
                 output.push({
-                    fullTestName: `${m.getName()}::${f.getName()}[${f.getParams()}]`,
+                    fullTestName: fullTestName,
                     testName: f.getName(),
                     testPath: m.getName(),
                     params: f.getParams()
