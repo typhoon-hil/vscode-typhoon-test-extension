@@ -15,6 +15,7 @@ window.onload = function() {
     addTextareaEventListeners();
     addCheckboxEventListeners();
     addTextInputEventListeners();
+    addSelectEventListeners();
 };
 
 function addWindowMessageListener() {
@@ -41,6 +42,10 @@ function addWindowMessageListener() {
                 element.value = JSON.stringify(data.value, null, 2);
                 autoResize(element);
             }
+            if (element.tagName === 'SELECT') {
+                console.log(data.value);
+                element.value = data.value;
+            }
         } finally {
             element.dispatchEvent = originalDispatchEvent;
         }
@@ -55,6 +60,14 @@ function addTextareaEventListeners() {
 
         // Add input event listener for dynamic resizing
         textarea.addEventListener('input', debounce(handleTextareaChange, 500));
+    });
+}
+
+function addSelectEventListeners() {
+    const selects = document.querySelectorAll('select'); // Catch all selects
+
+    selects.forEach(select => {
+        select.addEventListener('change', handleSelectChange);
     });
 }
 
@@ -101,6 +114,12 @@ function handleTextareaChange(event) {
     } catch (error) {
         return sendErrorMessage("Invalid JSON format");
     }
+    let configName = event.target.id;
+    sendMessage(configName, value);
+}
+
+function handleSelectChange(event) {
+    let value = event.target.value;
     let configName = event.target.id;
     sendMessage(configName, value);
 }

@@ -11,6 +11,19 @@ function generateConfigElement(config: Config): string {
     const description = config.description ? `<div class="config-item-description">${descriptionToHtml(config.description)}</div>` : '';
     const id = config.group + '.' + config.label;
 
+    if (config.enum) {
+        const options = config.enum.map((option: string) => `<option value="${option}" ${config.value === option ? 'selected' : ''}>${option}</option>`).join('\n');
+        return `
+            ${title}
+            ${description}
+            <div class="config-item-value">
+                <select id="${id}">
+                    ${options}
+                </select>
+            </div>
+        `;
+    }
+
     switch (config.type) {
         case 'string':
         case 'number':
@@ -68,7 +81,8 @@ export function getConfigs(configGroup: string): Config[] {
             type: configSchema[configName].type as ConfigType,
             description: configSchema[configName].description || configSchema[configName].markdownDescription,
             value: value,
-            group: configGroup
+            group: configGroup,
+            enum: configSchema[configName].enum
         };
     });
 }

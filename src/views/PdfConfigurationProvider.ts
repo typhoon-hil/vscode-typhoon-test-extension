@@ -71,6 +71,6 @@ export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider 
             vscode.commands.executeCommand(message.command);
             return;
         }
-        vscode.workspace.getConfiguration().update(message.configName, message.value, vscode.ConfigurationTarget.Global);
+        vscode.workspace.getConfiguration().update(message.configName, message.value, vscode.ConfigurationTarget.Global); // TODO: Add then and catch
     }
 }
