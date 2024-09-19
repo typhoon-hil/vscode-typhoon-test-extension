@@ -83,8 +83,8 @@ For new users, the extension provides an easier way to configure test settings t
 
 ## What's New
 
-- **Fixed**: Pytest Monitor no longer shows the `Starting...` node after tests are done when the `--collect-only` flag is used.
+- **Enhanced Test Collection with Pytest**: Support for the `--collect-only` flag has been added, allowing test discovery to run and display the collected test hierarchy directly in the `Pytest Monitor` view. The test structure can now be inspected before execution.
 
-- **Pytest Output**: Improved user experience by adding text coloring to the output.
+    ![Collect Only Demo](/assets/collect-only.gif)
 
-- **Enhanced Configuration**: The configuration description has been refined for greater clarity. Additionally, you can now execute commands directly from the description, improving accessibility and workflow efficiency.
+- **Run Tests Directly from the Test Tree**: Tests can now be run with a single click from the test tree in `Pytest Monitor`. Whether it's for the entire workspace, a specific file, or an individual function, test execution can be triggered directly from the corresponding tree node.
