@@ -90,7 +90,7 @@ export class TestItem extends vscode.TreeItem {
                 this.iconPath = new vscode.ThemeIcon('stop');
                 break;
             case TestStatus.Collected:
-                this.iconPath = new vscode.ThemeIcon('list-flat');
+                this.iconPath = this.parent ? new vscode.ThemeIcon('symbol-method') : new vscode.ThemeIcon('symbol-class');
                 break;
         }
     }

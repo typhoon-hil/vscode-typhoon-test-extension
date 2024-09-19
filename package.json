@@ -329,7 +329,7 @@
       },
       {
         "view": "typhoon-test.pytestMonitorView",
-        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests)"
+        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests) \n [Collect Tests](command:typhoon-test.collectTests)"
       }
     ],
     "menus": {
