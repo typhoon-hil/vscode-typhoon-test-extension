@@ -34,13 +34,16 @@ export class PytestRunner {
     private errorOccured: boolean;
     private testOutput: string = '';
     private isCollectOnly: boolean = false;
+    private argumentBuilder: PytestArgumentBuilder;
     
-    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string) {
+    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
+    ) {
         testTreeProvider.clearTests();
         this.outputChannel = vscode.window.createOutputChannel('Pytest Output', 'python');
         this.testRunEndChecker = new TestRunEndChecker();
         this.wasKilled = false;
         this.errorOccured = false;
+        this.argumentBuilder = new builderType(testScope);
     }
     
     private handleProcessExit(resolve: () => void, reject: () => void) {
@@ -90,11 +93,10 @@ export class PytestRunner {
     }
 
     private initProcess() {
-        const builder = new PytestArgumentBuilder(this.testScope);
-        const path = builder.getPythonPath();
-        const flags = builder.getFlags();
+        const path = this.argumentBuilder.getPythonPath();
+        const flags = this.argumentBuilder.getFlags();
 
-        this.isCollectOnly = builder.isCollectOnly();
+        this.isCollectOnly = this.argumentBuilder.isCollectOnly();
         
         return cp.spawn(path, flags, {
             shell: true,
