@@ -258,7 +258,7 @@
       },
       {
         "command": "typhoon-test.runTestTreeNode",
-        "title": "Run Tests",
+        "title": "Run Tests From Node",
         "category": "Typhoon Test",
         "icon": "$(debug-start)"
       },
