@@ -8,7 +8,8 @@ export enum TestStatus {
     Skipped = 'skipped',
     XPassed = 'xpassed',
     Error = 'error',
-    Interrupted = 'interrupted'
+    Interrupted = 'interrupted',
+    Collected = 'collected',
 }
 
 function statusStringToEnum(status: string): TestStatus {
@@ -85,6 +86,9 @@ export class TestItem extends vscode.TreeItem {
             case TestStatus.Interrupted:
                 this.iconPath = new vscode.ThemeIcon('stop');
                 break;
+            case TestStatus.Collected:
+                this.iconPath = new vscode.ThemeIcon('list-flat');
+                break;
         }
     }
 
@@ -106,16 +110,15 @@ export class TestItem extends vscode.TreeItem {
 
     private updateStatus() {
         const statuses = this.children.map(child => child.status);
-        if (statuses.includes(TestStatus.Interrupted)) {
+        if (statuses.includes(TestStatus.Collected)) {
+            this.setStatus(TestStatus.Collected);
+        } else if (statuses.includes(TestStatus.Interrupted)) {
             this.setStatus(TestStatus.Interrupted);
-        }
-        else if (statuses.includes(TestStatus.Running)) {
+        } else if (statuses.includes(TestStatus.Running)) {
             this.setStatus(TestStatus.Running);
-        }
-        else if (statuses.includes(TestStatus.Error)) {
+        } else if (statuses.includes(TestStatus.Error)) {
             this.setStatus(TestStatus.Error);
-        }
-        else if (statuses.includes(TestStatus.Failed)) {
+        } else if (statuses.includes(TestStatus.Failed)) {
             this.setStatus(TestStatus.Failed);
         } else if (statuses.includes(TestStatus.XFailed)) {
             this.setStatus(TestStatus.XFailed);
