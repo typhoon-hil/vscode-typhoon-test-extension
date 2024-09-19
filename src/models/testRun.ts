@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
+import { createCollectOnlyOutput } from './CollectOnlyOutput';
+import { TestStatus } from './testMonitoring';
 
 
 export enum InterpreterType {
@@ -31,6 +33,8 @@ export class PytestRunner {
     private testRunEndChecker: TestRunEndChecker;
     private wasKilled: boolean;
     private errorOccured: boolean;
+    private testOutput: string = '';
+    private isCollectOnly: boolean = false;
     
     constructor(private testTreeProvider: TestTreeProvider, private testScope?: string) {
         testTreeProvider.clearTests();
@@ -43,6 +47,14 @@ export class PytestRunner {
     private handleProcessExit(resolve: () => void, reject: () => void) {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
+
+        if (this.isCollectOnly) {
+            const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Module\s.+?>|<Function\s.+?>)/g)?.join('\n') || '';
+            const collectOnlyOutput = createCollectOnlyOutput(rawCollectOnlyOutput);
+            collectOnlyOutput.getOutput().forEach(module => {
+                this.testTreeProvider.addOrUpdateTest(module, TestStatus.Passed);
+            });
+        }
         
         if (this.errorOccured || this.wasKilled) {
             return reject();
@@ -63,6 +75,9 @@ export class PytestRunner {
         
         const lines = output.split('\n');
         lines.forEach(line => {
+            if (this.isCollectOnly) {
+                this.testOutput += line;
+            }
             if (!this.testRunEndChecker.check(line)) {
                 this.testTreeProvider.handleTestOutput(line);
             }
@@ -79,6 +94,8 @@ export class PytestRunner {
         const builder = new PytestArgumentBuilder(this.testScope);
         const path = builder.getPythonPath();
         const flags = builder.getFlags();
+
+        this.isCollectOnly = builder.isCollectOnly();
         
         return cp.spawn(path, flags, {
             shell: true,
