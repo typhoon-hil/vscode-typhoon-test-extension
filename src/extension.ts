@@ -19,6 +19,7 @@ import { getFullTestName } from './utils/editor';
 import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
+import { CollectOnlyPytestArgumentBuilder, PytestArgumentBuilder } from './models/PytestArgumentBuilder';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -137,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return getRunTestPromise(token, activeFile);
             });
         })
-    );  
+    );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
@@ -177,8 +178,24 @@ export function activate(context: vscode.ExtensionContext) {
             }, (_, token) => {
                 return getRunTestPromise(token, fullTestName);
             });
-        }
-    ));
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.collectTests', () => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: 'Collecting tests...',
+                cancellable: true
+            }, (_, token) => {
+                return getRunTestPromise(token, undefined, CollectOnlyPytestArgumentBuilder);
+            });
+        })
+    );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', () => {
@@ -204,7 +221,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    function getRunTestPromise(token: any, testName?: string): Promise<void> {
+    function getRunTestPromise(token: any, testName?: string, builderType: any = PytestArgumentBuilder): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             resolveTestPromise = resolve;
 
@@ -214,7 +231,7 @@ export function activate(context: vscode.ExtensionContext) {
                 });
             });
 
-            runTests(testTreeProvider, testName).then(() => {
+            runTests(testTreeProvider, testName, builderType).then(() => {
                 resolve();
             }).catch(() => {
                 reject();
