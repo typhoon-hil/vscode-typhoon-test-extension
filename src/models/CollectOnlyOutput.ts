@@ -76,6 +76,10 @@ export function createCollectOnlyOutput(raw: string): CollectOnlyOutput {
 }
 
 function extractLine(line: string, output: CollectOnlyOutput): void {
+    if (!line) {
+        return;
+    }
+    
     const worker = Factory.createWorker(line, output);
     worker.work();
 }
