@@ -16,7 +16,7 @@ export class TreeNode extends vscode.TreeItem {
             vscode.TreeItemCollapsibleState.None :
             vscode.TreeItemCollapsibleState.Collapsed;
         super(item.name, collapsibleState);
-        this.tooltip = `${item.type}: ${item.name}`;
+        this.tooltip = parent ? "" : `${item.type}: ${item.name}`;
         this.description = alias ? `(${alias})` : extractDescription((item as PythonCallable).doc);
         this.iconPath = this.getIconForType(item.type);
         this.contextValue = item.type;
