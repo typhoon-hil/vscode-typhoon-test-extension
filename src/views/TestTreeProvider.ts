@@ -174,10 +174,11 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         line = line.replace(/\s+/g, ' ').trim();
 
         const testNameMatch = line.split(' ')[0]?.match(/^(test_.*|.*_test)/); // TODO: Improve regex
+        const testDetailsString = line.split(' ')[0];
         const statusMatch = matchStatus(line);
 
         if (testNameMatch) {
-            const testNameDetails = extractTestNameDetails(testNameMatch[0]);
+            const testNameDetails = extractTestNameDetails(testDetailsString);
             const testName = testNameDetails.fullTestName;
 
             if (!this.containsTest(testName)) {
