@@ -158,7 +158,8 @@ export function extractTestNameDetails(fullTestName: string): TestNameDetails {
     const testName = fullTestName.split('::')[1].split('[')[0];
     const params = fullTestName.split('[')[1]?.split(']')[0];
     const folders = testPath.split('/');
-    return { fullTestName, name: testName, module: testPath, params, folders };
+    const module = folders.pop() || testPath;
+    return { fullTestName, name: testName, module, params, folders };
 }
 
 export function generateDummyTestItem(): TestItem {
