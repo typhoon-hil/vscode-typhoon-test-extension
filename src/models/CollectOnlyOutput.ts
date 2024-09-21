@@ -1,4 +1,4 @@
-import { TestNameDetails } from "./testMonitoring";
+import { extractTestNameDetails, TestNameDetails } from "./testMonitoring";
 
 export class CollectOnlyOutput {
     private readonly modules: CollectOnlyModule[] = [];
@@ -22,12 +22,7 @@ export class CollectOnlyOutput {
                     fullTestName += `[${f.getParams()}]`;
                 }
 
-                output.push({
-                    fullTestName: fullTestName,
-                    testName: f.getName(),
-                    testPath: m.getName(),
-                    params: f.getParams()
-                });
+                output.push(extractTestNameDetails(fullTestName));
             });
         });
         return output;
