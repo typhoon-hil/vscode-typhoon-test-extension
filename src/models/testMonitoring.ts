@@ -57,6 +57,7 @@ export class TestItem extends vscode.TreeItem {
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
+        public readonly details: TestNameDetails,
     ) {
         super(label, collapsibleState);
         this.setIcon();
@@ -146,8 +147,9 @@ export class TestItem extends vscode.TreeItem {
 
 export interface TestNameDetails {
     fullTestName: string; // testPath::testName[params]
-    testName: string;
-    testPath: string;
+    folders: string[];
+    name: string;
+    module: string;
     params?: string;
 }
 
@@ -155,5 +157,6 @@ export function extractTestNameDetails(fullTestName: string): TestNameDetails {
     const testPath = fullTestName.split('::')[0];
     const testName = fullTestName.split('::')[1].split('[')[0];
     const params = fullTestName.split('[')[1]?.split(']')[0];
-    return { fullTestName, testName, testPath, params };
+    const folders = testPath.split('/');
+    return { fullTestName, name: testName, module: testPath, params, folders };
 }
