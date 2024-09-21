@@ -160,3 +160,14 @@ export function extractTestNameDetails(fullTestName: string): TestNameDetails {
     const folders = testPath.split('/');
     return { fullTestName, name: testName, module: testPath, params, folders };
 }
+
+export function generateDummyTestItem(): TestItem {
+    const details = {
+        fullTestName: 'Starting...',
+        folders: [],
+        name: 'Starting...',
+        module: 'Starting...',
+    };
+
+    return new TestItem(TestItem.IgnoreContextValue, 'Starting...', vscode.TreeItemCollapsibleState.None, TestStatus.Running, details);
+}
