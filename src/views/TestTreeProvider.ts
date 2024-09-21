@@ -51,7 +51,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         if (testNameItem) {
             return testNameItem;
         }
-        const collapsibleState = isExpandable ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
+        const collapsibleState = isExpandable ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
         const id = testNameDetails.params ? testNameDetails.fullTestName.split('[')[0] : testNameDetails.fullTestName;
 
         const newTest = new TestItem(id, testNameDetails.name, collapsibleState, status, testNameDetails);
@@ -63,7 +63,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     private createTestPathItem(testNameDetails: TestNameDetails) {
         let testPathItem = this.findTestPath(testNameDetails.module);
         if (!testPathItem) {
-            testPathItem = new TestItem(testNameDetails.module, testNameDetails.module, vscode.TreeItemCollapsibleState.Expanded, TestStatus.Running, testNameDetails);
+            testPathItem = new TestItem(testNameDetails.module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
             this.tests.push(testPathItem);
         }
         return testPathItem;
