@@ -182,6 +182,22 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTestsFromExplorer', (uri: vscode.Uri) => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: `Running ${uri.fsPath}`,
+                cancellable: true
+            }, (_, token) => {
+                return getRunTestPromise(token, uri.fsPath, CollectOnlyPytestArgumentBuilder);
+            });
+        })
+    );
+
+    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.collectTests', () => {
             if (checkTestRunEnd()) {
                 return;

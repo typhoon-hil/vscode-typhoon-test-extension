@@ -272,6 +272,11 @@
         "command": "typhoon-test.pickOrganizationalLogoFilepath",
         "title": "Select File Path",
         "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.runTestsFromExplorer",
+        "title": "Run Pytest From Here",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
@@ -456,6 +461,13 @@
         {
           "command": "typhoon-test.runCurrentlySelectedTest",
           "when": "editorLangId == python"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "typhoon-test.runTestsFromExplorer",
+          "when": "resourceLangId == python || explorerResourceIsFolder || explorerResourceIsRoot",
+          "group": "typhoon-test"
         }
       ]
     }
