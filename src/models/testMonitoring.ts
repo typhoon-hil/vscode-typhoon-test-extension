@@ -147,20 +147,23 @@ export class TestItem extends vscode.TreeItem {
 }
 
 export interface TestNameDetails {
-    fullTestName: string; // testPath::testName[params]
+    fullTestName: string; // path/to/module.py::class_name_optional::testName[params]
     folders: string[];
     name: string;
     module: string;
+    class?: string;
     params?: string;
 }
 
 export function extractTestNameDetails(fullTestName: string): TestNameDetails {
-    const testPath = fullTestName.split('::')[0];
-    const testName = fullTestName.split('::')[1].split('[')[0];
+    const [testPath, classOrTestName, testNameWithParams] = fullTestName.split('::');
+    const testName = testNameWithParams?.split('[')[0] || classOrTestName?.split('[')[0]; // Test name is either second or third element based on class existence
     const params = fullTestName.split('[')[1]?.split(']')[0];
     const folders = testPath.split('/');
     const module = folders.pop() || testPath;
-    return { fullTestName, name: testName, module, params, folders };
+    const className = testNameWithParams ? classOrTestName : undefined; // Class exists only if there's a third part
+
+    return { fullTestName, name: testName, module, class: className, params, folders };
 }
 
 export function generateDummyTestItem(): TestItem {
