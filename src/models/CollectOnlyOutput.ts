@@ -3,21 +3,21 @@ import { extractTestNameDetails, TestNameDetails } from "./testMonitoring";
 export class CollectOnlyOutput {
     private readonly root: CollectOnlyDir = new CollectOnlyDir('');
     private package: CollectOnlyDir | undefined;
-    private lastModule: CollectOnlyModule | undefined;
+    private lastFunctionContainer: FunctionContainer | undefined;
     
     constructor() { }
     
     addDir(dir: CollectOnlyDir) {
         this.root.addDir(dir);
-        this.lastModule = dir.getModules()[dir.getModules().length - 1] || this.lastModule;
+        this.lastFunctionContainer = dir.getModules()[dir.getModules().length - 1] || this.lastFunctionContainer;
     }
     
-    set LastModule(module: CollectOnlyModule) {
-        this.lastModule = module;
+    set LastModule(module: FunctionContainer) {
+        this.lastFunctionContainer = module;
     }
 
-    get LastModule(): CollectOnlyModule | undefined {
-        return this.lastModule;
+    get LastModule(): FunctionContainer | undefined {
+        return this.lastFunctionContainer;
     }
     
     changePackage(dir: CollectOnlyDir) {
@@ -35,11 +35,23 @@ export class CollectOnlyOutput {
                 }
                 output.push(extractTestNameDetails(fullTestName));
             });
+
+            module.getClasses().forEach((cls: any) => processClass(cls, `${prefix}${module.getName()}::`));
         };
 
         const processDir = (dir: CollectOnlyDir, prefix: string = '') => {
             dir.getModules().forEach(m => processModule(m, `${prefix}${dir.getName()}/`));
             dir.getDirs().forEach(d => processDir(d, `${prefix}${dir.getName()}/`));
+        };
+
+        const processClass = (cls: CollectOnlyClass, prefix: string = '') => {
+            cls.getFunctions().forEach(f => {
+                let fullTestName = `${prefix}${cls.getName()}::${f.getName()}`;
+                if (f.getParams()) {
+                    fullTestName += `[${f.getParams()}]`;
+                }
+                output.push(extractTestNameDetails(fullTestName));
+            });
         };
 
         this.root.getModules().forEach(m => processModule(m));
@@ -70,7 +82,34 @@ export class CollectOnlyOutput {
     }
 }
 
-class CollectOnlyModule {
+class CollectOnlyModule implements FunctionContainer {
+    private readonly functions: CollectOnlyFunction[] = [];
+    private readonly classes: CollectOnlyClass[] = [];
+
+    constructor(private readonly name: string) { }
+
+    addFunction(func: CollectOnlyFunction) {
+        this.functions.push(func);
+    }
+
+    getFunctions() {
+        return [...this.functions];
+    }
+
+    addClass(cls: CollectOnlyClass) {
+        this.classes.push(cls);
+    }
+
+    getClasses() {
+        return [...this.classes];
+    }
+
+    getName() {
+        return this.name;
+    }
+}
+
+class CollectOnlyClass implements FunctionContainer {
     private readonly functions: CollectOnlyFunction[] = [];
 
     constructor(private readonly name: string) { }
@@ -159,6 +198,10 @@ interface Worker {
     work(): void;
 }
 
+interface FunctionContainer {
+    addFunction(func: CollectOnlyFunction): void;
+}
+
 class ModuleWorker implements Worker {
     constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
 
@@ -194,6 +237,17 @@ class DirWorker implements Worker {
     public work() { }
 }
 
+class ClassWorker implements Worker {
+    constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
+
+    public work() { 
+        const className = this.line.split(' ')[1];
+        const testClass = new CollectOnlyClass(className);
+        (this.output.LastModule as CollectOnlyModule)?.addClass(testClass);
+        this.output.LastModule = testClass;
+    }
+}
+
 class Factory {
     public static createWorker(line: string, output: CollectOnlyOutput): Worker {
         line = line.replaceAll('<', '').replaceAll('>', '');
@@ -204,6 +258,7 @@ class Factory {
             case 'module': return new ModuleWorker(line, output);
             case 'function': return new FunctionWorker(line, output);
             case 'dir': return new DirWorker(line, output);
+            case 'class': return new ClassWorker(line, output);
             default: throw new Error('Unknown element type');
         }
     }
