@@ -53,7 +53,7 @@ export class TestItem extends vscode.TreeItem {
     parent?: TestItem;
 
     constructor(
-        public readonly id: string,
+        public readonly identifier: string,
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
@@ -61,7 +61,8 @@ export class TestItem extends vscode.TreeItem {
     ) {
         super(label, collapsibleState);
         this.setIcon();
-        this.contextValue = id === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
+        this.contextValue = identifier === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
+        this.tooltip = identifier;
     }
 
     setIcon(): void {
