@@ -375,6 +375,11 @@
           "command": "typhoon-test.runTestTreeNode",
           "when": "viewItem == testItem",
           "group": "inline"
+        },
+        {
+          "command": "typhoon-test.runTestTreeNode",
+          "when": "viewItem == testItem",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
