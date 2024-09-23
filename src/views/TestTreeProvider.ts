@@ -6,7 +6,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<TestItem | undefined | void> = new vscode.EventEmitter<TestItem | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<TestItem | undefined | void> = this._onDidChangeTreeData.event;
 
-    private tests: TestItem[] = [];
+    private rootItems: TestItem[] = [];
     private lastTest: TestItem | undefined;
     private readonly dummyTest = generateDummyTestItem();
 
@@ -22,7 +22,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         if (element) {
             return element.getChildren();
         } else {
-            return this.tests;
+            return this.rootItems;
         }
     }
 
@@ -43,7 +43,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     
     private createTestFolders(folders: string[], testNameDetails: TestNameDetails): TestItem[] {
         Object.assign(testNameDetails, { params: undefined, fullTestName: "", module: "" });
-        let currentFolder = this.tests;
+        let currentFolder = this.rootItems;
 
         folders.forEach(folder => {
             let folderItem = currentFolder.find(t => t.label === folder);
@@ -52,10 +52,10 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
                 currentFolder.push(folderItem);
             }
             currentFolder = folderItem.getChildren();
-            this.lastTest = folderItem;
+
         });
 
-        return currentFolder === this.tests ? [] : currentFolder;
+        return currentFolder === this.rootItems ? [] : currentFolder;
     }
 
     private createParametrizedTestItem(testNameDetails: TestNameDetails, status: TestStatus, parent: TestItem) {
@@ -82,7 +82,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         let testPathItem = this.findTestPath(testNameDetails.module);
         if (!testPathItem) {
             testPathItem = new TestItem(testNameDetails.module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
-            this.tests.push(testPathItem);
+            this.rootItems.push(testPathItem);
         }
         return testPathItem;
     }
@@ -115,21 +115,21 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     private findTestPath(testPath: string): TestItem | undefined {
-        return this.tests.find(t => t.label === testPath);
+        return this.rootItems.find(t => t.label === testPath);
     }
 
     containsTest(testName: string): boolean {
-        return this.tests.some(t => t.label === testName);
+        return this.rootItems.some(t => t.label === testName);
     }
 
     clearTests(): void {
-        this.tests = [];
+        this.rootItems = [];
         this.lastTest = undefined;
         this.refresh();
     }
 
     updateLastTest(status: TestStatus) {
-        if (this.tests) {
+        if (this.rootItems) {
             const lastTest = this.lastTest;
             if (!lastTest) {
                 return;
@@ -141,13 +141,13 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     init() {
-        this.tests.push(this.dummyTest);
+        this.rootItems.push(this.dummyTest);
         this.refresh();
     }
 
     clearInit() {
-        if (this.tests.includes(this.dummyTest)) {
-            this.tests.splice(this.tests.indexOf(this.dummyTest), 1);
+        if (this.rootItems.includes(this.dummyTest)) {
+            this.rootItems.splice(this.rootItems.indexOf(this.dummyTest), 1);
         }
         this.refresh();
     }
@@ -157,12 +157,12 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             .filter(test => test.getChildren().length === 0);
     }
 
-    private getFlattenTests(tests: TestItem[] = this.tests): TestItem[] {
+    private getFlattenTests(tests: TestItem[] = this.rootItems): TestItem[] {
         return tests.flatMap(test => [test, ...this.getFlattenTests(test.getChildren())]);
     }
 
     handleInterrupt() {
-        let t = this.getFlattenTests(this.tests);
+        let t = this.getFlattenTests(this.rootItems);
         this.getRunningTests().forEach(test => test.update(TestStatus.Interrupted));
         this.refresh();
     }
