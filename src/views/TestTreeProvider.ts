@@ -27,35 +27,37 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     private updateTest(testNameDetails: TestNameDetails, status: TestStatus): void {
-        const test = this.findTest(testNameDetails)!;
+        const test = this.findTestItem(testNameDetails.fullTestName)!;
         test.update(status);
     }
 
     private addTest(testNameDetails: TestNameDetails, status: TestStatus): void {
         const isParametrized = testNameDetails.params !== undefined;
-        const folders = this.createTestFolders(testNameDetails.folders, testNameDetails);
-        const testModuleItem = this.createTestModuleItem(testNameDetails, folders.pop());
+        const lastFolder = this.createTestFolders(testNameDetails);
+        const testModuleItem = this.createTestModuleItem(testNameDetails, lastFolder);
         const newTest = this.createChildTestItem(testNameDetails, status, testModuleItem, isParametrized);
         if (isParametrized) {
             this.createParametrizedTestItem(testNameDetails, status, newTest);
         }
     }
-    
-    private createTestFolders(folders: string[], testNameDetails: TestNameDetails): TestItem[] {
-        Object.assign(testNameDetails, { params: undefined, fullTestName: "", module: "" });
+
+    private createTestFolders(testNameDetails: TestNameDetails): TestItem | undefined {
+        Object.assign({}, testNameDetails, { params: undefined, fullTestName: "", module: "" });
+        const folders = testNameDetails.folders;
         let currentFolder = this.rootItems;
+        let lastFolder: TestItem | undefined;
 
         folders.forEach(folder => {
             let folderItem = currentFolder.find(t => t.label === folder);
             if (!folderItem) {
                 folderItem = new TestItem(folder, folder, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
-                currentFolder.push(folderItem);
+                lastFolder ? lastFolder.addChild(folderItem) : this.rootItems.push(folderItem);
             }
             currentFolder = folderItem.getChildren();
-
+            lastFolder = folderItem;
         });
 
-        return currentFolder === this.rootItems ? [] : currentFolder;
+        return lastFolder;
     }
 
     private createParametrizedTestItem(testNameDetails: TestNameDetails, status: TestStatus, parent: TestItem) {
@@ -79,17 +81,24 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     private createTestModuleItem(testNameDetails: TestNameDetails, nearestFolder: TestItem | undefined): TestItem {
-        let testPathItem = this.findTestPath(testNameDetails.module);
+        const path = testNameDetails.folders.join('/');
+        const module = path ? '/' + testNameDetails.module : testNameDetails.module;
+            
+        let testPathItem = this.findTestItem(path + module);
         if (!testPathItem) {
-            testPathItem = new TestItem(testNameDetails.module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
-            this.rootItems.push(testPathItem);
+            testPathItem = new TestItem(path + module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+            if (!nearestFolder) {
+                this.rootItems.push(testPathItem);
+            } else {
+                nearestFolder.addChild(testPathItem);
+            }
         }
         return testPathItem;
     }
 
     addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
         this.clearInit();
-        const test = this.findTest(testName);
+        const test = this.findTestItem(testName.fullTestName);
         test ? this.updateTest(testName, status) : this.addTest(testName, status);
         this.refresh();
     }
@@ -100,26 +109,12 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         this.refresh();
     }
 
-    private findTest(testName: TestNameDetails): TestItem | undefined {
-        const testPathNode = this.findTestPath(testName.module);
-        if (!testPathNode) {
-            return undefined;
-        }
-
-        const test = testPathNode.getChildren().find(t => t.label === testName.name);
-        if (!test || !testName.params) {
-            return test;
-        }
-
-        return test.getChildren().find(t => t.label === testName.params);
-    }
-
-    private findTestPath(testPath: string): TestItem | undefined {
-        return this.rootItems.find(t => t.label === testPath);
-    }
-
     containsTest(testName: string): boolean {
         return this.rootItems.some(t => t.label === testName);
+    }
+
+    private findTestItem(identifier: string): TestItem | undefined {
+        return this.getFlattenTests().find(test => test.identifier === identifier);
     }
 
     clearTests(): void {
@@ -170,7 +165,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     handleTestOutput(line: string) {
         line = line.replace(/\s+/g, ' ').trim();
 
-        const testNameMatch = line.split(' ')[0]?.match(/^(test_.*|.*_test)/); // TODO: Improve regex
+        const testNameMatch = line.split(' ')[0]?.match(/([^\s]+\.py::(?:[^\s]+::)?[^\s]+)/); // TODO: Improve regex
         const testDetailsString = line.split(' ')[0];
         const statusMatch = matchStatus(line);
 
