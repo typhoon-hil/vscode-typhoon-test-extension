@@ -33,11 +33,29 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
 
     private addTest(testNameDetails: TestNameDetails, status: TestStatus): void {
         const isParametrized = testNameDetails.params !== undefined;
-        const testPathItem = this.createTestPathItem(testNameDetails);
-        const newTest = this.createChildTestItem(testNameDetails, status, testPathItem, isParametrized);
+        const folders = this.createTestFolders(testNameDetails.folders, testNameDetails);
+        const testModuleItem = this.createTestModuleItem(testNameDetails, folders.pop());
+        const newTest = this.createChildTestItem(testNameDetails, status, testModuleItem, isParametrized);
         if (isParametrized) {
             this.createParametrizedTestItem(testNameDetails, status, newTest);
         }
+    }
+    
+    private createTestFolders(folders: string[], testNameDetails: TestNameDetails): TestItem[] {
+        Object.assign(testNameDetails, { params: undefined, fullTestName: "", module: "" });
+        let currentFolder = this.tests;
+
+        folders.forEach(folder => {
+            let folderItem = currentFolder.find(t => t.label === folder);
+            if (!folderItem) {
+                folderItem = new TestItem(folder, folder, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+                currentFolder.push(folderItem);
+            }
+            currentFolder = folderItem.getChildren();
+            this.lastTest = folderItem;
+        });
+
+        return currentFolder === this.tests ? [] : currentFolder;
     }
 
     private createParametrizedTestItem(testNameDetails: TestNameDetails, status: TestStatus, parent: TestItem) {
@@ -60,7 +78,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         return newTest;
     }
 
-    private createTestPathItem(testNameDetails: TestNameDetails) {
+    private createTestModuleItem(testNameDetails: TestNameDetails, nearestFolder: TestItem | undefined): TestItem {
         let testPathItem = this.findTestPath(testNameDetails.module);
         if (!testPathItem) {
             testPathItem = new TestItem(testNameDetails.module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
