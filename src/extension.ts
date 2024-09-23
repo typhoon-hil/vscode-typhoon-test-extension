@@ -169,7 +169,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            const fullTestName = item.id;
+            const fullTestName = item.identifier;
 
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,

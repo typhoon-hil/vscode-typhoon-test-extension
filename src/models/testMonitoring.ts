@@ -53,14 +53,16 @@ export class TestItem extends vscode.TreeItem {
     parent?: TestItem;
 
     constructor(
-        public readonly id: string,
+        public readonly identifier: string,
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
+        public readonly details: TestNameDetails,
     ) {
         super(label, collapsibleState);
         this.setIcon();
-        this.contextValue = id === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
+        this.contextValue = identifier === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
+        this.tooltip = identifier;
     }
 
     setIcon(): void {
@@ -90,8 +92,28 @@ export class TestItem extends vscode.TreeItem {
                 this.iconPath = new vscode.ThemeIcon('stop');
                 break;
             case TestStatus.Collected:
-                this.iconPath = this.parent ? new vscode.ThemeIcon('symbol-method') : new vscode.ThemeIcon('symbol-class');
-                break;
+                if (!this.identifier.includes('.py')) { // Folder
+                    this.iconPath = new vscode.ThemeIcon('symbol-folder');
+                    break;
+                }
+                if (this.identifier.includes('[')) { // Function
+                    this.iconPath = new vscode.ThemeIcon('symbol-key');
+                    break;
+                }
+                
+                const parts = this.identifier.split('::');
+                if (parts.length === 1) { // Module
+                    this.iconPath = new vscode.ThemeIcon('symbol-module');
+                    break;
+                }
+                if (parts.length === 2) { // Function or Class
+                    this.iconPath = this.details.class ? new vscode.ThemeIcon('symbol-class') : new vscode.ThemeIcon('symbol-function');
+                    break;
+                }
+                if (parts.length === 3) { // Class method
+                    this.iconPath = new vscode.ThemeIcon('symbol-method');
+                    break;
+                }
         }
     }
 
@@ -145,15 +167,32 @@ export class TestItem extends vscode.TreeItem {
 }
 
 export interface TestNameDetails {
-    fullTestName: string; // testPath::testName[params]
-    testName: string;
-    testPath: string;
+    fullTestName: string; // path/to/module.py::class_name_optional::testName[params]
+    folders: string[];
+    name: string;
+    module: string;
+    class?: string;
     params?: string;
 }
 
 export function extractTestNameDetails(fullTestName: string): TestNameDetails {
-    const testPath = fullTestName.split('::')[0];
-    const testName = fullTestName.split('::')[1].split('[')[0];
+    const [testPath, classOrTestName, testNameWithParams] = fullTestName.split('::');
+    const testName = testNameWithParams?.split('[')[0] || classOrTestName?.split('[')[0]; // Test name is either second or third element based on class existence
     const params = fullTestName.split('[')[1]?.split(']')[0];
-    return { fullTestName, testName, testPath, params };
+    const folders = testPath.split('/');
+    const module = folders.pop() || testPath;
+    const className = testNameWithParams ? classOrTestName : undefined; // Class exists only if there's a third part
+
+    return { fullTestName, name: testName, module, class: className, params, folders };
+}
+
+export function generateDummyTestItem(): TestItem {
+    const details = {
+        fullTestName: 'Starting...',
+        folders: [],
+        name: 'Starting...',
+        module: 'Starting...',
+    };
+
+    return new TestItem(TestItem.IgnoreContextValue, 'Starting...', vscode.TreeItemCollapsibleState.None, TestStatus.Running, details);
 }
