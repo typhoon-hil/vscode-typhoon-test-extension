@@ -35,7 +35,8 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         const isParametrized = testNameDetails.params !== undefined;
         const lastFolder = this.createTestFolders(testNameDetails);
         const testModuleItem = this.createTestModuleItem(testNameDetails, lastFolder);
-        const newTest = this.createChildTestItem(testNameDetails, status, testModuleItem, isParametrized);
+        const testClassItem = this.createClassItem(testNameDetails, testModuleItem);
+        const newTest = this.createChildTestItem(testNameDetails, status, testClassItem, isParametrized);
         if (isParametrized) {
             this.createParametrizedTestItem(testNameDetails, status, newTest);
         }
@@ -94,6 +95,20 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             }
         }
         return testPathItem;
+    }
+
+    private createClassItem(testNameDetails: TestNameDetails, module: TestItem): TestItem {
+        if (!testNameDetails.class) {
+            return module;
+        }
+        const id = testNameDetails.fullTestName.split('::').slice(0, 2).join('::');
+        const classItem = this.findTestItem(id);
+        if (classItem) {
+            return classItem;
+        }
+        const newClass = new TestItem(id, testNameDetails.class, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+        module.addChild(newClass);
+        return newClass;
     }
 
     addOrUpdateTest(testName: TestNameDetails, status: TestStatus): void {
