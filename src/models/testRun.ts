@@ -51,7 +51,7 @@ export class PytestRunner {
         this.testTreeProvider.clearInit();
 
         if (this.isCollectOnly) {
-            const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Package\s.+?>|<Module\s.+?>|<Function\s.+?>)/g)?.join('\n') || '';
+            const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Package\s.+?>|<Module\s.+?>|<Function\s.+?>|<Class\s.+?>)/g)?.join('\n') || '';
             const collectOnlyOutput = createCollectOnlyOutput(rawCollectOnlyOutput);
             collectOnlyOutput.getOutput().forEach(testDetails => {
                 this.testTreeProvider.addCollectOnlyTest(testDetails);
