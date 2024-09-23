@@ -92,8 +92,28 @@ export class TestItem extends vscode.TreeItem {
                 this.iconPath = new vscode.ThemeIcon('stop');
                 break;
             case TestStatus.Collected:
-                this.iconPath = this.parent ? new vscode.ThemeIcon('symbol-method') : new vscode.ThemeIcon('symbol-class');
-                break;
+                if (!this.identifier.includes('.py')) { // Folder
+                    this.iconPath = new vscode.ThemeIcon('symbol-folder');
+                    break;
+                }
+                if (this.identifier.includes('[')) { // Function
+                    this.iconPath = new vscode.ThemeIcon('symbol-key');
+                    break;
+                }
+                
+                const parts = this.identifier.split('::');
+                if (parts.length === 1) { // Module
+                    this.iconPath = new vscode.ThemeIcon('symbol-module');
+                    break;
+                }
+                if (parts.length === 2) { // Function or Class
+                    this.iconPath = this.details.class ? new vscode.ThemeIcon('symbol-class') : new vscode.ThemeIcon('symbol-function');
+                    break;
+                }
+                if (parts.length === 3) { // Class method
+                    this.iconPath = new vscode.ThemeIcon('symbol-method');
+                    break;
+                }
         }
     }
 
