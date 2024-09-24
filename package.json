@@ -254,11 +254,6 @@
         "category": "Typhoon Test"
       },
       {
-        "command": "typhoon-test.runCurrentlySelectedTest",
-        "title": "Run Currently Selected Test",
-        "category": "Typhoon Test"
-      },
-      {
         "command": "typhoon-test.runTestTreeNode",
         "title": "Run Tests From Node",
         "category": "Typhoon Test",
@@ -421,10 +416,6 @@
         {
           "command": "typhoon-test.runTestsFromFile",
           "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runCurrentlySelectedTest",
-          "when": "editorLangId == python"
         }
       ],
       "editor/title": [
@@ -468,10 +459,6 @@
         },
         {
           "command": "typhoon-test.openPdfConfiguration",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runCurrentlySelectedTest",
           "when": "editorLangId == python"
         }
       ],

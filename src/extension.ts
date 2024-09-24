@@ -142,29 +142,6 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.runCurrentlySelectedTest', () => {
-            if (checkTestRunEnd()) {
-                return;
-            }
-
-            const fullTestName = getFullTestName();
-
-            if (!fullTestName) {
-                vscode.window.showErrorMessage('No test is currently selected');
-                return;
-            }
-
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: `Running test ${fullTestName}`,
-                cancellable: true
-            }, (_, token) => {
-                return getRunTestPromise(token, fullTestName);
-            });
-        })
-    );
-
-    context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTestTreeNode', (item: TestItem) => {
             if (checkTestRunEnd()) {
                 return;
