@@ -17,9 +17,18 @@
     "Other"
   ],
   "license": "MIT",
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "submenus": [
+      {
+        "id": "typhoon-test",
+        "label": "Typhoon Test",
+        "icon": "$(rocket)"
+      }
+    ],
     "keybindings": [
       {
         "command": "typhoon-test.runTests",
@@ -252,12 +261,7 @@
         "category": "Typhoon Test"
       },
       {
-        "command": "typhoon-test.runCurrentlySelectedTest",
-        "title": "Run Currently Selected Test",
-        "category": "Typhoon Test"
-      },
-      {
-        "command": "typhoon-test.runTestTreeNode",
+        "command": "typhoon-test.runTestsFromTestItem",
         "title": "Run Tests From Node",
         "category": "Typhoon Test",
         "icon": "$(debug-start)"
@@ -275,7 +279,7 @@
       },
       {
         "command": "typhoon-test.runTestsFromExplorer",
-        "title": "Run Pytest From Here",
+        "title": "Run With Typhoon Test",
         "category": "Typhoon Test"
       }
     ],
@@ -372,12 +376,12 @@
           "group": "inline"
         },
         {
-          "command": "typhoon-test.runTestTreeNode",
+          "command": "typhoon-test.runTestsFromTestItem",
           "when": "viewItem == testItem",
           "group": "inline"
         },
         {
-          "command": "typhoon-test.runTestTreeNode",
+          "command": "typhoon-test.runTestsFromTestItem",
           "when": "viewItem == testItem",
           "group": "navigation"
         }
@@ -414,57 +418,19 @@
         {
           "command": "typhoon-test.runTestsFromFile",
           "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runCurrentlySelectedTest",
-          "when": "editorLangId == python"
         }
       ],
       "editor/title": [
         {
-          "command": "typhoon-test.openTestRunConfiguration",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.openPdfConfiguration",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runTests",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.stopTests",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runTestsFromFile",
+          "submenu": "typhoon-test",
+          "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
       ],
       "editor/context": [
         {
-          "command": "typhoon-test.runTestsFromFile",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runTests",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.stopTests",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.openTestRunConfiguration",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.openPdfConfiguration",
-          "when": "editorLangId == python"
-        },
-        {
-          "command": "typhoon-test.runCurrentlySelectedTest",
+          "submenu": "typhoon-test",
+          "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
       ],
@@ -473,6 +439,23 @@
           "command": "typhoon-test.runTestsFromExplorer",
           "when": "resourceLangId == python || explorerResourceIsFolder || explorerResourceIsRoot",
           "group": "typhoon-test"
+        }
+      ],
+      "typhoon-test": [
+        {
+          "command": "typhoon-test.openTestRunConfiguration"
+        },
+        {
+          "command": "typhoon-test.openPdfConfiguration"
+        },
+        {
+          "command": "typhoon-test.runTests"
+        },
+        {
+          "command": "typhoon-test.stopTests"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile"
         }
       ]
     }

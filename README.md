@@ -99,3 +99,11 @@ For new users, the extension provides an easier way to configure test settings t
 - **Run Tests Directly from the Test Tree**: Tests can now be run with a single click from the test tree in `Pytest Monitor`. Whether it's for the entire workspace, a specific file, or an individual function, test execution can be triggered directly from the corresponding tree node.
 
     ![Run Test From Node](/assets/pytest-run-from-node.png)
+
+- **Typhoon Test Submenu**: Simplifies searching for the Typhoon Test specific commands by grouping all available commands under one submenu
+
+    ![Submenu Demo](/assets/submenu.png)
+
+- **Run Selected Python Entity**: Using the code lens, users can easily run specific class, method or function, without need to search for the commands and positioning cursor above their target
+
+    ![Run Selection](/assets/run-selection.png)
