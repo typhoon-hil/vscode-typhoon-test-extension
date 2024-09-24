@@ -220,15 +220,13 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // vscode.window.withProgress({
-            //     location: vscode.ProgressLocation.Notification,
-            //     title: `Running ${name}`,
-            //     cancellable: true
-            // }, (_, token) => {
-            //     return getRunTestPromise(token, name);
-            // });
-
-            vscode.window.showInformationMessage(`Running ${name}`);
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: `Running ${name}`,
+                cancellable: true
+            }, (_, token) => {
+                return getRunTestPromise(token, name);
+            });
         })
     );
 
