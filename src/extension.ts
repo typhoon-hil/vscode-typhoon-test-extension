@@ -130,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.runTestTreeNode', (item: TestItem) => {
+        vscode.commands.registerCommand('typhoon-test.runTestsFromTestItem', (item: TestItem) => {
             vscode.commands.executeCommand('typhoon-test.runTests', item.identifier);
         })
     );

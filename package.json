@@ -254,7 +254,7 @@
         "category": "Typhoon Test"
       },
       {
-        "command": "typhoon-test.runTestTreeNode",
+        "command": "typhoon-test.runTestsFromTestItem",
         "title": "Run Tests From Node",
         "category": "Typhoon Test",
         "icon": "$(debug-start)"
@@ -369,12 +369,12 @@
           "group": "inline"
         },
         {
-          "command": "typhoon-test.runTestTreeNode",
+          "command": "typhoon-test.runTestsFromTestItem",
           "when": "viewItem == testItem",
           "group": "inline"
         },
         {
-          "command": "typhoon-test.runTestTreeNode",
+          "command": "typhoon-test.runTestsFromTestItem",
           "when": "viewItem == testItem",
           "group": "navigation"
         }
