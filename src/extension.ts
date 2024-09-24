@@ -15,7 +15,6 @@ import { runTests, stopTests } from './commands/runAndStopTests';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
-import { getFullTestName } from './utils/editor';
 import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
@@ -98,80 +97,47 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.runTests', () => {
+        vscode.commands.registerCommand('typhoon-test.runTests', (testName?: string) => {
             if (checkTestRunEnd()) {
                 return;
             }
 
-            const rootDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-            if (!rootDir) {
-                vscode.window.showErrorMessage('No workspace is open');
-                return;
+            if (!testName) {
+                testName = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+                if (!testName) {
+                    vscode.window.showErrorMessage('No workspace is currently open');
+                    return;
+                }
             }
 
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: `Running tests from ${rootDir}`,
+                title: `Running ${getDisplayTestName(testName)}`,
                 cancellable: true
             }, (_, token) => {
-                return getRunTestPromise(token);
+                return getRunTestPromise(token, testName);
             });
         })
     );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTestsFromFile', () => {
-            if (checkTestRunEnd()) {
-                return;
-            }
-
             const activeFile = vscode.window.activeTextEditor?.document.fileName;
-            if (!activeFile) {
+            activeFile ? 
+                vscode.commands.executeCommand('typhoon-test.runTests', activeFile) :
                 vscode.window.showErrorMessage('No file is currently open');
-                return;
-            }
-
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: `Running tests from ${activeFile}`,
-                cancellable: true
-            }, (_, token) => {
-                return getRunTestPromise(token, activeFile);
-            });
         })
     );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTestTreeNode', (item: TestItem) => {
-            if (checkTestRunEnd()) {
-                return;
-            }
-
-            const fullTestName = item.identifier;
-
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: `Running ${fullTestName}`,
-                cancellable: true
-            }, (_, token) => {
-                return getRunTestPromise(token, fullTestName);
-            });
+            vscode.commands.executeCommand('typhoon-test.runTests', item.identifier);
         })
     );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.runTestsFromExplorer', (uri: vscode.Uri) => {
-            if (checkTestRunEnd()) {
-                return;
-            }
-
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: `Running ${uri.fsPath}`,
-                cancellable: true
-            }, (_, token) => {
-                return getRunTestPromise(token, uri.fsPath, CollectOnlyPytestArgumentBuilder);
-            });
+            vscode.commands.executeCommand('typhoon-test.runTests', uri.fsPath);
         })
     );
 
@@ -187,22 +153,6 @@ export function activate(context: vscode.ExtensionContext) {
                 cancellable: true
             }, (_, token) => {
                 return getRunTestPromise(token, undefined, CollectOnlyPytestArgumentBuilder);
-            });
-        })
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.runTestCodeLens', (name: string) => {
-            if (checkTestRunEnd()) {
-                return;
-            }
-
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: `Running ${name}`,
-                cancellable: true
-            }, (_, token) => {
-                return getRunTestPromise(token, name);
             });
         })
     );
@@ -260,5 +210,15 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showErrorMessage('Test run is still in progress');
         }
         return res;
+    }
+
+    function getDisplayTestName(testName: string): string {
+        const rootDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+        if (!rootDir) {
+            return testName;
+        }
+
+        let filteredName = testName.replace(rootDir, '') || testName;
+        return filteredName.startsWith('/') || filteredName.startsWith('\\') ? filteredName.slice(1) : filteredName;
     }
 }
