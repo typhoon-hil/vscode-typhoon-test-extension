@@ -17,7 +17,9 @@
     "Other"
   ],
   "license": "MIT",
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "keybindings": [
@@ -276,6 +278,11 @@
       {
         "command": "typhoon-test.runTestsFromExplorer",
         "title": "Run Pytest From Here",
+        "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.runTestCodeLens",
+        "title": "Run With Typhoon Test",
         "category": "Typhoon Test"
       }
     ],
