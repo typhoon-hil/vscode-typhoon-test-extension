@@ -20,6 +20,7 @@ import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
 import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
 import { CollectOnlyPytestArgumentBuilder, PytestArgumentBuilder } from './models/PytestArgumentBuilder';
+import { PytestCodeLensProvider } from './codelens/PytestCodeLensProvider';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -212,6 +213,29 @@ export function activate(context: vscode.ExtensionContext) {
             });
         })
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.runTestCodeLens', (name: string) => {
+            if (checkTestRunEnd()) {
+                return;
+            }
+
+            // vscode.window.withProgress({
+            //     location: vscode.ProgressLocation.Notification,
+            //     title: `Running ${name}`,
+            //     cancellable: true
+            // }, (_, token) => {
+            //     return getRunTestPromise(token, name);
+            // });
+
+            vscode.window.showInformationMessage(`Running ${name}`);
+        })
+    );
+
+    context.subscriptions.push(vscode.languages.registerCodeLensProvider(
+        { scheme: 'file', language: 'python' },
+        new PytestCodeLensProvider()
+    ));
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', () => {
