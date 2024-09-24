@@ -24,7 +24,7 @@ export class PytestCodeLensProvider implements vscode.CodeLensProvider {
             // Add a CodeLens for the class itself (if you want to run the whole class tests)
             codeLenses.push(new vscode.CodeLens(range, {
                 title: "Run With Typhoon Test",
-                command: "typhoon-test.runTestCodeLens",
+                command: "typhoon-test.runTests",
                 arguments: [`${document.fileName}::${currentClass}`]  // Class-level pytest command
             }));
         }
@@ -40,14 +40,14 @@ export class PytestCodeLensProvider implements vscode.CodeLensProvider {
                 // If inside a class, run the class method
                 codeLenses.push(new vscode.CodeLens(range, {
                     title: "Run With Typhoon Test",
-                    command: "typhoon-test.runTestCodeLens",
+                    command: "typhoon-test.runTests",
                     arguments: [`${document.fileName}::${currentClass}::${methodName}`]  // Class + Method pytest command
                 }));
             } else {
                 // Standalone function (outside any class)
                 codeLenses.push(new vscode.CodeLens(range, {
                     title: "Run My Command",
-                    command: "typhoon-test.runTestCodeLens",
+                    command: "typhoon-test.runTests",
                     arguments: [`${document.fileName}::${methodName}`]  // Function pytest command (no class)
                 }));
             }

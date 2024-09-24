@@ -274,11 +274,6 @@
         "command": "typhoon-test.runTestsFromExplorer",
         "title": "Run Pytest From Here",
         "category": "Typhoon Test"
-      },
-      {
-        "command": "typhoon-test.runTestCodeLens",
-        "title": "Run With Typhoon Test",
-        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
