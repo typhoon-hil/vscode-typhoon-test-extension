@@ -51,7 +51,7 @@ The extension also provides a way to quick run a tests by executing the `typhoon
 ![Pytest Monitor Demo](/assets/pytest-demo.gif)
 
 Pytest Monitor creates a new output channel, **Pytest Output**, in the Output panel, where the test results are printed.
-If the `typhoon-test.testRun.openReport` setting is enabled, the extension will create a new terminal **Allure Report**,
+If the `typhoon-test.testRun.openReport` setting is enabled, the extension will create a new terminal, **Allure Report**,
 where the Allure server will be started and the test results will be displayed in a web browser.
 If the `typhoon-test.testRun.pdfReport` will also generate a PDF report of the test results in the workspace directory.
 Execution results will be stored in the `report` directory. If the `typhoon-test.testRun.cleanOldResults` setting is enabled,
@@ -67,9 +67,7 @@ Quickly execute all tests in the active Python file or run a specific test by pl
 
 Easily terminate ongoing test executions with a dedicated stop command.
 
-### 
-
-#### Extension Configuration
+### Extension Configuration
 
 The extension needs to be configured in order to work properly. The configuration can be accessed by executing the
 `typhoon-test.openTestRunConfiguration` command.
@@ -78,7 +76,11 @@ For new users, the extension provides an easier way to configure test settings t
 
 - **PDF Configuration WebView**: Easily customize PDF settings in an intuitive WebView interface.
 
+    ![Pdf Configuration Demo](/assets/pdf-configuration.gif)
+
 - **Test Run Configuration WebView**: Simplify the setup of test run options directly within the WebView.
+
+    ![Test Run Configuration Demo](/assets/test-run-configuration.gif)
 
 
 ## Requirements
