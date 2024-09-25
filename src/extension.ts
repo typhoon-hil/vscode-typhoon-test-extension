@@ -20,7 +20,7 @@ import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
 import { CollectOnlyPytestArgumentBuilder, PytestArgumentBuilder } from './models/PytestArgumentBuilder';
 import { PytestCodeLensProvider } from './codelens/PytestCodeLensProvider';
-import { viewTestInFile } from './commands/viewTestInFile';
+import { viewTestInCode } from './commands/viewTestInCode';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -171,7 +171,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.viewTestInCode', (item: TestItem) => {
-            viewTestInFile(item.details);
+            viewTestInCode(item.details);
         })
     );
 

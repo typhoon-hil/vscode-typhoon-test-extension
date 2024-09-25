@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { TestNameDetails } from '../models/testMonitoring';
 
 
-export function viewTestInFile(details: TestNameDetails) {
+export function viewTestInCode(details: TestNameDetails) {
     let paths = [vscode.workspace.workspaceFolders?.[0].uri.fsPath, details.folders.join('/'), details.module];
     const uri = vscode.Uri.file(paths.join('/'));
     vscode.workspace.openTextDocument(uri).then((document) => {
