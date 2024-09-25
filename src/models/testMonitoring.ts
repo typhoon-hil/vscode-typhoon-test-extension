@@ -61,8 +61,13 @@ export class TestItem extends vscode.TreeItem {
     ) {
         super(label, collapsibleState);
         this.setIcon();
-        this.contextValue = identifier === TestItem.IgnoreContextValue ? TestItem.IgnoreContextValue : 'testItem';
+        this.contextValue = identifier === TestItem.IgnoreContextValue ? undefined :
+            this.IsFolder ? 'testItem.folder' : 'testItem';
         this.tooltip = identifier;
+    }
+
+    get IsFolder(): boolean {
+        return !this.identifier.includes('.py');
     }
 
     setIcon(): void {
