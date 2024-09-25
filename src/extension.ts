@@ -15,7 +15,7 @@ import { runTests, stopTests } from './commands/runAndStopTests';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
-import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
+import { ConfigurationWebviewProvider } from './views/ConfigurationWebviewProvider';
 import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
 import { CollectOnlyPytestArgumentBuilder, PytestArgumentBuilder } from './models/PytestArgumentBuilder';
