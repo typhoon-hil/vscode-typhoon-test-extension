@@ -1,265 +1,141 @@
 import { extractTestNameDetails, TestNameDetails } from "./testMonitoring";
 
+
 export class CollectOnlyOutput {
-    private readonly root: CollectOnlyDir = new CollectOnlyDir('');
-    private package: CollectOnlyDir | undefined;
-    private lastFunctionContainer: FunctionContainer | undefined;
-    
-    constructor() { }
-    
-    addDir(dir: CollectOnlyDir) {
-        this.root.addDir(dir);
-        this.lastFunctionContainer = dir.getModules()[dir.getModules().length - 1] || this.lastFunctionContainer;
-    }
-    
-    set LastModule(module: FunctionContainer) {
-        this.lastFunctionContainer = module;
+    private readonly root: CollectOnlyFolder = new CollectOnlyFolder('');
+    private levels: { [level: number]: CollectOnlyComponent } = {};
+    private currentIndent: number;
+
+    constructor(initialIndent: number) {
+        this.levels[initialIndent / 2 - 1] = this.root;
+        this.currentIndent = initialIndent / 2 - 1;
     }
 
-    get LastModule(): FunctionContainer | undefined {
-        return this.lastFunctionContainer;
+    private dropLevels() {
+        for (let level in this.levels) {
+            if (parseInt(level) > this.currentIndent) {
+                delete this.levels[level];
+            }
+        }
     }
-    
-    changePackage(dir: CollectOnlyDir) {
-        this.package = dir;
+
+    addComponent(line: string) {
+        const indent = getIndentLevel(line);
+        const worker = Factory.createComponent(line);
+        this.levels[indent] = worker;
+        this.CurrentIndent = indent;
+        this.Parent.add(worker);
+    }
+
+    private set CurrentIndent(indent: number) {
+        this.currentIndent = indent;
+        this.dropLevels();
+    }
+
+    private get Parent(): CollectOnlyComponent {
+        const parentIndent = this.currentIndent - 1;
+        return this.levels[parentIndent] || this.root;
     }
 
     getOutput(): TestNameDetails[] {
-        const output: TestNameDetails[] = [];
-        
-        const processModule = (module: any, prefix: string = '') => {
-            module.getFunctions().forEach((f: any) => {
-                let fullTestName = `${prefix}${module.getName()}::${f.getName()}`;
-                if (f.getParams()) {
-                    fullTestName += `[${f.getParams()}]`;
-                }
-                output.push(extractTestNameDetails(fullTestName));
-            });
-
-            module.getClasses().forEach((cls: any) => processClass(cls, `${prefix}${module.getName()}::`));
-        };
-
-        const processDir = (dir: CollectOnlyDir, prefix: string = '') => {
-            dir.getModules().forEach(m => processModule(m, `${prefix}${dir.getName()}/`));
-            dir.getDirs().forEach(d => processDir(d, `${prefix}${dir.getName()}/`));
-        };
-
-        const processClass = (cls: CollectOnlyClass, prefix: string = '') => {
-            cls.getFunctions().forEach(f => {
-                let fullTestName = `${prefix}${cls.getName()}::${f.getName()}`;
-                if (f.getParams()) {
-                    fullTestName += `[${f.getParams()}]`;
-                }
-                output.push(extractTestNameDetails(fullTestName));
-            });
-        };
-
-        this.root.getModules().forEach(m => processModule(m));
-        this.root.getDirs().forEach(d => processDir(d));
-
-        return output;
-    }
-
-    addDirsWithModule(path: string) {
-        const paths = path.split('/');
-        let currentDir = this.package || this.root;
-        paths.forEach((p) => {
-            if (p.endsWith('.py')) {
-                const module = new CollectOnlyModule(p);
-                currentDir.addModule(module);
-                this.LastModule = module;
-                return;
-            }
-            const dir = currentDir.findDir(p);
-            if (dir) {
-                currentDir = dir;
-            } else {
-                const newDir = new CollectOnlyDir(p);
-                currentDir.addDir(newDir);
-                currentDir = newDir;
-            }
-        });
+        return this.root.getNames().map(name => name.slice(1))
+            .map(name => extractTestNameDetails(name));
     }
 }
 
-class CollectOnlyModule implements FunctionContainer {
-    private readonly functions: CollectOnlyFunction[] = [];
-    private readonly classes: CollectOnlyClass[] = [];
-
-    constructor(private readonly name: string) { }
-
-    addFunction(func: CollectOnlyFunction) {
-        this.functions.push(func);
+function getIndentLevel(line: string): number {
+    for (let i = 0; i < line.length; i++) {
+        if (line[i] !== ' ') {
+            return i / 2;
+        }
     }
-
-    getFunctions() {
-        return [...this.functions];
-    }
-
-    addClass(cls: CollectOnlyClass) {
-        this.classes.push(cls);
-    }
-
-    getClasses() {
-        return [...this.classes];
-    }
-
-    getName() {
-        return this.name;
-    }
+    return 0;
 }
 
-class CollectOnlyClass implements FunctionContainer {
-    private readonly functions: CollectOnlyFunction[] = [];
+class CollectOnlyComponent {
+    protected children: CollectOnlyComponent[] = [];
 
-    constructor(private readonly name: string) { }
-
-    addFunction(func: CollectOnlyFunction) {
-        this.functions.push(func);
+    constructor(protected readonly name: string) {
     }
 
-    getFunctions() {
-        return [...this.functions];
+    add(component: CollectOnlyComponent): void {
+        this.children.push(component);
     }
 
-    getName() {
-        return this.name;
-    }
-}
-
-class CollectOnlyFunction {
-    private params?: string;
-
-    constructor(private readonly name: string) {
-        this.params = name.split('[')[1]?.split(']')[0];
+    getChildren(): CollectOnlyComponent[] {
+        return [...this.children];
     }
 
-    public getName() {
-        return this.name.split('[')[0];
+    getNames(): string[] {
+        return [];
     }
 
-    public getParams() {
-        return this.params;
-    }
-}
-
-class CollectOnlyDir {
-    private readonly modules: CollectOnlyModule[] = [];
-    private readonly dirs: CollectOnlyDir[] = [];
-
-    constructor(private readonly name: string) { }
-
-    getName() {
+    getName(): string {
         return this.name;
     }
 
-    addModule(module: CollectOnlyModule) {
-        this.modules.push(module);
-    }
-
-    addDir(dir: CollectOnlyDir) {
-        this.dirs.push(dir);
-    }
-
-    getModules() {
-        return [...this.modules];
-    }
-
-    getDirs() {
-        return [...this.dirs];
-    }
-
-    findModule(moduleName: string): CollectOnlyModule | undefined {
-        return this.modules.find(module => module.getName() === moduleName);
-    }
-
-    findDir(dirName: string): CollectOnlyDir | undefined {
-        return this.dirs.find(dir => dir.getName() === dirName);
+    findChild(name: string): CollectOnlyComponent | undefined {
+        return this.children.find(child => child.getName() === name);
     }
 }
 
-export function createCollectOnlyOutput(raw: string): CollectOnlyOutput {
-    const output = new CollectOnlyOutput();
-    const lines = raw.split('\n');
-    lines.forEach(line => extractLine(line, output));
-    return output;
-}
-
-function extractLine(line: string, output: CollectOnlyOutput): void {
-    if (!line) {
-        return;
+class CollectOnlyFolder extends CollectOnlyComponent {
+    constructor(name: string) {
+        super(name);
     }
 
-    const worker = Factory.createWorker(line, output);
-    worker.work();
-}
-
-interface Worker {
-    work(): void;
-}
-
-interface FunctionContainer {
-    addFunction(func: CollectOnlyFunction): void;
-}
-
-class ModuleWorker implements Worker {
-    constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
-
-    public work() {
-        const moduleName = this.line.split(' ')[1];
-        this.output.addDirsWithModule(moduleName);
+    getNames(): string[] {
+        return this.children.flatMap(child => child.getNames())
+            .map(childName => `${this.name}/${childName}`);
     }
 }
 
-class FunctionWorker implements Worker {
-    constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
+class CollectOnlyModule extends CollectOnlyComponent {
+    constructor(name: string) {
+        super(name);
+    }
 
-    public work() {
-        const functionName = this.line.split(' ')[1];
-        this.output.LastModule?.addFunction(new CollectOnlyFunction(functionName));
+    getNames(): string[] {
+        return this.children.flatMap(child => child.getNames())
+            .map(childName => `${this.name}::${childName}`);
     }
 }
 
-class PackageWorker implements Worker {
-    constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
+class CollectOnlyClass extends CollectOnlyModule {
+}
 
-    public work() {
-        const packageName = this.line.split(' ')[1];
-        const dir = new CollectOnlyDir(packageName);
-        this.output.addDir(dir);
-        this.output.changePackage(dir);
+class CollectOnlyFunction extends CollectOnlyComponent {
+    constructor(name: string) {
+        super(name);
     }
-}
 
-class DirWorker implements Worker {
-    constructor(private readonly _: string, private readonly __: CollectOnlyOutput) { }
-
-    public work() { }
-}
-
-class ClassWorker implements Worker {
-    constructor(private readonly line: string, private readonly output: CollectOnlyOutput) { }
-
-    public work() { 
-        const className = this.line.split(' ')[1];
-        const testClass = new CollectOnlyClass(className);
-        (this.output.LastModule as CollectOnlyModule)?.addClass(testClass);
-        this.output.LastModule = testClass;
+    getNames(): string[] {
+        return [this.name];
     }
 }
 
 class Factory {
-    public static createWorker(line: string, output: CollectOnlyOutput): Worker {
-        line = line.replaceAll('<', '').replaceAll('>', '');
+    public static createComponent(line: string): CollectOnlyComponent {
+        line = line.replaceAll('<', '').replaceAll('>', '').trim();
         const elementType = line.split(' ')[0].toLowerCase();
+        const name = line.split(' ')[1];
 
         switch (elementType) {
-            case 'package': return new PackageWorker(line, output);
-            case 'module': return new ModuleWorker(line, output);
-            case 'function': return new FunctionWorker(line, output);
-            case 'dir': return new DirWorker(line, output);
-            case 'class': return new ClassWorker(line, output);
+            case 'package': return new CollectOnlyFolder(name);
+            case 'module': return new CollectOnlyModule(name);
+            case 'function': return new CollectOnlyFunction(name);
+            case 'dir': return new CollectOnlyFolder(name);
+            case 'class': return new CollectOnlyClass(name);
             default: throw new Error('Unknown element type');
         }
     }
+}
+
+export function createCollectOnlyOutput(raw: string): CollectOnlyOutput {
+    const lines = raw.split('\n').filter(line => line);
+    const indent = getIndentLevel(lines[0] || '');
+
+    const output = new CollectOnlyOutput(indent);
+    lines.forEach(line => output.addComponent(line));
+    return output;
 }
