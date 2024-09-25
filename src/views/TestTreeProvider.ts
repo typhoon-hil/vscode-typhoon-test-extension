@@ -15,6 +15,13 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     getTreeItem(element: TestItem): vscode.TreeItem {
+        if (!element.IsFolder) {
+            element.command = {
+                command: 'typhoon-test.viewTestInCode',
+                title: 'View Test In Code',
+                arguments: [element]
+            };
+        }
         return element;
     }
 
