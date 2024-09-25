@@ -107,3 +107,7 @@ For new users, the extension provides an easier way to configure test settings t
 - **Run Selected Python Entity**: Using the code lens, users can easily run specific class, method or function, without need to search for the commands and positioning cursor above their target
 
     ![Run Selection](/assets/run-selection.png)
+
+- **View In Code**: Users can now view tests directly in the editor by clicking on the test node with the execution result.
+
+    ![View In Code Demo](/assets/view-in-code.gif)
