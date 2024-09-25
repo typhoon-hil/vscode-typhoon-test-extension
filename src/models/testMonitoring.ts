@@ -57,13 +57,16 @@ export class TestItem extends vscode.TreeItem {
         public readonly label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public status: TestStatus,
-        public readonly details: TestNameDetails,
     ) {
         super(label, collapsibleState);
         this.setIcon();
         this.contextValue = identifier === TestItem.IgnoreContextValue ? undefined :
             this.IsFolder ? 'testItem.folder' : 'testItem';
         this.tooltip = identifier;
+    }
+
+    get details(): TestNameDetails {
+        return extractTestNameDetails(this.identifier);
     }
 
     get IsFolder(): boolean {
@@ -181,23 +184,22 @@ export interface TestNameDetails {
 }
 
 export function extractTestNameDetails(fullTestName: string): TestNameDetails {
-    const [testPath, classOrTestName, testNameWithParams] = fullTestName.split('::');
-    const testName = testNameWithParams?.split('[')[0] || classOrTestName?.split('[')[0]; // Test name is either second or third element based on class existence
-    const params = fullTestName.split('[')[1]?.split(']')[0];
-    const folders = testPath.split('/');
-    const module = folders.pop() || testPath;
-    const className = testNameWithParams ? classOrTestName : undefined; // Class exists only if there's a third part
+    const [testPath = '', classOrTestName = '', testNameWithParams = ''] = fullTestName.split('::');
+    
+    // Extract test name (without params) and parameters if they exist
+    const testName = testNameWithParams?.split('[')[0] || classOrTestName?.split('[')[0] || ''; 
+    const params = fullTestName.split('[')[1]?.split(']')[0] || '';
+
+    // Extract folders and module (module is the last part of the path)
+    const folders = testPath ? testPath.split('/').slice(0, -1) : ['']; // Folders (exclude module)
+    const module = testPath ? testPath.split('/').pop() || '' : '';     // Module is the last part of testPath
+
+    // Handle class name (only exists if there are three parts)
+    const className = testNameWithParams ? classOrTestName : '';
 
     return { fullTestName, name: testName, module, class: className, params, folders };
 }
 
 export function generateDummyTestItem(): TestItem {
-    const details = {
-        fullTestName: 'Starting...',
-        folders: [],
-        name: 'Starting...',
-        module: 'Starting...',
-    };
-
-    return new TestItem(TestItem.IgnoreContextValue, 'Starting...', vscode.TreeItemCollapsibleState.None, TestStatus.Running, details);
+    return new TestItem(TestItem.IgnoreContextValue, 'Starting...', vscode.TreeItemCollapsibleState.None, TestStatus.Running);
 }
