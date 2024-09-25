@@ -15,6 +15,13 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     getTreeItem(element: TestItem): vscode.TreeItem {
+        if (!element.IsFolder) {
+            element.command = {
+                command: 'typhoon-test.viewTestInCode',
+                title: 'View Test In Code',
+                arguments: [element]
+            };
+        }
         return element;
     }
 
@@ -44,7 +51,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         folders.forEach(folder => {
             let folderItem = currentFolder.find(t => t.identifier === folder);
             if (!folderItem) {
-                folderItem = new TestItem(folder, folder + '/', vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+                folderItem = new TestItem(folder, folder + '/', vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running);
                 lastFolder ? lastFolder.addChild(folderItem) : this.rootItems.push(folderItem);
             }
             currentFolder = folderItem.getChildren();
@@ -58,7 +65,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         if (!testNameDetails.params) {
             return;
         }
-        const parametrizedTest = new TestItem(testNameDetails.fullTestName, testNameDetails.params, vscode.TreeItemCollapsibleState.None, status, testNameDetails);
+        const parametrizedTest = new TestItem(testNameDetails.fullTestName, testNameDetails.params, vscode.TreeItemCollapsibleState.None, status);
         parent.addChild(parametrizedTest);
         this.lastTest = parametrizedTest;
     }
@@ -71,7 +78,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         }
         const collapsibleState = testNameDetails.params ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
 
-        const newTest = new TestItem(id, testNameDetails.name, collapsibleState, status, testNameDetails);
+        const newTest = new TestItem(id, testNameDetails.name, collapsibleState, status);
         parent.addChild(newTest);
         this.lastTest = newTest;
         return newTest;
@@ -83,7 +90,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             
         let testPathItem = this.findTestItem(path + module);
         if (!testPathItem) {
-            testPathItem = new TestItem(path + module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+            testPathItem = new TestItem(path + module, testNameDetails.module, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running);
             if (!nearestFolder) {
                 this.rootItems.push(testPathItem);
             } else {
@@ -102,7 +109,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         if (classItem) {
             return classItem;
         }
-        const newClass = new TestItem(id, testNameDetails.class, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running, testNameDetails);
+        const newClass = new TestItem(id, testNameDetails.class, vscode.TreeItemCollapsibleState.Collapsed, TestStatus.Running);
         module.addChild(newClass);
         return newClass;
     }

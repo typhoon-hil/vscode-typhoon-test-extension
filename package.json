@@ -281,6 +281,11 @@
         "command": "typhoon-test.runTestsFromExplorer",
         "title": "Run With Typhoon Test",
         "category": "Typhoon Test"
+      },
+      {
+        "command": "typhoon-test.viewTestInCode",
+        "title": "View Test In Code",
+        "category": "Typhoon Test"
       }
     ],
     "viewsContainers": {
@@ -377,11 +382,16 @@
         },
         {
           "command": "typhoon-test.runTestsFromTestItem",
-          "when": "viewItem == testItem",
+          "when": "viewItem == testItem || viewItem == testItem.folder",
           "group": "inline"
         },
         {
           "command": "typhoon-test.runTestsFromTestItem",
+          "when": "viewItem == testItem || viewItem == testItem.folder",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.viewTestInCode",
           "when": "viewItem == testItem",
           "group": "navigation"
         }
@@ -418,6 +428,10 @@
         {
           "command": "typhoon-test.runTestsFromFile",
           "when": "editorLangId == python"
+        },
+        {
+          "command": "typhoon-test.viewTestInCode",
+          "when": "false"
         }
       ],
       "editor/title": [

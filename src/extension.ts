@@ -15,11 +15,12 @@ import { runTests, stopTests } from './commands/runAndStopTests';
 import { TestTreeProvider } from './views/TestTreeProvider';
 import { pickOrganizationalLogoFilepath } from './commands/pickOrganizationalLogoFilepath';
 import { refreshPdfConfig } from './utils/pdfConfig';
-import { ConfigurationWebviewProvider } from './views/PdfConfigurationProvider';
+import { ConfigurationWebviewProvider } from './views/ConfigurationWebviewProvider';
 import { TestItem } from './models/testMonitoring';
 import { PytestRunner } from './models/testRun';
 import { CollectOnlyPytestArgumentBuilder, PytestArgumentBuilder } from './models/PytestArgumentBuilder';
 import { PytestCodeLensProvider } from './codelens/PytestCodeLensProvider';
+import { viewTestInCode } from './commands/viewTestInCode';
 
 export function activate(context: vscode.ExtensionContext) {
     let sidebarProvider = new DocumentationProvider(context.extensionUri);
@@ -102,6 +103,10 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
+            if (typeof testName !== 'string') {
+                testName = undefined;
+            }
+
             if (!testName) {
                 testName = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
                 if (!testName) {
@@ -165,6 +170,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('typhoon-test.pickOrganizationalLogoFilepath', () => {
             pickOrganizationalLogoFilepath();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('typhoon-test.viewTestInCode', (item: TestItem) => {
+            viewTestInCode(item.details);
         })
     );
 
