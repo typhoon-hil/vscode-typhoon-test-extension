@@ -98,18 +98,18 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.runTests', (testTarget?: string) => {
+        vscode.commands.registerCommand('typhoon-test.runTests', (testName?: string) => {
             if (checkTestRunEnd()) {
                 return;
             }
 
-            if (typeof testTarget !== 'string') {
-                testTarget = undefined;
+            if (typeof testName !== 'string') {
+                testName = undefined;
             }
 
-            if (!testTarget) {
-                testTarget = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-                if (!testTarget) {
+            if (!testName) {
+                testName = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+                if (!testName) {
                     vscode.window.showErrorMessage('No workspace is currently open');
                     return;
                 }
@@ -117,10 +117,10 @@ export function activate(context: vscode.ExtensionContext) {
 
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: `Running ${getDisplayTestName(testTarget)}`,
+                title: `Running ${getDisplayTestName(testName)}`,
                 cancellable: true
             }, (_, token) => {
-                return getRunTestPromise(token, testTarget);
+                return getRunTestPromise(token, testName);
             });
         })
     );
