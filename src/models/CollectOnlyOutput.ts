@@ -2,7 +2,7 @@ import { extractTestNameDetails, TestNameDetails } from "./testMonitoring";
 
 
 export class CollectOnlyOutput {
-    private readonly root: CollectOnlyFolder = new CollectOnlyFolder('');
+    private readonly root: CollectOnlyRoot = new CollectOnlyRoot();
     private levels: { [level: number]: CollectOnlyComponent } = {};
     private currentIndent: number;
 
@@ -38,8 +38,7 @@ export class CollectOnlyOutput {
     }
 
     getOutput(): TestNameDetails[] {
-        return this.root.getNames().map(name => name.slice(1))
-            .map(name => extractTestNameDetails(name));
+        return this.root.getNames().map(name => extractTestNameDetails(name));
     }
 }
 
@@ -114,12 +113,42 @@ class CollectOnlyFunction extends CollectOnlyComponent {
     }
 }
 
+class CollectOnlyRoot extends CollectOnlyComponent {
+    constructor() {
+        super('');
+    }
+
+    getNames(): string[] {
+        return this.children.flatMap(child => child.getNames());
+    }
+}
+
 class Factory {
     public static createComponent(line: string): CollectOnlyComponent {
         line = line.replaceAll('<', '').replaceAll('>', '').trim();
         const elementType = line.split(' ')[0].toLowerCase();
-        const name = line.split(' ')[1];
+        const nameWithPath = line.split(' ')[1];
+        const paths = nameWithPath.split('/');
+        const name = paths.pop() || '';
+        const root = new CollectOnlyRoot();
 
+        let parent = root;
+        paths.forEach(path => {
+            const element = parent.findChild(path);
+            if (element) {
+                parent = element;
+            } else {
+                const folder = new CollectOnlyFolder(path);
+                parent.add(folder);
+                parent = folder;
+            }
+        });
+
+        root.add(this._createComponent(elementType, name));
+        return root.getChildren()[0];
+    }
+
+    private static _createComponent(elementType: string, name: string): CollectOnlyComponent {
         switch (elementType) {
             case 'package': return new CollectOnlyFolder(name);
             case 'module': return new CollectOnlyModule(name);
