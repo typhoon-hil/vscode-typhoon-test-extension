@@ -87,6 +87,7 @@ export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
             "pytest",
             this.getTestScope(),
             "--collect-only",
+            "-q"
         );
     }
 
