@@ -53,6 +53,7 @@ export class PytestArgumentBuilder {
 
     getFlags(): string[] {
         return concat(
+            "-u",
             "-m",
             "pytest",
             this.getTestScope(),
@@ -88,6 +89,7 @@ export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
 
     getFlags(): string[] {
         return concat(
+            "-u",
             "-m",
             "pytest",
             this.getTestScope(),
