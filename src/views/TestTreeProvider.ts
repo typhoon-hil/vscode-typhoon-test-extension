@@ -122,6 +122,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     addCollectOnlyTest(testName: TestNameDetails): void {
+        this.clearInit();
         this.addTest(testName, TestStatus.Collected);
         this.lastTest?.setStatus(TestStatus.Collected);
         this.refresh();
@@ -195,5 +196,9 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
         else if (statusMatch) {
             this.updateLastTest(statusMatch);
         }
+    }
+
+    toString(): string[] {
+        return this.getFlattenTests().filter(test => test.getChildren().length === 0).map(test => test.identifier);
     }
 }

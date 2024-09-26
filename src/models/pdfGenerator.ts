@@ -26,7 +26,7 @@ export class PdfArgumentBuilder {
     }
 
     private addTitle(): PdfArgumentBuilder {
-        this.command += `--pdf-title=${this.pdfConfig.pdfCoverageTitle} `;
+        this.command += `--pdf-title="${this.pdfConfig.pdfCoverageTitle}" `;
         return this;
     }
 

@@ -53,6 +53,7 @@ export class PytestArgumentBuilder {
 
     getFlags(): string[] {
         return concat(
+            "-u",
             "-m",
             "pytest",
             this.getTestScope(),
@@ -63,7 +64,7 @@ export class PytestArgumentBuilder {
             this.getCleanAllResults(),
             this.getRealTimeLogs(),
             this.getPdfConfig(),
-            "-v"
+            this.isQuiet() ? "" : "-v"
         );
     }
 
@@ -74,6 +75,11 @@ export class PytestArgumentBuilder {
     isCollectOnly(): boolean {
         return this.getAdditionalOptions().includes("--collect-only");
     }
+
+    isQuiet(): boolean {
+        return this.getAdditionalOptions().endsWith("--collect-only -q") || 
+            this.getAdditionalOptions().includes("--collect-only -q ");
+    }
 }
 
 export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
@@ -83,15 +89,20 @@ export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
 
     getFlags(): string[] {
         return concat(
+            "-u",
             "-m",
             "pytest",
             this.getTestScope(),
             "--collect-only",
-            "-v"
+            "-q"
         );
     }
 
     isCollectOnly(): boolean {
+        return true;
+    }
+
+    isQuiet(): boolean {
         return true;
     }
 }

@@ -46,7 +46,7 @@ export class PytestCodeLensProvider implements vscode.CodeLensProvider {
             } else {
                 // Standalone function (outside any class)
                 codeLenses.push(new vscode.CodeLens(range, {
-                    title: "Run My Command",
+                    title: "Run With Typhoon Test",
                     command: "typhoon-test.runTests",
                     arguments: [`${document.fileName}::${methodName}`]  // Function pytest command (no class)
                 }));

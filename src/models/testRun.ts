@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
-import { createCollectOnlyOutput } from './CollectOnlyOutput';
+import { extractTestNameDetails } from './testMonitoring';
 
 
 export enum InterpreterType {
@@ -32,11 +32,9 @@ export class PytestRunner {
     private testRunEndChecker: TestRunEndChecker;
     private wasKilled: boolean;
     private errorOccured: boolean;
-    private testOutput: string = '';
-    private isCollectOnly: boolean = false;
     private argumentBuilder: PytestArgumentBuilder;
     
-    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
+    constructor(private testTreeProvider: TestTreeProvider, testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
     ) {
         testTreeProvider.clearTests();
         this.outputChannel = vscode.window.createOutputChannel('Pytest Output', 'python');
@@ -50,20 +48,20 @@ export class PytestRunner {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
 
-        if (this.isCollectOnly) {
-            const rawCollectOnlyOutput = this.testOutput.match(/(<Dir\s.+?>|<Package\s.+?>|<Module\s.+?>|<Function\s.+?>|<Class\s.+?>)/g)?.join('\n') || '';
-            const collectOnlyOutput = createCollectOnlyOutput(rawCollectOnlyOutput);
-            collectOnlyOutput.getOutput().forEach(testDetails => {
-                this.testTreeProvider.addCollectOnlyTest(testDetails);
-            });
-        }
-        
         if (this.errorOccured || this.wasKilled) {
             return reject();
         }
         
         runAllureReport();
         resolve();
+    }
+
+    private addCollectOnlyTests(rawOutput: string) {
+        const rawCollectOnlyOutput = rawOutput.match(/[\w\/\\\-\.]+\.py::[\w\-]+(?:::[\w\-]+)?(?:\[[^\]]*\])?/g) || [];
+        const details = rawCollectOnlyOutput.map(extractTestNameDetails);
+        details.forEach(testDetails => {
+            this.testTreeProvider.addCollectOnlyTest(testDetails);
+        });
     }
     
     private handleProcessOutput(data: Buffer) {
@@ -75,11 +73,13 @@ export class PytestRunner {
         
         this.outputChannel.append(output);
         
+        if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
+            this.addCollectOnlyTests(output);
+            return;
+        }
+
         const lines = output.split('\n');
         lines.forEach(line => {
-            if (this.isCollectOnly) {
-                this.testOutput += line;
-            }
             if (!this.testRunEndChecker.check(line)) {
                 this.testTreeProvider.handleTestOutput(line);
             }
@@ -96,8 +96,6 @@ export class PytestRunner {
         const path = this.argumentBuilder.getPythonPath();
         const flags = this.argumentBuilder.getFlags();
 
-        this.isCollectOnly = this.argumentBuilder.isCollectOnly();
-        
         return cp.spawn(path, flags, {
             shell: true,
             cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
@@ -108,6 +106,10 @@ export class PytestRunner {
         this.pytestProcess?.stdout?.on('data', this.handleProcessOutput.bind(this));
         this.pytestProcess?.stderr?.on('data', this.handleProcessError.bind(this));
         this.pytestProcess?.on('exit', this.handleProcessExit.bind(this, resolve, reject));
+        this.pytestProcess?.on('error', (e) => {
+            this.outputChannel.appendLine(e.message);
+            reject();
+        });
     }
     
     run(): Promise<void> {
