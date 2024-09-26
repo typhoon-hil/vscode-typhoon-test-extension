@@ -34,7 +34,6 @@ export class PytestRunner {
     private wasKilled: boolean;
     private errorOccured: boolean;
     private testOutput: string = '';
-    private isCollectOnly: boolean = false;
     private argumentBuilder: PytestArgumentBuilder;
     
     constructor(private testTreeProvider: TestTreeProvider, private testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
@@ -51,7 +50,7 @@ export class PytestRunner {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
 
-        if (this.isCollectOnly) {
+        if (this.argumentBuilder.isCollectOnly()) {
             const rawCollectOnlyOutput = this.testOutput.match(/[\w/-]+\.py::\w+/g) || [];
             const details = rawCollectOnlyOutput.map(extractTestNameDetails);
             details.forEach(testDetails => {
@@ -78,7 +77,7 @@ export class PytestRunner {
         
         const lines = output.split('\n');
         lines.forEach(line => {
-            if (this.isCollectOnly) {
+            if (this.argumentBuilder.isCollectOnly()) {
                 this.testOutput += line;
                 return;
             }
@@ -98,8 +97,6 @@ export class PytestRunner {
         const path = this.argumentBuilder.getPythonPath();
         const flags = this.argumentBuilder.getFlags();
 
-        this.isCollectOnly = this.argumentBuilder.isCollectOnly();
-        
         return cp.spawn(path, flags, {
             shell: true,
             cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
