@@ -50,7 +50,7 @@ export class PytestRunner {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
 
-        if (this.argumentBuilder.isCollectOnly()) {
+        if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
             const rawCollectOnlyOutput = this.testOutput.match(/[\w/-]+\.py::\w+/g) || [];
             const details = rawCollectOnlyOutput.map(extractTestNameDetails);
             details.forEach(testDetails => {
@@ -75,12 +75,13 @@ export class PytestRunner {
         
         this.outputChannel.append(output);
         
+        this.testOutput += output;
+        if (this.argumentBuilder.isCollectOnly()) {
+            return;
+        }
+
         const lines = output.split('\n');
         lines.forEach(line => {
-            if (this.argumentBuilder.isCollectOnly()) {
-                this.testOutput += line;
-                return;
-            }
             if (!this.testRunEndChecker.check(line)) {
                 this.testTreeProvider.handleTestOutput(line);
             }
@@ -107,6 +108,10 @@ export class PytestRunner {
         this.pytestProcess?.stdout?.on('data', this.handleProcessOutput.bind(this));
         this.pytestProcess?.stderr?.on('data', this.handleProcessError.bind(this));
         this.pytestProcess?.on('exit', this.handleProcessExit.bind(this, resolve, reject));
+        this.pytestProcess?.on('error', () => {
+            this.outputChannel.appendLine('Error starting pytest process');
+            reject();
+        });
     }
     
     run(): Promise<void> {
