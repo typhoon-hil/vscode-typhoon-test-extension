@@ -197,4 +197,8 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
             this.updateLastTest(statusMatch);
         }
     }
+
+    toString(): string[] {
+        return this.getFlattenTests().filter(test => test.getChildren().length !== 0).map(test => test.identifier);
+    }
 }
