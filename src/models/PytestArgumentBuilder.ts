@@ -74,6 +74,11 @@ export class PytestArgumentBuilder {
     isCollectOnly(): boolean {
         return this.getAdditionalOptions().includes("--collect-only");
     }
+
+    isQuiet(): boolean {
+        return this.getAdditionalOptions().includes("--collect-only -q") || 
+            this.getAdditionalOptions().includes("--collect-only -q ");
+    }
 }
 
 export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
@@ -92,6 +97,10 @@ export class CollectOnlyPytestArgumentBuilder extends PytestArgumentBuilder {
     }
 
     isCollectOnly(): boolean {
+        return true;
+    }
+
+    isQuiet(): boolean {
         return true;
     }
 }
