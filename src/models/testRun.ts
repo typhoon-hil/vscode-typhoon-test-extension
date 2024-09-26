@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import { PytestArgumentBuilder } from './PytestArgumentBuilder';
 import { getTestRunConfig } from '../utils/config';
 import { getPlatform } from '../utils/platform/selector';
-import { createCollectOnlyOutput } from './CollectOnlyOutput';
 import { extractTestNameDetails } from './testMonitoring';
 
 
