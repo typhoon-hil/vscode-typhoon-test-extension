@@ -33,7 +33,6 @@ export class PytestRunner {
     private testRunEndChecker: TestRunEndChecker;
     private wasKilled: boolean;
     private errorOccured: boolean;
-    private testOutput: string = '';
     private argumentBuilder: PytestArgumentBuilder;
     
     constructor(private testTreeProvider: TestTreeProvider, testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
@@ -50,20 +49,20 @@ export class PytestRunner {
         PytestRunner.isRunning = false;
         this.testTreeProvider.clearInit();
 
-        if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
-            const rawCollectOnlyOutput = this.testOutput.match(/[\w\/\\\-\.]+\.py::[\w\-]+(?:::[\w\-]+)?(?:\[[^\]]*\])?/g) || [];
-            const details = rawCollectOnlyOutput.map(extractTestNameDetails);
-            details.forEach(testDetails => {
-                this.testTreeProvider.addCollectOnlyTest(testDetails);
-            });
-        }
-        
         if (this.errorOccured || this.wasKilled) {
             return reject();
         }
         
         runAllureReport();
         resolve();
+    }
+
+    private addCollectOnlyTests(rawOutput: string) {
+        const rawCollectOnlyOutput = rawOutput.match(/[\w\/\\\-\.]+\.py::[\w\-]+(?:::[\w\-]+)?(?:\[[^\]]*\])?/g) || [];
+        const details = rawCollectOnlyOutput.map(extractTestNameDetails);
+        details.forEach(testDetails => {
+            this.testTreeProvider.addCollectOnlyTest(testDetails);
+        });
     }
     
     private handleProcessOutput(data: Buffer) {
@@ -75,8 +74,8 @@ export class PytestRunner {
         
         this.outputChannel.append(output);
         
-        this.testOutput += output;
-        if (this.argumentBuilder.isCollectOnly()) {
+        if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
+            this.addCollectOnlyTests(output);
             return;
         }
 
