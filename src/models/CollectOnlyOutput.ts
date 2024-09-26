@@ -153,7 +153,6 @@ class Factory {
             case 'package': return new CollectOnlyFolder(name);
             case 'module': return new CollectOnlyModule(name);
             case 'function': return new CollectOnlyFunction(name);
-            case 'dir': return new CollectOnlyFolder(name);
             case 'class': return new CollectOnlyClass(name);
             default: throw new Error('Unknown element type');
         }
