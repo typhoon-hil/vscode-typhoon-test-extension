@@ -36,7 +36,7 @@ export class PytestRunner {
     private testOutput: string = '';
     private argumentBuilder: PytestArgumentBuilder;
     
-    constructor(private testTreeProvider: TestTreeProvider, private testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
+    constructor(private testTreeProvider: TestTreeProvider, testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
     ) {
         testTreeProvider.clearTests();
         this.outputChannel = vscode.window.createOutputChannel('Pytest Output', 'python');
