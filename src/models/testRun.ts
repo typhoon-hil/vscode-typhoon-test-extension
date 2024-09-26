@@ -51,7 +51,7 @@ export class PytestRunner {
         this.testTreeProvider.clearInit();
 
         if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
-            const rawCollectOnlyOutput = this.testOutput.match(/[\w/-]+\.py::\w+/g) || [];
+            const rawCollectOnlyOutput = this.testOutput.match(/[\w\/\\\-\.]+\.py::[\w\-]+(?:::[\w\-]+)?(?:\[[^\]]*\])?/g) || [];
             const details = rawCollectOnlyOutput.map(extractTestNameDetails);
             details.forEach(testDetails => {
                 this.testTreeProvider.addCollectOnlyTest(testDetails);
