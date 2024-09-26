@@ -122,6 +122,7 @@ export class TestTreeProvider implements vscode.TreeDataProvider<TestItem> {
     }
 
     addCollectOnlyTest(testName: TestNameDetails): void {
+        this.clearInit();
         this.addTest(testName, TestStatus.Collected);
         this.lastTest?.setStatus(TestStatus.Collected);
         this.refresh();
