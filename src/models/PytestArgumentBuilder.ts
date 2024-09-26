@@ -64,7 +64,7 @@ export class PytestArgumentBuilder {
             this.getCleanAllResults(),
             this.getRealTimeLogs(),
             this.getPdfConfig(),
-            "-v"
+            this.isQuiet() ? "" : "-v"
         );
     }
 
