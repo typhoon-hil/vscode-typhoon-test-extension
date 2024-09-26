@@ -108,6 +108,10 @@ export class PytestRunner {
         this.pytestProcess?.stdout?.on('data', this.handleProcessOutput.bind(this));
         this.pytestProcess?.stderr?.on('data', this.handleProcessError.bind(this));
         this.pytestProcess?.on('exit', this.handleProcessExit.bind(this, resolve, reject));
+        this.pytestProcess?.on('error', (e) => {
+            this.outputChannel.appendLine(e.message);
+            reject();
+        });
     }
     
     run(): Promise<void> {
