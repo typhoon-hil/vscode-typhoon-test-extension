@@ -3,6 +3,7 @@ import { PdfArgumentBuilder } from './pdfGenerator';
 
 export class PytestArgumentBuilder {
     private config = getTestRunConfig();
+    private pdfBuilder = new PdfArgumentBuilder();
 
     constructor(protected readonly testScope?: string) {}
 
@@ -48,7 +49,7 @@ export class PytestArgumentBuilder {
         if (!this.config.pdfReport) {
             return '';
         }
-        return "--generate-pdf " + new PdfArgumentBuilder().getCommand();
+        return "--generate-pdf " + this.pdfBuilder.getCommand();
     }
 
     getFlags(): string[] {
@@ -79,6 +80,12 @@ export class PytestArgumentBuilder {
     isQuiet(): boolean {
         return this.getAdditionalOptions().endsWith("--collect-only -q") || 
             this.getAdditionalOptions().includes("--collect-only -q ");
+    }
+
+    getDisplayCommand(): string {
+        const pdfConfigDisplayCommand = this.pdfBuilder.getDisplayCommand();
+        const flags = this.getFlags().join(" ").replace(this.getPdfConfig(), pdfConfigDisplayCommand); 
+        return this.getPythonPath() + " " + flags;
     }
 }
 
