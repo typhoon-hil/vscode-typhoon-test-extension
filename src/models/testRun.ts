@@ -120,12 +120,14 @@ export class PytestRunner {
             
             this.testTreeProvider.init();
             
-            this.outputChannel.show(true);
-            this.outputChannel.appendLine('TEST RUN STARTED...');
-            
             this.pytestProcess = this.initProcess();
             PytestRunner.isRunning = true;
             this.addProcessListeners(resolve, reject);
+            
+            this.outputChannel.show(true);
+            this.outputChannel.appendLine(`${getTime()}: ${this.argumentBuilder.getDisplayCommand()}`);
+            this.outputChannel.appendLine(`${getTime()}: Script started`);
+            this.outputChannel.appendLine('');
         });
     }
     
@@ -176,4 +178,8 @@ function runAllureReport() {
         terminal.show();
         terminal.sendText('typhoon-allure serve report');
     }
+}
+
+function getTime(): string {
+    return `[${new Date().toLocaleTimeString()}]`;
 }
