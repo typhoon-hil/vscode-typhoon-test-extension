@@ -36,7 +36,7 @@ export class PdfArgumentBuilder {
     }
 
     private addMotto(): PdfArgumentBuilder {
-        this.command += `--pdf-slogan="${this.formatMotto()}" `;
+        this.command += `--pdf-slogan="${this.generateFormattedMotto()}" `;
         return this;
     }
 
@@ -64,7 +64,7 @@ export class PdfArgumentBuilder {
         return this;
     }
 
-    private formatMotto(): string {
+    private generateFormattedMotto(): string {
         let motto = this.pdfConfig.organizationalMotto;
         if (!motto) { return ""; }
         return this.applyHtmlTags(motto.join("\n"));
@@ -103,5 +103,11 @@ export class PdfArgumentBuilder {
 
     getCommand(): string {
         return this.command.trim();
+    }
+
+    getDisplayCommand(): string {
+        let pureMotto = this.pdfConfig.organizationalMotto?.join("") || "";
+        pureMotto = pureMotto.replaceAll("*", "").replaceAll("_", "");
+        return this.getCommand().replace(this.generateFormattedMotto(), pureMotto);
     }
 }
