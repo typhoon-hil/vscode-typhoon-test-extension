@@ -33,7 +33,7 @@ export class PytestArgumentBuilder {
     }
 
     protected getAllureDir(): string[] {
-        return ["--alluredir", "report"];
+        return ["--alluredir=report"];
     }
 
     protected getCleanAllResults(): string {
