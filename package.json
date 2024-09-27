@@ -397,11 +397,6 @@
           "group": "inline"
         },
         {
-          "command": "typhoon-test.viewTestInCode",
-          "when": "viewItem == testItem",
-          "group": "inline"
-        },
-        {
           "command": "typhoon-test.runTestsFromTestItem",
           "when": "viewItem == testItem || viewItem == testItem.folder",
           "group": "navigation"
