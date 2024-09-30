@@ -1,5 +1,5 @@
 import { Platform } from '../../models/Platform';
-import { spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 
 export class WindowsPlatform implements Platform {
     getPythonCommand(): string {
@@ -15,8 +15,18 @@ export class WindowsPlatform implements Platform {
     }
 
     killProcess(pid: number | undefined): void {
+        const taskkillPath = 'C:\\Windows\\System32\\taskkill.exe';
+        
         if (pid) {
-            spawn('taskkill', ['/pid', pid.toString(), '/T', '/F']);
+            const args = ['/pid', pid.toString(), '/T', '/F'];
+            const result = spawnSync(taskkillPath, args);
+
+            if (result.error) {
+                const res = spawnSync('taskkill', args);
+                if (res.error) {
+                    throw res.error;
+                }
+            } 
         }
     }
 }
