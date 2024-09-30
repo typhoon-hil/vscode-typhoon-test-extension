@@ -219,8 +219,9 @@ export function activate(context: vscode.ExtensionContext) {
 
             runTests(testTreeProvider, testName, builderType).then(() => {
                 resolve();
-            }).catch(() => {
+            }).catch((e) => {
                 reject();
+                vscode.window.showErrorMessage(e.message);
             });
         });
     }
@@ -234,7 +235,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     function getDisplayTestName(testName: string): string {
-        const rootDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+        const rootDir = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
         if (!rootDir) {
             return testName;
         }
