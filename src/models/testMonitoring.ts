@@ -48,7 +48,7 @@ export function matchStatus(line: string): TestStatus | undefined {
 
 
 export class TestItem extends vscode.TreeItem {
-    static readonly IgnoreContextValue = 'ignore context value';
+    static readonly IgnoreContextValue = '...';
     private children: TestItem[] = [];
     parent?: TestItem;
 
