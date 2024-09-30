@@ -33,7 +33,7 @@
       {
         "command": "typhoon-test.runTests",
         "key": "F7",
-        "when": "!typhoon-test.isRunning"
+        "when": "!typhoon-test.isRunning && workspaceFolderCount > 0"
       },
       {
         "command": "typhoon-test.stopTests",
@@ -43,7 +43,7 @@
       {
         "command": "typhoon-test.runTestsFromFile",
         "key": "Shift+F7",
-        "when": "!typhoon-test.isRunning"
+        "when": "!typhoon-test.isRunning  && workspaceFolderCount > 0"
       }
     ],
     "configuration": {
@@ -351,7 +351,8 @@
       },
       {
         "view": "typhoon-test.pytestMonitorView",
-        "contents": "Run pytest tests and monitor the progress. \n [Run Tests](command:typhoon-test.runTests) \n [Collect Tests](command:typhoon-test.collectTests)"
+        "contents": "Run pytest tests and monitor the progress. In order to use the Pytest Monitor, please open the tests folder in workspace \n [Run Tests](command:typhoon-test.runTests) \n [Collect Tests](command:typhoon-test.collectTests)",
+        "enablement": "workspaceFolderCount > 0"
       }
     ],
     "menus": {
@@ -373,12 +374,12 @@
         },
         {
           "command": "typhoon-test.runTests",
-          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
+          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning && workspaceFolderCount > 0",
           "group": "navigation"
         },
         {
           "command": "typhoon-test.collectTests",
-          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
+          "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning && workspaceFolderCount > 0",
           "group": "navigation"
         },
         {
@@ -491,13 +492,16 @@
           "command": "typhoon-test.openPdfConfiguration"
         },
         {
-          "command": "typhoon-test.runTests"
+          "command": "typhoon-test.runTests",
+          "when": "!typhoon-test.isRunning && workspaceFolderCount > 0"
         },
         {
-          "command": "typhoon-test.stopTests"
+          "command": "typhoon-test.stopTests",
+          "when": "typhoon-test.isRunning"
         },
         {
-          "command": "typhoon-test.runTestsFromFile"
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "!typhoon-test.isRunning && workspaceFolderCount > 0"
         }
       ]
     }
