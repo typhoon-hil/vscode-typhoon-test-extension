@@ -33,7 +33,8 @@ export class PytestRunner {
     private wasKilled: boolean;
     private errorOccured: boolean;
     private argumentBuilder: PytestArgumentBuilder;
-    
+    static runningChangeListeners: Array<(value: boolean) => void> = [];
+
     constructor(private testTreeProvider: TestTreeProvider, testScope?: string, builderType: new (testScope?: string) => PytestArgumentBuilder = PytestArgumentBuilder
     ) {
         testTreeProvider.clearTests();
@@ -42,16 +43,19 @@ export class PytestRunner {
         this.wasKilled = false;
         this.errorOccured = false;
         this.argumentBuilder = new builderType(testScope);
+        PytestRunner.runningChangeListeners = [(value: boolean) => {
+            if (!value) { this.testTreeProvider.clearInit(); }
+        }];
     }
-    
+
     private handleProcessExit(resolve: () => void, reject: () => void) {
-        PytestRunner.isRunning = false;
+        PytestRunner.IsRunning = false;
         this.testTreeProvider.clearInit();
 
         if (this.errorOccured || this.wasKilled) {
             return reject();
         }
-        
+
         runAllureReport();
         resolve();
     }
@@ -63,16 +67,16 @@ export class PytestRunner {
             this.testTreeProvider.addCollectOnlyTest(testDetails);
         });
     }
-    
+
     private handleProcessOutput(data: Buffer) {
         const output = data.toString();
-        
+
         if (output.includes('Report successfully generated')) {
             this.outputChannel.appendLine('\n');
         }
-        
+
         this.outputChannel.append(output);
-        
+
         if (this.argumentBuilder.isCollectOnly() && this.argumentBuilder.isQuiet()) {
             this.addCollectOnlyTests(output);
             return;
@@ -85,7 +89,7 @@ export class PytestRunner {
             }
         });
     }
-    
+
     private handleProcessError(data: Buffer) {
         const output = data.toString();
         this.outputChannel.append(output);
@@ -101,7 +105,7 @@ export class PytestRunner {
             cwd: vscode.workspace.workspaceFolders![0].uri.fsPath
         });
     }
-    
+
     private addProcessListeners(resolve: () => void, reject: () => void) {
         this.pytestProcess?.stdout?.on('data', this.handleProcessOutput.bind(this));
         this.pytestProcess?.stderr?.on('data', this.handleProcessError.bind(this));
@@ -111,62 +115,63 @@ export class PytestRunner {
             reject();
         });
     }
-    
+
     run(): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (PytestRunner.isRunning) {
+            if (PytestRunner.IsRunning) {
                 return reject();
             }
-            
+
             this.testTreeProvider.init();
-            
+
             this.pytestProcess = this.initProcess();
-            PytestRunner.isRunning = true;
+            PytestRunner.IsRunning = true;
             this.addProcessListeners(resolve, reject);
-            
+
             this.outputChannel.show(true);
             this.outputChannel.appendLine(`${getTime()}: ${this.argumentBuilder.getDisplayCommand()}`);
             this.outputChannel.appendLine(`${getTime()}: Script started`);
             this.outputChannel.appendLine('');
         });
     }
-    
+
     stop() {
         if (this.pytestProcess) {
             this.wasKilled = true;
-            
+
             try {
                 getPlatform().killProcess(this.pytestProcess.pid);
-                PytestRunner.isRunning = false;
+                PytestRunner.IsRunning = false;
             } catch (e) {
                 this.wasKilled = false;
-                PytestRunner.isRunning = true;
+                PytestRunner.IsRunning = true;
                 return;
             }
-            
+
             this.testTreeProvider.clearInit();
             this.testTreeProvider.handleInterrupt();
             this.outputChannel.appendLine('\nTEST RUN INTERRUPTED');
         }
     }
-    
+
     public static get IsRunning(): boolean {
         return this.running;
     }
 
-    private static set isRunning(value: boolean) {
+    public static set IsRunning(value: boolean) {
         this.running = value;
         vscode.commands.executeCommand('setContext', 'typhoon-test.isRunning', value);
+        this.runningChangeListeners.forEach(listener => listener(value));
     }
 }
 
 class TestRunEndChecker {
     private hasEnded = false;
-    
+
     check(line: string) {
         return this.hasEnded || (this.hasEnded = this.isTestRunEnd(line));
     }
-    
+
     private isTestRunEnd(line: string) {
         return line.includes('===') && !line.includes('test session starts');
     }

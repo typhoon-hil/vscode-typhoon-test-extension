@@ -10,7 +10,10 @@ export async function runTests(testTreeProvider: TestTreeProvider, testScope?: s
     } 
     
     pytestRunner = new PytestRunner(testTreeProvider, testScope, builderType);
-    await pytestRunner.run();
+    await pytestRunner.run().then().catch((e) => {
+        PytestRunner.IsRunning = false;
+        throw e;
+    });
 }
 
 export function stopTests() {
