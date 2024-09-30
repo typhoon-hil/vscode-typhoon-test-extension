@@ -145,7 +145,7 @@ export class PytestRunner {
             } catch (e) {
                 this.wasKilled = false;
                 PytestRunner.IsRunning = true;
-                return;
+                throw e;
             }
 
             this.testTreeProvider.clearInit();

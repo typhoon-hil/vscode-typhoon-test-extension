@@ -1,6 +1,7 @@
 import { PytestArgumentBuilder } from "../models/PytestArgumentBuilder";
 import { PytestRunner } from "../models/testRun";
 import { TestTreeProvider } from "../views/TestTreeProvider";
+import * as vscode from 'vscode';
 
 let pytestRunner: PytestRunner | undefined;
 
@@ -17,5 +18,10 @@ export async function runTests(testTreeProvider: TestTreeProvider, testScope?: s
 }
 
 export function stopTests() {
-    pytestRunner?.stop();
+    try {
+        pytestRunner?.stop();
+    }
+    catch (e) {
+        vscode.window.showErrorMessage('Failed to stop tests: ' + e);
+    }
 }
