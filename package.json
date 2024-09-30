@@ -231,12 +231,14 @@
       {
         "command": "typhoon-test.openTestRunConfiguration",
         "title": "Open Test Run Configuration",
-        "category": "Typhoon Test"
+        "category": "Typhoon Test",
+        "icon": "$(gear)"
       },
       {
         "command": "typhoon-test.openPdfConfiguration",
         "title": "Open PDF Configuration",
-        "category": "Typhoon Test"
+        "category": "Typhoon Test",
+        "icon": "$(gear)"
       },
       {
         "command": "typhoon-test.pickInterpreterPath",
@@ -377,6 +379,16 @@
         {
           "command": "typhoon-test.collectTests",
           "when": "view == typhoon-test.pytestMonitorView && !typhoon-test.isRunning",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.openTestRunConfiguration",
+          "when": "view == typhoon-test.testRunConfigurationView",
+          "group": "navigation"
+        },
+        {
+          "command": "typhoon-test.openPdfConfiguration",
+          "when": "view == typhoon-test.pdfConfigurationView",
           "group": "navigation"
         }
       ],
