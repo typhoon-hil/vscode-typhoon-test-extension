@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { generateConfigElements, getConfigs } from '../utils/configWebview';
 import { ConfigCommand, ConfigError, ConfigResponse } from '../models/config';
+import path from 'path';
 
 export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
@@ -39,11 +40,11 @@ export class ConfigurationWebviewProvider implements vscode.WebviewViewProvider 
         const elements = generateConfigElements(configs);
 
         const cssPath = this._view?.webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'configuration', 'configuration.css')
+            vscode.Uri.file(path.join(__dirname, 'media', 'configuration', 'configuration.css'))
         );
         
         const jsPath = this._view?.webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'configuration', 'configuration.js')
+            vscode.Uri.file(path.join(__dirname, 'media', 'configuration', 'configuration.js'))
         );
 
         return `

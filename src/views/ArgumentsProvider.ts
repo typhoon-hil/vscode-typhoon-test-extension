@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
-import {TreeNode} from "../models/TreeNode";
-import {copyToClipboard, insertToEditor} from "../utils/snippetCreator";
-import {TakenActionMessage} from "../models/snippet";
+import { TreeNode } from "../models/TreeNode";
+import { copyToClipboard, insertToEditor } from "../utils/snippetCreator";
+import { TakenActionMessage } from "../models/snippet";
 
 export class ArgumentsProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
-    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media'));
+    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, 'media')).fsPath;
 
     constructor(private readonly _extensionUri: vscode.Uri) {
     }
@@ -25,13 +24,13 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
         };
 
         const htmlPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.html')
+            path.join(this.mediaPath, 'argumentsWebview.html')
         );
-        const htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf8');
 
-        webviewView.webview.html = this.getInitHtml(htmlContent);
-
-        webviewView.webview.onDidReceiveMessage(this.handleMessage);
+        vscode.workspace.fs.readFile(htmlPath).then(content => {
+            webviewView.webview.html = this.getInitHtml(content.toString());
+            webviewView.webview.onDidReceiveMessage(this.handleMessage);
+        });
     }
 
     public update(item: TreeNode): void {
@@ -56,11 +55,11 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
 
     private getInitHtml(htmlContent: string): string {
         const jsPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.js')
+            path.join(this.mediaPath, 'argumentsWebview.js')
         );
 
         const cssPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.css')
+            path.join(this.mediaPath, 'argumentsWebview.css')
         );
 
         const scriptUri = this._view!.webview.asWebviewUri(jsPath);
@@ -71,5 +70,3 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
             .replace('argumentsWebview.css', styleUri.toString());
     }
 }
-
-
