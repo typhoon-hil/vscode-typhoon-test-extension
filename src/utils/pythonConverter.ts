@@ -3,7 +3,7 @@ import path from "path";
 import * as vscode from "vscode";
 import {exec} from "child_process";
 
-const scriptsDir = vscode.Uri.file(path.join(__dirname, '..', '..', 'scripts')).fsPath;
+const scriptsDir = vscode.Uri.file(path.join(__dirname, '..', 'scripts')).fsPath;
 
 export async function loadPythonEntity(pythonCommand: string, moduleName: string, type: PythonEntityType): Promise<PythonEntity> {
     const plain = await extractPython(pythonCommand, moduleName, type);
