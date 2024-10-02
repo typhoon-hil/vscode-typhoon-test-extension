@@ -37,12 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('typhoon-test.pdfConfigurationView', pdfConfigurationProvider);
     vscode.window.registerWebviewViewProvider('typhoon-test.testRunConfigurationView', testRunConfigurationProvider);
 
-    context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocstringView', (item: TreeNode) =>
+    context.subscriptions.push(vscode.commands.registerCommand('typhoon-test.showDocumentation', (item: TreeNode) =>
         showDocstringView(sidebarProvider, item)
     ));
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('typhoon-test.showArgumentsView', (item: TreeNode) => {
+        vscode.commands.registerCommand('typhoon-test.showArguments', (item: TreeNode) => {
             showArgumentsView(formProvider, item);
         })
     );
