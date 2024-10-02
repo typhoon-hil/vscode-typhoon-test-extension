@@ -3,7 +3,8 @@
 'use strict';
 
 const path = require('path');
-const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 
 /**@type {import('webpack').Configuration}*/
 const config = {
@@ -21,18 +22,18 @@ const config = {
   externals: {
     vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
   },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/scripts', to: 'scripts' }, // Copy all Python files from src/scripts to dist/scripts
+        { from: 'src/media', to: 'media' },     // Copy all media files from src/media to dist/media
+      ],
+    }),
+  ],
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     mainFields: ['main'], // look for `browser` entry point in imported node modules
     extensions: ['.ts', '.js'],
-    alias: {
-      // provides alternate implementation for node module and source files
-    },
-    fallback: {
-      // Webpack 5 no longer polyfills Node.js core modules automatically.
-      // see https://webpack.js.org/configuration/resolve/#resolvefallback
-      // for the list of Node.js core module polyfills.
-    }
   },
   module: {
     rules: [
@@ -44,7 +45,14 @@ const config = {
             loader: 'ts-loader'
           }
         ]
-      }
+      },
+      {
+        test: /\.py$/, // Python file handling
+        type: 'asset/resource',
+        generator: {
+          filename: 'scripts/[name][ext]', // Copies Python files to `dist/scripts/`
+        },
+      },
     ]
   }
 };
