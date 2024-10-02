@@ -6,7 +6,7 @@ import { TakenActionMessage } from "../models/snippet";
 
 export class ArgumentsProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
-    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media'));
+    private readonly mediaPath = vscode.Uri.file(path.join(__dirname, '..', '..', 'media')).fsPath;
 
     constructor(private readonly _extensionUri: vscode.Uri) {
     }
@@ -24,7 +24,7 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
         };
 
         const htmlPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.html')
+            path.join(this.mediaPath, 'argumentsWebview.html')
         );
 
         vscode.workspace.fs.readFile(htmlPath).then(content => {
@@ -55,11 +55,11 @@ export class ArgumentsProvider implements vscode.WebviewViewProvider {
 
     private getInitHtml(htmlContent: string): string {
         const jsPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.js')
+            path.join(this.mediaPath, 'argumentsWebview.js')
         );
 
         const cssPath = vscode.Uri.file(
-            path.join(this.mediaPath.fsPath, 'argumentsWebview.css')
+            path.join(this.mediaPath, 'argumentsWebview.css')
         );
 
         const scriptUri = this._view!.webview.asWebviewUri(jsPath);
