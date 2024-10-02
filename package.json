@@ -300,7 +300,7 @@
       "activitybar": [
         {
           "id": "api-wizard",
-          "title": "Typhoon Test API Wizard",
+          "title": "API Wizard",
           "icon": "./images/api-wizard.svg"
         },
         {
@@ -439,12 +439,12 @@
           "when": "false"
         },
         {
-          "command": "typhoon-test.addPythonEntity",
-          "when": "view.typhoon-test.pythonEntityView.visible"
-        },
-        {
           "command": "typhoon-test.removePythonEntity",
           "when": "false"
+        },
+        {
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view.typhoon-test.pythonEntityView.visible"
         },
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
@@ -455,12 +455,36 @@
           "when": "false"
         },
         {
-          "command": "typhoon-test.runTestsFromFile",
-          "when": "editorLangId == python"
-        },
-        {
           "command": "typhoon-test.viewTestInCode",
           "when": "false"
+        },
+        {
+          "command": "typhoon-test.collectTestsFromTestItem",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.runTestsFromTestItem",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.runTestsFromExplorer",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.pickInterpreterPath",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.stopTests",
+          "when": "typhoon-test.isRunning"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "editorLangId == python && workspaceFolderCount > 0 && !typhoon-test.isRunning"
+        },
+        {
+          "command": "typhoon-test.runTests",
+          "when": "workspaceFolderCount > 0 && !typhoon-test.isRunning"
         }
       ],
       "editor/title": [
