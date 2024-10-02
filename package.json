@@ -2,11 +2,11 @@
   "name": "tt-demo",
   "displayName": "TT Demo",
   "description": "Typhoon Test Demo",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "engines": {
     "vscode": "^1.91.0"
   },
-  "icon": "./images/logo.png",
+  "icon": "images/logo.png",
   "publisher": "balsabulatovic",
   "repository": {
     "type": "git",
@@ -301,12 +301,12 @@
         {
           "id": "api-wizard",
           "title": "API Wizard",
-          "icon": "./images/api-wizard.svg"
+          "icon": "images/api-wizard.svg"
         },
         {
           "id": "pytestMonitor",
           "title": "Pytest Monitor",
-          "icon": "./images/pytest-monitor.svg"
+          "icon": "images/pytest-monitor.svg"
         }
       ]
     },
