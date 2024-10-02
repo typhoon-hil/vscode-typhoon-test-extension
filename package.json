@@ -6,6 +6,7 @@
   "engines": {
     "vscode": "^1.91.0"
   },
+  "icon": "./images/logo.png",
   "publisher": "balsabulatovic",
   "repository": {
     "type": "git",
@@ -24,9 +25,8 @@
   "contributes": {
     "submenus": [
       {
-        "id": "typhoon-test",
-        "label": "Typhoon Test",
-        "icon": "$(rocket)"
+        "id": "typhoon-test-submenu",
+        "label": "Typhoon Test"
       }
     ],
     "keybindings": [
@@ -299,19 +299,19 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "typhoon-test",
+          "id": "api-wizard",
           "title": "Typhoon Test API Wizard",
-          "icon": "$(rocket)"
+          "icon": "./images/api-wizard.svg"
         },
         {
           "id": "pytestMonitor",
           "title": "Pytest Monitor",
-          "icon": "$(beaker)"
+          "icon": "./images/pytest-monitor.svg"
         }
       ]
     },
     "views": {
-      "typhoon-test": [
+      "api-wizard": [
         {
           "id": "typhoon-test.pythonEntityView",
           "name": "Function List"
@@ -465,14 +465,14 @@
       ],
       "editor/title": [
         {
-          "submenu": "typhoon-test",
+          "submenu": "typhoon-test-submenu",
           "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
       ],
       "editor/context": [
         {
-          "submenu": "typhoon-test",
+          "submenu": "typhoon-test-submenu",
           "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
@@ -481,10 +481,10 @@
         {
           "command": "typhoon-test.runTestsFromExplorer",
           "when": "resourceLangId == python || explorerResourceIsFolder || explorerResourceIsRoot",
-          "group": "typhoon-test"
+          "group": "typhoon-test-group"
         }
       ],
-      "typhoon-test": [
+      "typhoon-test-submenu": [
         {
           "command": "typhoon-test.openTestRunConfiguration"
         },
