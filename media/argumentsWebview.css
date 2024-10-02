@@ -28,7 +28,7 @@ th {
     left: 0;
     width: 100%;
     flex-wrap: wrap;
-    background-color: transparent;
+    background-color: var(--vscode-sideBarTitle-background);
 }
 
 .vscode-button {
