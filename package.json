@@ -1,11 +1,12 @@
 {
   "name": "tt-demo",
   "displayName": "TT Demo",
-  "description": "Typhoon Test Demo",
-  "version": "0.0.19",
+  "description": "Typhoon test extension for VS Code",
+  "version": "0.0.21",
   "engines": {
     "vscode": "^1.91.0"
   },
+  "icon": "images/logo.png",
   "publisher": "balsabulatovic",
   "repository": {
     "type": "git",
@@ -20,13 +21,12 @@
   "activationEvents": [
     "onLanguage:python"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension",
   "contributes": {
     "submenus": [
       {
-        "id": "typhoon-test",
-        "label": "Typhoon Test",
-        "icon": "$(rocket)"
+        "id": "typhoon-test-submenu",
+        "label": "Typhoon Test"
       }
     ],
     "keybindings": [
@@ -299,19 +299,19 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "typhoon-test",
-          "title": "Typhoon Test API Wizard",
-          "icon": "$(rocket)"
+          "id": "api-wizard",
+          "title": "Typhoon API Wizard",
+          "icon": "images/api-wizard.svg"
         },
         {
           "id": "pytestMonitor",
-          "title": "Pytest Monitor",
-          "icon": "$(beaker)"
+          "title": "Typhoon Pytest Monitor",
+          "icon": "images/pytest-monitor.svg"
         }
       ]
     },
     "views": {
-      "typhoon-test": [
+      "api-wizard": [
         {
           "id": "typhoon-test.pythonEntityView",
           "name": "Function List"
@@ -439,12 +439,12 @@
           "when": "false"
         },
         {
-          "command": "typhoon-test.addPythonEntity",
-          "when": "view.typhoon-test.pythonEntityView.visible"
-        },
-        {
           "command": "typhoon-test.removePythonEntity",
           "when": "false"
+        },
+        {
+          "command": "typhoon-test.addPythonEntity",
+          "when": "view.typhoon-test.pythonEntityView.visible"
         },
         {
           "command": "typhoon-test.saveApiWizardWorkspace",
@@ -455,24 +455,48 @@
           "when": "false"
         },
         {
-          "command": "typhoon-test.runTestsFromFile",
-          "when": "editorLangId == python"
-        },
-        {
           "command": "typhoon-test.viewTestInCode",
           "when": "false"
+        },
+        {
+          "command": "typhoon-test.collectTestsFromTestItem",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.runTestsFromTestItem",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.runTestsFromExplorer",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.pickInterpreterPath",
+          "when": "false"
+        },
+        {
+          "command": "typhoon-test.stopTests",
+          "when": "typhoon-test.isRunning"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "when": "editorLangId == python && workspaceFolderCount > 0 && !typhoon-test.isRunning"
+        },
+        {
+          "command": "typhoon-test.runTests",
+          "when": "workspaceFolderCount > 0 && !typhoon-test.isRunning"
         }
       ],
       "editor/title": [
         {
-          "submenu": "typhoon-test",
+          "submenu": "typhoon-test-submenu",
           "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
       ],
       "editor/context": [
         {
-          "submenu": "typhoon-test",
+          "submenu": "typhoon-test-submenu",
           "group": "Typhoon Test",
           "when": "editorLangId == python"
         }
@@ -481,10 +505,10 @@
         {
           "command": "typhoon-test.runTestsFromExplorer",
           "when": "resourceLangId == python || explorerResourceIsFolder || explorerResourceIsRoot",
-          "group": "typhoon-test"
+          "group": "typhoon-test-group"
         }
       ],
-      "typhoon-test": [
+      "typhoon-test-submenu": [
         {
           "command": "typhoon-test.openTestRunConfiguration"
         },
@@ -507,12 +531,13 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "compile": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "vscode:prepublish": "npm run package",
+    "package": "webpack --mode production --devtool hidden-source-map"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.7",
@@ -525,6 +550,9 @@
     "eslint": "^8.57.0",
     "tree-sitter": "^0.21.0",
     "tree-sitter-python": "^0.21.0",
-    "typescript": "^5.4.5"
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   }
 }
