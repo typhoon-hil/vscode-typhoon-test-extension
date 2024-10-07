@@ -2,7 +2,7 @@
   "name": "tt-demo",
   "displayName": "TT Demo",
   "description": "Typhoon test extension for VS Code",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "engines": {
     "vscode": "^1.91.0"
   },
