@@ -1,7 +1,7 @@
 {
   "name": "tt-demo",
   "displayName": "TT Demo",
-  "description": "Typhoon Test Demo",
+  "description": "Typhoon test extension for VS Code",
   "version": "0.0.21",
   "engines": {
     "vscode": "^1.91.0"
@@ -300,12 +300,12 @@
       "activitybar": [
         {
           "id": "api-wizard",
-          "title": "API Wizard",
+          "title": "Typhoon API Wizard",
           "icon": "images/api-wizard.svg"
         },
         {
           "id": "pytestMonitor",
-          "title": "Pytest Monitor",
+          "title": "Typhoon Pytest Monitor",
           "icon": "images/pytest-monitor.svg"
         }
       ]
