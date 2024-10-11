@@ -17,7 +17,7 @@
     "Snippets",
     "Other"
   ],
-  "license": "MIT",
+  "license": "LGPL-3.0",
   "activationEvents": [
     "onLanguage:python"
   ],
