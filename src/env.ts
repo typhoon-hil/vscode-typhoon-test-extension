@@ -1,3 +1,6 @@
+const extensionName = 'vscode-typhoon-test';
+const extensionPublisher = 'Typhoon-HIL';
+
 export const environment = {
-    extensionId: 'balsabulatovic.tt-demo'
+    extensionId: `${extensionPublisher}.${extensionName}`,
 };
