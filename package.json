@@ -527,6 +527,18 @@
           "command": "typhoon-test.runTestsFromFile",
           "when": "!typhoon-test.isRunning && workspaceFolderCount > 0"
         }
+      ],
+      "editor/title/run": [
+        {
+          "command": "typhoon-test.runTests",
+          "group": "navigation@1",
+          "when": "workspaceFolderCount > 0 && !typhoon-test.isRunning"
+        },
+        {
+          "command": "typhoon-test.runTestsFromFile",
+          "group": "navigation@1",
+          "when": "editorLangId == python && workspaceFolderCount > 0 && !typhoon-test.isRunning"
+        }
       ]
     }
   },
